@@ -209,7 +209,7 @@ timeline.push(instructions_block);
 for (var i = 0; i <= Math.floor(n_videos * n_repeat / n_videos_per_block); i++) {
     // iterate over videos per block
     for (var j = 0; j < n_videos_per_block; j++) {
-        if i * n_videos_per_block + j >= n_videos * n_repeat - 1{  // check if the last video was reached
+        if (i * n_videos_per_block + j >= n_videos * n_repeat - 1) {  // check if the last video was reached
             break;
         }
 
