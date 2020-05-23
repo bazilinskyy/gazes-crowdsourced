@@ -221,10 +221,10 @@ for (var i = 0; i < n_videos * n_repeat / n_videos_per_block; i++) {
     }
     // save data
     timeline.push(save_data_block);
- //    // don't add the between block after the last trial
- //    if (i != 11 && i % 2 == 1) {
-	//     timeline.push(between_blocks[i]);
-	// }
+    // don't add the between block after the last trial
+    if (i != 1 && i % 2 == 1) {
+	    timeline.push(between_blocks[i]);
+	}
 }
 
 console.log(video_ids);
