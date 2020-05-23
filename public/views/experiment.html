@@ -113,43 +113,7 @@ for (var i = 1; i <= n_videos; i++) {
 		video_ids.push(i);
 	}
 }
-console.log('video_ids ', video_ids);
-// shuffle array with video IDs
-var video_ids_blocks = [];  // all groups shuffled
-var video_ids_1 = shuffle(video_ids.slice(0, 2 * n_repeat)) ;  // group 1
-var video_ids_2 = shuffle(video_ids.slice(2 * n_repeat, 4 * n_repeat));  // group 2
-var video_ids_3 = shuffle(video_ids.slice(4 * n_repeat, 6 * n_repeat));  // group 3
-var video_ids_4 = shuffle(video_ids.slice(6 * n_repeat, 8 * n_repeat));  // group 4
-var video_ids_5 = shuffle(video_ids.slice(8 * n_repeat, 10 * n_repeat));  // group 5
-var video_ids_6 = shuffle(video_ids.slice(10 * n_repeat));  // group 6
-console.log('video_ids_1 ', video_ids_1);
-console.log('video_ids_2 ', video_ids_2);
-console.log('video_ids_3 ', video_ids_3);
-console.log('video_ids_4 ', video_ids_4);
-console.log('video_ids_5 ', video_ids_5);
-console.log('video_ids_6 ', video_ids_6);
-video_ids_blocks.push(video_ids_1);
-video_ids_blocks.push(video_ids_2);
-video_ids_blocks.push(video_ids_3);
-video_ids_blocks.push(video_ids_4);
-video_ids_blocks.push(video_ids_5);
-video_ids_blocks.push(video_ids_6);
-video_ids_blocks = shuffle(video_ids_blocks);
-// get unique conditions and sort them
-conditions_ordered = [];
-conditions_ordered.push(video_ids_blocks[0].filter(onlyUnique));
-conditions_ordered.push(video_ids_blocks[1].filter(onlyUnique));
-conditions_ordered.push(video_ids_blocks[2].filter(onlyUnique));
-conditions_ordered.push(video_ids_blocks[3].filter(onlyUnique));
-conditions_ordered.push(video_ids_blocks[4].filter(onlyUnique));
-conditions_ordered.push(video_ids_blocks[5].filter(onlyUnique));
-console.log('conditions_ordered ', conditions_ordered);
-conditions = conditions_ordered[0].concat(conditions_ordered[1], conditions_ordered[2], conditions_ordered[3], conditions_ordered[4], conditions_ordered[5]);
-console.log('conditions ', conditions);
-console.log('condition images ', condition_images);
-
-console.log('video_ids_blocks ', video_ids_blocks);
-video_ids = video_ids_blocks[0].concat(video_ids_blocks[1], video_ids_blocks[2], video_ids_blocks[3], video_ids_blocks[4], video_ids_blocks[5]);
+video_ids = shuffle(video_ids);
 console.log('video_ids ', video_ids);
 
 // populate array with codechart IDs
