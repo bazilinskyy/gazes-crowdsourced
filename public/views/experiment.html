@@ -17,19 +17,10 @@
     <link href='css/experiment.css' rel='stylesheet' type='text/css'></link>
     <link rel='icon' type='image/png' href='/img/favicon.png' />
 	<style>
-	#questionnaire img{
-	    width: 200px;
-	}
-	#questionnaire input{
+	#input-codeblock input{
 	    font-size: 18px;
         width: 50%;
 	}
-
-    #questionnaire-thead tr th p {
-        font-weight: normal;
-        margin-top: 0px;
-        margin-bottom: 7px;
-    }
 	</style>
   </head>
   <body>
@@ -170,7 +161,7 @@ for (var i = 0; i < n_videos * n_repeat; i++) {
 var codechart_input_block = {
     type: 'survey-html-form',
     preamble: '<p> Please enter the character code you remember looking at last:</p>',
-    html: '<p><input name="input_code" id="input_code" pattern="^[a-zA-Z]\d{2}$" type="text" /></p>'
+    html: '<p><input name="input-codeblock" id="input-codeblock" pattern="^[A-Za-z]{1}[0-9]{2}" type="text" /></p>'
 };
 // build between blocks
 for (var i = 1; i <= n_videos * n_repeat / n_videos_per_block - 1; i++) {
