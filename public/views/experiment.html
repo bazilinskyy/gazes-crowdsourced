@@ -217,93 +217,7 @@ for (var i = 1; i <= n_videos * n_repeat / n_videos_per_block - 1; i++) {
         choices: ['C']
     });
 }
-// slider questions
-var slider_block_1 = {
-    type: 'html-slider-response',
-    labels: ['0', '20', '40', '60', '80', '100'],
-    stimulus: '<p></p>',
-    slider_width: 1000,
-    prompt: "<p style='width: 1000px'>Please rate the following statement based on 10 videos shown since the last break/start of the experiment: <strong>It was easy to understand the signal</strong> (0 = completely disagree, 100 = completely agree).</p>",
-    require_movement: true
-};
-var slider_block_2 = {
-    type: 'html-slider-response',
-    labels: ['0', '20', '40', '60', '80', '100'],
-    stimulus: '<p></p>',
-    slider_width: 1000,
-    prompt: "<p style='width: 1000px'>Please rate the following statement based on 10 videos shown since the last break/start of the experiment: <strong>I like this way of communication</strong> (0 = completely disagree, 100 = completely agree).</p>",
-    require_movement: true
-};
-// per block questions
-var sliders_blocks = [];
-for (var i = 0; i < n_videos * n_videos_per_block / n_break; i++) {  // add qustions for each block
-    if (i == 0) { // first phrase, so from the start of the experiment
-        var legend_phrase = 'since the start of the experiment';
-    } else { // not the first phrase, so since the last break
-        var legend_phrase = 'since the last break';
-    }
-    // id of condition
-    // 0  0 1    0*2 0*2+1
-    // 1  2 3    1*2 1*2+1
-    // 2  4 5    2*2 2*2+1
-    cond_num = i * 2;
-    if (conditions[cond_num] < conditions[cond_num + 1]) { // order smaller -> larger
-        cond_num_1 = cond_num;
-        cond_num_2 = cond_num + 1;
-    } else {
-        cond_num_1 = cond_num + 1;
-        cond_num_2 = cond_num;
-    }
-    console.log('cond_num ', cond_num, cond_num_1, cond_num_2, conditions[cond_num_1], conditions[cond_num_2], condition_images[conditions[cond_num_1] - 1], condition_images[conditions[cond_num_2] - 1]);
-    // add block to array
-    sliders_blocks.push({
-        type: 'survey-html-form-slider',
-        require_movement: true,
-        html: '<div id="jspsych-content" class="jspsych-content"></p><div id="jspsych-html-slider-response-wrapper" style="margin: 100px 0px;"><div><p style="width: 1000px">Please rate the following statements based on the videos of the car continuing to drive, which were shown ' + legend_phrase + '. Provide your answers by moving the sliders on the scale: 0 = completely disagree, 100 = completely agree. You will not be able to continue before moving all sliders.</p><img src=\"' + condition_images[conditions[cond_num_1] - 1] + '\"/></div><div class="jspsych-html-slider-response-container" style="position:relative; margin: 3em auto 1.5em auto; width:1000px;"><input type="range" value="50" min="0" max="100" step="1" style="width: 100%;" id="slider-0" name="slider-0" size="5"><div><div style="display: inline-block; position: absolute; left:-10%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">0</span></div><div style="display: inline-block; position: absolute; left:10%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">20</span></div><div style="display: inline-block; position: absolute; left:30%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">40</span></div><div style="display: inline-block; position: absolute; left:50%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">60</span></div><div style="display: inline-block; position: absolute; left:70%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">80</span></div><div style="display: inline-block; position: absolute; left:90%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">100</span></div></div></div><p style="width: 1000px"><strong>This concept was easy to understand</strong>.</p><div class="jspsych-html-slider-response-container" style="position:relative; margin: 3em auto 1.5em auto; width:1000px;"><input type="range" value="50" min="0" max="100" step="1" style="width: 100%;" id="slider-1" name="slider-1"><div><div style="display: inline-block; position: absolute; left:-10%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">0</span></div><div style="display: inline-block; position: absolute; left:10%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">20</span></div><div style="display: inline-block; position: absolute; left:30%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">40</span></div><div style="display: inline-block; position: absolute; left:50%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">60</span></div><div style="display: inline-block; position: absolute; left:70%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">80</span></div><div style="display: inline-block; position: absolute; left:90%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">100</span></div></div></div><p style="width: 1000px"><strong>I like this concept as a way of communication</strong>.</p><div class="jspsych-html-slider-response-container" style="position:relative; margin: 3em auto 1.5em auto; width:1000px;"><input type="range" value="50" min="0" max="100" step="1" style="width: 100%;" id="slider-2" name="slider-2"><div><div style="display: inline-block; position: absolute; left:-10%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">0</span></div><div style="display: inline-block; position: absolute; left:10%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">20</span></div><div style="display: inline-block; position: absolute; left:30%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">40</span></div><div style="display: inline-block; position: absolute; left:50%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">60</span></div><div style="display: inline-block; position: absolute; left:70%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">80</span></div><div style="display: inline-block; position: absolute; left:90%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">100</span></div></div></div><p style="width: 1000px"><strong>The concept is intuitive for signaling \'Please do NOT cross the road\'</strong>.</p><div id="jspsych-html-slider-response-wrapper" style="margin: 100px 0px;"><div><p style="width: 1000px">Please rate the following statements based on the videos of the car letting you cross the street, which were shown ' + legend_phrase + '. Provide your answers by moving the sliders on the scale: 0 = completely disagree, 100 = completely agree. You will not be able to continue before moving all sliders.</p><img src=\"' + condition_images[conditions[cond_num_2] - 1] + '\"/></div><div class="jspsych-html-slider-response-container" style="position:relative; margin: 3em auto 1.5em auto; width:1000px;"><input type="range" value="50" min="0" max="100" step="1" style="width: 100%;" id="slider-3" name="slider-3"><div><div style="display: inline-block; position: absolute; left:-10%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">0</span></div><div style="display: inline-block; position: absolute; left:10%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">20</span></div><div style="display: inline-block; position: absolute; left:30%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">40</span></div><div style="display: inline-block; position: absolute; left:50%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">60</span></div><div style="display: inline-block; position: absolute; left:70%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">80</span></div><div style="display: inline-block; position: absolute; left:90%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">100</span></div></div></div><p style="width: 1000px"><strong>This concept was easy to understand</strong>.</p><div class="jspsych-html-slider-response-container" style="position:relative; margin: 3em auto 1.5em auto; width:1000px;"><input type="range" value="50" min="0" max="100" step="1" style="width: 100%;" id="slider-4" name="slider-4"><div><div style="display: inline-block; position: absolute; left:-10%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">0</span></div><div style="display: inline-block; position: absolute; left:10%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">20</span></div><div style="display: inline-block; position: absolute; left:30%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">40</span></div><div style="display: inline-block; position: absolute; left:50%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">60</span></div><div style="display: inline-block; position: absolute; left:70%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">80</span></div><div style="display: inline-block; position: absolute; left:90%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">100</span></div></div></div><p style="width: 1000px"><strong>I like this concept as a way of communication</strong>.</p><div class="jspsych-html-slider-response-container" style="position:relative; margin: 3em auto 1.5em auto; width:1000px;"><input type="range" value="50" min="0" max="100" step="1" style="width: 100%;" id="slider-5" name="slider-5"><div><div style="display: inline-block; position: absolute; left:-10%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">0</span></div><div style="display: inline-block; position: absolute; left:10%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">20</span></div><div style="display: inline-block; position: absolute; left:30%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">40</span></div><div style="display: inline-block; position: absolute; left:50%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">60</span></div><div style="display: inline-block; position: absolute; left:70%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">80</span></div><div style="display: inline-block; position: absolute; left:90%; text-align: center; width: 20%;"><span style="text-align: center; font-size: 80%;">100</span></div></div></div><p style="width: 1000px"><strong>The concept is intuitive for signaling \'Please cross the road\'</strong>.</p><div></div>',
-        items: 6
-    });
-}
 
-// videos with examples
-var video_example_1 = {
-    type: 'video-keyboard-response',
-    trial_ends_after_video: true,
-    choices: jsPsych.NO_KEYS,
-    sources: [video_pfefix + 'example_1.mp4'],
-    prompt: '<p>Watch this video with an example of a communication feature.</p>',
-};
-var video_example_2 = {
-    type: 'video-keyboard-response',
-    trial_ends_after_video: true,
-    choices: jsPsych.NO_KEYS,
-    sources: [video_pfefix + 'example_2.mp4'],
-    prompt: '<p>Watch this video with an example of a communication feature.</p>',
-};
-// final questionnaire
-// var multi_choice_block_horizontal = {
-//   type: 'survey-multi-choice',
-//   questions: [
-//     {prompt: "I like vegetables", options: page_1_options, required: true, horizontal: true,}, 
-//     {prompt: "I like fruit", options: page_2_options, required: false, horizontal: true}
-//   ],
-// };
-// var questions_end = {
-//   type: 'survey-text',
-//   questions: [
-//     {prompt: "How old are you?", rows: 5, columns: 40}, 
-//     {prompt: "Where were you born?", rows: 3, columns: 50}
-//   ],
-// };
-var str_yield = 'Car letting you cross';
-var str_continue = 'Car continuing to drive';
-var questions_end = {
-  type: 'survey-html-form-ranking',
-  preamble: '<p>Please rank the ways of communicating you have just seen. Only numbers between 1 and 6 are accepted. <strong>Do NOT put the same number more than once in the same row. Only inputting unique values will allow you to continue.</strong></p>',
-  html: '<table id="questionnaire"><thead id="questionnaire-thead"><tr><th></th><th><img src=\'' + image_pfefix + 'colour_continue.png\'/></th><th><img src=\'' + image_pfefix + 'gesture_continue.png\'/></th><th><img src=\'' + image_pfefix + 'implicit_continue.png\'/></th><th><img src=\'' + image_pfefix + 'lightbar_continue.png\'/></th><th><img src=\'' + image_pfefix + 'posture_continue.png\'/></th><th><img src=\'' + image_pfefix + 'text_continue.png\'/></th></tr><tr><th></th><th><p>' + str_continue + '</p></th><th><p>' + str_continue + '</p></th><th><p>' + str_continue + '</p></th><th><p>' + str_continue + '</p></th><th><p>' + str_continue + '</p></th><th><p>' + str_continue + '</p></th></tr><tr><th></th><th><img src=\'' + image_pfefix + 'colour.png\'/></th><th><img src=\'' + image_pfefix + 'gesture.png\'/></th><th><img src=\'' + image_pfefix + 'implicit.png\'/></th><th><img src=\'' + image_pfefix + 'lightbar.png\'/></th><th><img src=\'' + image_pfefix + 'posture.png\'/></th><th><img src=\'' + image_pfefix + 'text.png\'/></th></tr><tr><th></th><th><p>' + str_yield + '</p></th><th><p>' + str_yield + '</p></th><th><p>' + str_yield + '</p></th><th><p>' + str_yield + '</p></th><th><p>' + str_yield + '</p></th><th><p>' + str_yield + '</p></th></tr></thead><tbody><tr><td><strong>Clarity</strong><br>(from 1 = most clear to 6 = least clear)<p></p></td><td><input id="ranking-input-0-0" name="ranking-input-0-0" type="number" min="1" max="6" step="1"/></td><td><input id="ranking-input-0-1" name="ranking-input-0-1" type="number" min="1" max="6" step="1" required /></td><td><input id="ranking-input-0-2" name="ranking-input-0-2" type="number" min="1" max="6" step="1" required /></td><td><input id="ranking-input-0-3" name="ranking-input-0-3" type="number" min="1" max="6" step="1" required /></td><td><input id="ranking-input-0-4" name="ranking-input-0-4" type="number" min="1" max="6" step="1" required /></td><td><input id="ranking-input-0-5" name="ranking-input-0-5" type="number" min="1" max="6" step="1" required /></td></tr><tr><td><strong>Personal preference</strong><br>(from 1 = most preferred to 6 = least preferred)</td><td><input id="ranking-input-1-0" name="ranking-input-1-0" type="number" min="1" max="6" step="1" required /></td><td><input id="ranking-input-1-1" name="ranking-input-1-1" type="number" min="1" max="6" step="1" required /></td><td><input id="ranking-input-1-2" name="ranking-input-1-2" type="number" min="1" max="6" step="1" required /></td><td><input id="ranking-input-1-3" name="ranking-input-1-3" type="number" min="1" max="6" step="1" required /></td><td><input id="ranking-input-1-4" name="ranking-input-1-4" type="number" min="1" max="6" step="1" required /></td><td><input id="ranking-input-1-5" name="ranking-input-1-5" type="number" min="1" max="6" step="1" required /></td></tr></tbody></table>',
-  unique_values: true,
-  rows: 2,
-  items_per_row: 6
-};
 // block for sending data
 var save_data_block = {
     type: 'call-function',
@@ -325,20 +239,15 @@ var save_data_block = {
 }
 // create experiment timeline array
 var timeline = [];
-// timeline.push(sliders_blocks[0]);
-// timeline.push(questions_end);
-// timeline.push(save_data_block);
+
 timeline.push(instructions_block);
-// timeline.push(video_example_1);
-// timeline.push(video_example_2);
 // iterate over blocks
 for (var i = 0; i < n_videos * n_repeat / n_videos_per_block; i++) {
     // iterate over videos per block
     for (var j = 0; j < n_videos_per_block; j++) {
-    	// if (j != 0) {  // add the continue page before all videos except for the 1st one
-	    // 	timeline.push(continue_block);
-	    // }
-	    timeline.push(continue_block);
+    	if (j != 0) {  // add the continue page before all videos except for the 1st one
+	    	timeline.push(continue_block);
+	    }
         timeline.push(image_block);  // page with an image asking to press the key
         timeline.push(video_stimuli[i * n_videos_per_block + j]);  // page with the stimulus
         // gaze
@@ -346,28 +255,20 @@ for (var i = 0; i < n_videos * n_repeat / n_videos_per_block; i++) {
         timeline.push(codechart_input_block);
         console.log(i, j, i * n_videos_per_block + j, video_stimuli[i * n_videos_per_block + j]);
     }
- //    // questions after each block with stimuli
- //    if (i % 2 == 1) {
- //        timeline.push(sliders_blocks[Math.floor(i / 2)]);
- //        console.log(Math.floor(i / 2), sliders_blocks[Math.floor(i / 2)]);
-	// }
-	// // add final questionnaire in the
-	// if (i == 11) {
-	// 	timeline.push(questions_end);
-	// }
     // save data
     timeline.push(save_data_block);
- //    // don't add the between block after the last trial
- //    if (i != 11 && i % 2 == 1) {
-	//     timeline.push(between_blocks[i]);
-	// }
+    // don't add the between block after the last trial
+    if (i != 11 && i % 2 == 1) {
+	    timeline.push(between_blocks[i]);
+	}
 }
+
 console.log(video_ids);
 console.log(between_blocks);
 console.log(video_stimuli);
 console.log(timeline);
-console.log(sliders_blocks);
 console.log(codechart_stimuli);
+
 /* Start the experiment */
 jsPsych.init({
 	// auto_preload: false,
