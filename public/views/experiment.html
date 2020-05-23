@@ -35,6 +35,7 @@ var n_videos = 12; // number of videos
 var n_repeat = 1; // number of repeats of each condition
 var n_videos_per_block = 5; // number of videos in each block
 var n_break = 5; // number of videos between each break
+var n_codeblocks = 100; // number of codeblock images generated
 var video_pfefix = 'videos/video_'; // prefix for videos
 var image_pfefix = 'img/'; // prefix for images
 var condition_images = [image_pfefix + 'colour_continue.png', image_pfefix + 'colour.png', image_pfefix + 'gesture_continue.png', image_pfefix + 'gesture.png', image_pfefix + 'implicit_continue.png', image_pfefix + 'implicit.png', image_pfefix + 'lightbar_continue.png', image_pfefix + 'lightbar.png', image_pfefix + 'posture_continue.png', image_pfefix + 'posture.png', image_pfefix + 'text_continue.png', image_pfefix + 'text.png'];
@@ -107,10 +108,8 @@ video_ids = shuffle(video_ids);
 console.log('video_ids ', video_ids);
 
 // populate array with codechart IDs
-for (var i = 0; i < n_videos; i++) {
-    for (var j = 0; j < n_repeat; j++) {
-        codechart_ids.push(i);
-    }
+for (var i = 0; i < n_codeblocks; i++) {
+    codechart_ids.push(i);
 }
 codechart_ids = shuffle(codechart_ids);  // shuffle codechart blocks
 console.log('codechart_ids ', codechart_ids);
