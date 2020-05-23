@@ -186,7 +186,7 @@ if __name__ == "__main__":
 
     data = {}
     for i in range(num_codecharts):
-        filename = os.path.join(rootdir, ' cb_%d.jpg' % (i))
+        filename = os.path.join(rootdir, 'cb_%d.jpg' % (i))
         valid_codes, coordinates = create_codechart(filename,
                                                     image_width,
                                                     image_height)
