@@ -38,7 +38,6 @@ var n_break = 5; // number of videos between each break
 var n_codeblocks = 100; // number of codeblock images generated
 var video_pfefix = 'videos/video_'; // prefix for videos
 var image_pfefix = 'img/'; // prefix for images
-var condition_images = [image_pfefix + 'colour_continue.png', image_pfefix + 'colour.png', image_pfefix + 'gesture_continue.png', image_pfefix + 'gesture.png', image_pfefix + 'implicit_continue.png', image_pfefix + 'implicit.png', image_pfefix + 'lightbar_continue.png', image_pfefix + 'lightbar.png', image_pfefix + 'posture_continue.png', image_pfefix + 'posture.png', image_pfefix + 'text_continue.png', image_pfefix + 'text.png'];
 
  /**
  * Returns a random integer between min (inclusive) and max (inclusive).
@@ -238,7 +237,7 @@ console.log(codechart_stimuli);
 jsPsych.init({
 	// auto_preload: false,
     show_preload_progress_bar: true,
-    preload_images: condition_images.concat([image_pfefix + 'black_frame.png']),
+    preload_images: [image_pfefix + 'black_frame.png'],
     timeline: timeline,
     max_load_time: 3000000,
     on_finish: function() {
