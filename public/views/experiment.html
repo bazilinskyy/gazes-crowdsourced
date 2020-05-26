@@ -36,8 +36,8 @@ var n_repeat = 1; // number of repeats of each condition
 var n_videos_per_block = 5; // number of videos in each block
 var n_break = 5; // number of videos between each break
 var n_codeblocks = 100; // number of codeblock images generated
-var video_pfefix = 'videos/video_'; // prefix for videos
-var image_pfefix = 'img/'; // prefix for images
+var video_prefix = 'videos/video_'; // prefix for videos
+var image_prefix = 'img/'; // prefix for images
 
  /**
  * Returns a random integer between min (inclusive) and max (inclusive).
@@ -122,7 +122,7 @@ for (var i = 0; i < n_videos * n_repeat; i++) {
         width: 1280,
         height: 720,
         choices: ['F'],
-        sources: [video_pfefix + video_ids[i] + '.mp4'],
+        sources: [video_prefix + video_ids[i] + '.mp4'],
         prompt: '<p>Press and HOLD \'F\' when you feel safe to cross.</p>',
         on_finish: function(data) {
             jsPsych.data.addDataToLastTrial({
@@ -140,20 +140,20 @@ var continue_block = {
 // black with image to be added before each video
 var image_block = {
     type: 'html-keyboard-response',
-    stimulus: '<img src=\'' + image_pfefix + 'black_frame.png\'/><p>Press and HOLD \'F\' when you feel safe to cross.</p>',
+    stimulus: '<img src=\'' + image_prefix + 'black_frame.png\'/><p>Press and HOLD \'F\' when you feel safe to cross.</p>',
     choices: ['F'],
 };
 // demo image
 var image_demo_block = {
     type: 'image-keyboard-response',
-    stimulus: image_pfefix + 'cat_frame.png',
+    stimulus: image_prefix + 'cat_frame.png',
     choices: jsPsych.NO_KEYS,
     trial_duration: 3000
 };
 // gazes
 // build array with codecharts
 for (var i = 0; i < n_videos * n_repeat; i++) {
-    image_str = image_pfefix + 'codeboard/cb_' + codechart_ids[i] + '.jpg';
+    image_str = image_prefix + 'codeboard/cb_' + codechart_ids[i] + '.jpg';
     codechart_stimuli.push({
         type: 'image-keyboard-response',
         stimulus: image_str,
@@ -237,7 +237,7 @@ console.log(codechart_stimuli);
 jsPsych.init({
 	// auto_preload: false,
     show_preload_progress_bar: true,
-    preload_images: [image_pfefix + 'black_frame.png'],
+    preload_images: [image_prefix + 'black_frame.png'],
     timeline: timeline,
     max_load_time: 3000000,
     on_finish: function() {
