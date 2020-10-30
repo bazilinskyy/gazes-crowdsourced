@@ -93,7 +93,6 @@ jsPsych.plugins['survey-html-form-slider'] = (function() {
     // check if all entries in row are unique
     if(trial.require_movement){
       for (var item = 0; item < trial.items; item++) { // iterate over rows
-        console.log('#slider-' + item);
         display_element.querySelector('#slider-' + item).addEventListener('change', function(){            
           var numberPattern = /\d+/g;
           numbers = this.id.match(numberPattern);
@@ -109,7 +108,6 @@ jsPsych.plugins['survey-html-form-slider'] = (function() {
           }
           // update status of button
           if (sliders_moved_count === trial.items) {  // check if all sliders were moved
-            console.log(this.id, this.value, item_event, sliders_moved, sliders_moved_count, 'button for sliders enabled');
             display_element.querySelector('#jspsych-survey-html-form-next').disabled = false;
           }
         });
