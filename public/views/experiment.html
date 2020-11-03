@@ -288,7 +288,7 @@ image_ids = shuffle(image_ids);  // shuffle IDs
 for (var i = 0; i < n_images * n_images_repeat; i++) {
     image_stimuli.push({
         type: 'image-keyboard-response',
-        stimulus: [image_prefix + 'stimuli/image_' + image_ids[i] + '.jpg'],
+        stimulus: [image_prefix + 'stimuli/image_' + image_ids[i] + '.png'],
         choices: jsPsych.NO_KEYS,
         trial_duration: i_dur,
     });
