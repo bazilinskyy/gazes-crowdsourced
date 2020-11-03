@@ -291,6 +291,8 @@ for (var i = 0; i < n_images * n_images_repeat; i++) {
         stimulus: [image_prefix + 'stimuli/image_' + image_ids[i] + '.png'],
         choices: jsPsych.NO_KEYS,
         trial_duration: i_dur,
+        stimulus_width: 1280,
+        stimulus_height: 720
     });
 }
 // black with text to continue before showing the image
@@ -341,7 +343,7 @@ for (var i = 0; i <= n_images * n_images_repeat; i++) {
     // gaze
     timeline.push(codechart_stimuli[i]);
     timeline.push(codechart_input_block);
-    timeline.push(question_block);
+    // timeline.push(question_block);
     if (debug) {
         console.log(i, image_stimuli[i]);
     }
