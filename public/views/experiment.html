@@ -30,7 +30,13 @@
 /**
  * Constants.
  **/
-var n_images = 82; // number of images
+var n_images = 97; // number of images
+var n_images_per_participant = 10; // number of images to be shown per participant
+// durations of stimulus
+var stimulus_durations = [];
+for (var i = 200; 5000; i=i+200) {
+    stimulus_durations.push(i);
+}
 var n_images_repeat = 1; // number of repeats of each condition
 var n_images_break = 30; // number of images between each break
 var n_codeblocks = 400; // number of codeblock images generated
@@ -283,18 +289,22 @@ for (var i = 1; i <= n_images; i++) {
         image_ids.push(i);
     }
 }
-image_ids = shuffle(image_ids);  // shuffle IDs
+image_ids = shuffle(image_ids);  // shuffle image IDs
 // build array with images with stimuli
 for (var i = 0; i < n_images * n_images_repeat; i++) {
-    image_stimuli.push({
-        type: 'image-keyboard-response',
-        stimulus: [image_prefix + 'stimuli/image_' + image_ids[i] + '.png'],
-        choices: jsPsych.NO_KEYS,
-        trial_duration: i_dur,
-        stimulus_width: 1280,
-        stimulus_height: 720
-    });
+	for (var j = 0; j < stimulus_durations.length; j++) {
+	    image_stimuli.push({
+	        type: 'image-keyboard-response',
+	        stimulus: [image_prefix + 'stimuli/image_' + image_ids[i] + '.png'],
+	        choices: jsPsych.NO_KEYS,
+	        trial_duration: stimulus_durations[j],
+	        stimulus_width: 1280,
+	        stimulus_height: 720
+	    });
+	}
 }
+image_stimuli = shuffle(image_stimuli);  // shuffle blocks with images
+image_stimuli = image_stimuli.slice(n_images_per_participant * n_images_repeat); // trim array of stimuli
 // black with text to continue before showing the image
 var continue_block = {
     type: 'html-keyboard-response',
@@ -329,9 +339,9 @@ var timeline = [];
 timeline.push(instructions_block);
 // iterate over images
 var between_blocks_count = 0;  // counter of shown between blocks
-for (var i = 0; i <= n_images * n_images_repeat; i++) {
+for (var i = 0; i <= n_images_per_participant * n_images_repeat; i++) {
     // check if the last image was reached
-    if (i >= n_images * n_images_repeat) {
+    if (i >= n_images_per_participant * n_images_repeat) {
         break;
     }
     // add the continue page before all images except for the 1st one
