@@ -44,6 +44,7 @@ for (var i = 200; i < 1000; i+=200) {
 for (var i = 1000; i <= 5000; i+=1000) {
     stimulus_durations.push(i);
 }
+stimulus_durations = shuffle(stimulus_durations); // randomise durations
 var n_images_repeat = 1; // number of repeats of each condition
 var n_images_break = 25; // number of images between each break
 var n_codeblocks = 400; // number of codeblock images generated
@@ -305,16 +306,14 @@ for (var i = 1; i <= n_images; i++) {
 if (group_choice == 1) {
 	image_ids = shuffle(image_ids);  // shuffle image IDs
 	for (var i = 0; i < n_images * n_images_repeat; i++) {
-		for (var j = 0; j < stimulus_durations.length; j++) {
-		    image_stimuli.push({
-		        type: 'image-keyboard-response',
-		        stimulus: [image_prefix + 'stimuli/image_' + image_ids[i] + '.png'],
-		        choices: jsPsych.NO_KEYS,
-		        trial_duration: stimulus_durations[j],
-		        stimulus_width: 1280,
-		        stimulus_height: 720
-		    });
-		}
+	    image_stimuli.push({
+	        type: 'image-keyboard-response',
+	        stimulus: [image_prefix + 'stimuli/image_' + image_ids[i] + '.png'],
+	        choices: jsPsych.NO_KEYS,
+	        trial_duration: stimulus_durations[0],
+	        stimulus_width: 1280,
+	        stimulus_height: 720
+	    });
 	}
 } else if (group_choice == 2) {
 	for (var i = 0; i < n_images_group_2; i++) {
