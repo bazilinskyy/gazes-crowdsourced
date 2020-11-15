@@ -369,7 +369,9 @@ timeline.push(instructions_block);
 var between_blocks_count = 0;  // counter of shown between blocks
 for (var i = 0; i <= n_images_per_participant * n_images_repeat; i++) {
     // check if the last image was reached
-    if (i >= n_images_per_participant * n_images_repeat) {
+    if (group_choice == 2 && i >= n_images_group_2) {
+    	break;
+    } else if (i >= n_images_per_participant * n_images_repeat) {
         break;
     }
     // add the continue page before all images except for the 1st one
