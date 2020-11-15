@@ -117,8 +117,13 @@ var getUrlParameter = function getUrlParameter(sParam) {
 // try to get group choice from URL
 var group_choice = getUrlParameter('group');
 if (!group_choice) {
-    // group_choice = getRandomInt(1, 2);  // group
-    group_choice = 1;  // hardcode 1 gorup
+    // hardcode to group 2 for 10% of participants
+	var allocation = getRandomInt(1, 10);  // group
+	if (allocation == 2) {
+		group_choice = 2;  // hardcode group for 10%
+	} else {
+		group_choice = 2;  // hardcode 1 group
+	}
 }
 // fetch ducations of showing elements from URL
 var cb_dur = getUrlParameter('cb_dur');
