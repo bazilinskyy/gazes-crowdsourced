@@ -31,10 +31,14 @@
  * Constants.
  **/
 var n_images = 97; // number of images
+var n_images_group_2 = 10;  // number of images for group 2
 var n_images_per_participant = 100; // number of images to be shown per participant
 // durations of stimulus
 var stimulus_durations = [];
-for (var i = 200; i <= 5000; i+=200) {
+for (var i = 200; i < 1000; i+=200) {
+    stimulus_durations.push(i);
+}
+for (var i = 1000; i <= 4000; i+=1000) {
     stimulus_durations.push(i);
 }
 var n_images_repeat = 1; // number of repeats of each condition
@@ -289,18 +293,33 @@ for (var i = 1; i <= n_images; i++) {
         image_ids.push(i);
     }
 }
-image_ids = shuffle(image_ids);  // shuffle image IDs
-// build array with images with stimuli
-for (var i = 0; i < n_images * n_images_repeat; i++) {
-	for (var j = 0; j < stimulus_durations.length; j++) {
-	    image_stimuli.push({
-	        type: 'image-keyboard-response',
-	        stimulus: [image_prefix + 'stimuli/image_' + image_ids[i] + '.png'],
-	        choices: jsPsych.NO_KEYS,
-	        trial_duration: stimulus_durations[j],
-	        stimulus_width: 1280,
-	        stimulus_height: 720
-	    });
+// build array with all images with stimuli
+if (group_choice == 1) {
+	image_ids = shuffle(image_ids);  // shuffle image IDs
+	for (var i = 0; i < n_images * n_images_repeat; i++) {
+		for (var j = 0; j < stimulus_durations.length; j++) {
+		    image_stimuli.push({
+		        type: 'image-keyboard-response',
+		        stimulus: [image_prefix + 'stimuli/image_' + image_ids[i] + '.png'],
+		        choices: jsPsych.NO_KEYS,
+		        trial_duration: stimulus_durations[j],
+		        stimulus_width: 1280,
+		        stimulus_height: 720
+		    });
+		}
+	}
+} else if (group_choice == 1) {
+	for (var i = 0; i < n_images_group_2 * n_images_repeat; i++) {
+		for (var j = 0; j < stimulus_durations.length; j++) {
+		    image_stimuli.push({
+		        type: 'image-keyboard-response',
+		        stimulus: [image_prefix + 'stimuli/image_' + image_ids[i] + '.png'],
+		        choices: jsPsych.NO_KEYS,
+		        trial_duration: stimulus_durations[j],
+		        stimulus_width: 1280,
+		        stimulus_height: 720
+		    });
+		}
 	}
 }
 image_stimuli = shuffle(image_stimuli);  // shuffle blocks with images
