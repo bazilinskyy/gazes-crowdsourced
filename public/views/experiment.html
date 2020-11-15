@@ -282,7 +282,7 @@ var save_data_block = {
 // define instructions block
 var instructions_block = {
     type: 'html-keyboard-response',
-    stimulus: '<p>You will view ' + n_images_per_participant * n_images_repeat + ' images. Right after each image, a page with codes will be shown briefly. Please pay attention when the page with the codes is shown to input a valid code to proceed to the next page. You will be asked to input the code that you remember looking at last. After each ' + n_images_break + ' images you will be able to take a short break. Press \'C\' to proceed to the first image. </p>',
+    stimulus: '<p>You will view ' + n_images_per_participant * n_images_repeat + ' images. For each image, imaging that you are pedestrian standing on the side of the road and willing to cross it. Right after each image, a page with codes will be shown briefly. Please pay attention when the page with the codes is shown. You will be asked to input the code that you remember looking at last. After each ' + n_images_break + ' images you will be able to take a short break. Press \'C\' to proceed to the first image. </p>',
     choices: ['C'],
     on_finish: function(data) {
         jsPsych.data.addDataToLastTrial({
