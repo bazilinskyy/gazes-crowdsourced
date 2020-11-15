@@ -31,7 +31,8 @@
  * Constants.
  **/
 var n_images = 97; // number of images
-var n_images_group_2 = 10;  // number of images for group 2
+var stimuli_group_2 = [6, 36, 57, 67, 70, 76, 94, 112, 148, 149]; // stimuli for group 2
+var n_images_group_2 = stimuli_group_2.length;  // number of images for group 2
 var n_images_per_participant = 100; // number of images to be shown per participant
 // durations of stimulus
 var stimulus_durations = [];
@@ -315,11 +316,11 @@ if (group_choice == 1) {
 		}
 	}
 } else if (group_choice == 2) {
-	for (var i = 0; i < n_images_group_2 * n_images_repeat; i++) {
+	for (var i = 0; i < n_images_group_2; i++) {
 		for (var j = 0; j < stimulus_durations.length; j++) {
 		    image_stimuli.push({
 		        type: 'image-keyboard-response',
-		        stimulus: [image_prefix + 'stimuli/image_' + image_ids[i] + '.png'],
+		        stimulus: [image_prefix + 'stimuli/image_' + stimuli_group_2[i] + '.png'],
 		        choices: jsPsych.NO_KEYS,
 		        trial_duration: stimulus_durations[j],
 		        stimulus_width: 1280,
