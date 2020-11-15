@@ -127,10 +127,13 @@ if (!group_choice) {
 	var allocation = getRandomInt(1, 10);  // group
 	if (allocation == 2) {
 		group_choice = 2;  // hardcode group for 10%
-		n_images_per_participant = n_images_group_2;
 	} else {
-		group_choice = 2;  // hardcode 1 group
+		group_choice = 1;  // hardcode 1 group
 	}
+}
+// number of stimuli in group 2
+if (group_choice == 2) {
+	n_images_per_participant = stimuli_group_2.length * stimulus_durations.length;
 }
 // fetch ducations of showing elements from URL
 var cb_dur = getUrlParameter('cb_dur');
