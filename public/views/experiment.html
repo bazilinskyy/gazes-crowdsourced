@@ -34,7 +34,7 @@ var n_images = 97; // number of images
 var n_images_per_participant = 100; // number of images to be shown per participant
 // durations of stimulus
 var stimulus_durations = [];
-for (var i = 200; i < 5000; i+=200) {
+for (var i = 200; i <= 5000; i+=200) {
     stimulus_durations.push(i);
 }
 var n_images_repeat = 1; // number of repeats of each condition
@@ -304,7 +304,7 @@ for (var i = 0; i < n_images * n_images_repeat; i++) {
 	}
 }
 image_stimuli = shuffle(image_stimuli);  // shuffle blocks with images
-image_stimuli = image_stimuli.slice(n_images_per_participant * n_images_repeat); // trim array of stimuli
+image_stimuli = image_stimuli.slice(0, n_images_per_participant * n_images_repeat); // trim array of stimuli
 // black with text to continue before showing the image
 var continue_block = {
     type: 'html-keyboard-response',
