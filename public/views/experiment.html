@@ -301,11 +301,10 @@ var sentinel_codechart_input_block = {
             var path_sentinel_image = '../public/img/sentinel/sentinel_' + sentinel_ids[counter_sentinel_images_shown] + '.jpg';
             console.log('path_sentinel_image', path_sentinel_image);
             console.log("json_correct_codes[path_sentinel_image]['correct_codes']", json_correct_codes[path_sentinel_image]['correct_codes']);
-            console.log("$('#input-codeblock').val()", $('#input-codeblock').val());
             console.log('JSON.stringify(data)', JSON.stringify(data));
             console.log('data', data);
             // check if inputted code is in list of correct codes
-            var given_answer = data['responses']['input-codeblock'].toUpperCase();;
+            var given_answer = data['responses'][0]['input-codeblock'].toUpperCase();;
             console.log('given_answer', given_answer);
             if (json_correct_codes[path_sentinel_image]['correct_codes'].includes(given_answer) ) {
                 counter_wrong_codes++;
