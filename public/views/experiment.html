@@ -300,6 +300,7 @@ var sentinel_codechart_input_block = {
             var path_sentinel_image = '../public/img/sentinel/sentinel_' + sentinel_ids[counter_sentinel_images_shown] + '.jpg';
             console.log('path_sentinel_image', path_sentinel_image);
             console.log(json_correct_codes[path_sentinel_image]['correct_codes']);
+            console.log($("#input-codeblock").val());
             counter_wrong_codes++;
         // } 
     }
@@ -428,7 +429,7 @@ for (var i = 0; i < n_images_per_participant * n_images_repeat / n_images_break;
         type: 'image-keyboard-response',
         stimulus: image_str,
         choices: jsPsych.NO_KEYS,
-        trial_duration: sentineldata_duration,
+        trial_duration: sentinel_duration,
         on_finish: function() {
             counter_sentinel_images_shown++;  // increase counter of images shown
         }
