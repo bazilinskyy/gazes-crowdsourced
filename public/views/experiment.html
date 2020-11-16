@@ -389,14 +389,14 @@ for (var i = 0; i < n_images_per_participant * n_images_repeat; i++) {
 }
 // build arrays with sentinel images and corresponding codecharts
 for (var i = 0; i < n_images_per_participant * n_images_repeat; i++) {
-    image_str = image_prefix + 'sentinel/sentinel_' + sentinel_stimuli[i] + '.jpg';
+    image_str = image_prefix + 'sentinel/sentinel_' + sentinel_ids[i] + '.jpg';
     sentinel_stimuli.push({
         type: 'image-keyboard-response',
         stimulus: image_str,
         choices: jsPsych.NO_KEYS,
         trial_duration: sentinel_duration
     })
-    image_str = image_prefix + 'codeboard_sentinel/sentinel_cb_' + sentinel_stimuli[i] + '.jpg';
+    image_str = image_prefix + 'codeboard_sentinel/sentinel_cb_' + sentinel_ids[i] + '.jpg';
     sentinel_codechart_stimuli.push({
         type: 'image-keyboard-response',
         stimulus: image_str,
