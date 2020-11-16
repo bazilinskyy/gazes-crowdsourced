@@ -259,7 +259,7 @@ for (var i = 0; i < n_sentinel; i++) {
 sentinel_ids = shuffle(sentinel_ids);  // shuffle codechart blocks
 
 // locations of sentinel check
-for (var i = 0; i < n_images_per_participant * n_images_repeat / n_images_break - 1; i++) {
+for (var i = 0; i < n_images_per_participant * n_images_repeat / n_images_break; i++) {
     // pick location within the block
     var id = getRandomInt(i * n_images_break, (i + 1) * n_images_break - 1);
     sentinel_locations.push(id);
