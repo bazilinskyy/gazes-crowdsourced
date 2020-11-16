@@ -306,13 +306,13 @@ var sentinel_codechart_input_block = {
             // check if inputted code is in list of correct codes
             var given_answer = data['responses'].substring(20,23).toUpperCase();
             console.log('given_answer', given_answer);
-            if (json_correct_codes[path_sentinel_image]['correct_codes'].includes(given_answer) ) {
+            if (!json_correct_codes[path_sentinel_image]['correct_codes'].includes(given_answer)) {
                 counter_wrong_codes++;
             }
             // too many wrong codes inputted
             // todo: use cookie
-            if (counter_wrong_codes >= allowed_wrong_codes) {
-                window.location.href = 'wrong_codes';
+            if (counter_wrong_codes > allowed_wrong_codes) {
+                window.location.href = 'finish?wrong_codes=' + counter_wrong_codes;
             }
         // } 
     }

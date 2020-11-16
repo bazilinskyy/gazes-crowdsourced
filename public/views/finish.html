@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
   <head>
-    <title>Videos of animations of driving</title>
+    <title>Experiment finished</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script src="jsPsych/jspsych.js"></script>
     <link href="jsPsych/css/jspsych.css" rel="stylesheet" type="text/css"></link>
@@ -23,22 +23,41 @@
           }
       }
     };
+
+
+    window.onload = function() {
+      if (getUrlParameter('work')) {
+          document.getElementById("wrong_codes").style.visibility="hidden";   
+      } else if (getUrlParameter('wrong_codes')) {
+          document.getElementById("finish_code").style.visibility="hidden";  
+      }
+  };
   </script>
 
   </head>
   <body>
     <div class = "parent">
       <div class = "child">
-        <div id="jspsych_target">
-        You have now completed the experiment. Thank you for your participation. Please note down or copy to your clipboard the following code:  
-        <br>
-        <strong>
-          <script>
-            document.write(getUrlParameter('work'));
-          </script>
-        </strong>
-        <br>
-          Do not forget to enter the code we gave in the Appen page in the field "Type code that you received after the end of the test." to finalise the job and receive your money. You will find this field under the link you clicked to open this tab. You may now close this tab.
+        <!-- finished with code -->
+        <div id="finish_code">
+          <div id="jspsych_target">
+          You have now completed the experiment. Thank you for your participation. Please note down or copy to your clipboard the following code:  
+          <br>
+          <strong>
+            <script>
+              document.write(getUrlParameter('work'));
+            </script>
+          </strong>
+          <br>
+            Do not forget to enter the code we gave in the Appen page in the field "Type code that you received after the end of the test." to finalise the job and receive your money. You will find this field under the link you clicked to open this tab. You may now close this tab.
+          </div>
+        </div>
+
+        <!-- finished with wrong codes inputted -->
+        <div id="wrong_codes">
+          <div id="jspsych_target">
+            You have provides too many wrong codes. Please close this page and do not attempt to do this experiment again. You will not be allowed to do so. Thank you for your participation.  
+          </div>
         </div>
       </div>
     </div>
