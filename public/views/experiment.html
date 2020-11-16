@@ -439,6 +439,7 @@ for (var i = 0; i <= n_images_per_participant * n_images_repeat; i++) {
     if (sentinel_locations.includes(i)) {
         sentinel_last_id++; // increase counter of sentinel blocks added
         timeline.push(fixation_block);  // page with fiexation
+        console.log('sentinel_last_id', sentinel_last_id);
         timeline.push(sentinel_stimuli[sentinel_last_id]);  // page with the stimulus
         // gaze
         timeline.push(sentinel_codechart_stimuli[sentinel_last_id]);
