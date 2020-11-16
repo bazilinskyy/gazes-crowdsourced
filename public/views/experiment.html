@@ -49,7 +49,7 @@ var n_images_repeat = 1; // number of repeats of each condition
 var n_images_break = 40; // number of images between each break
 var n_codeblocks = 400; // number of codeblock images generated
 var image_prefix = 'img/'; // prefix for images
-var codeblock_duration = 750;
+var codeblock_duration = 400;
 var fixation_duration = 750;
 var image_duration = 2000;
 var SHOW_DEBUG = false; // switch for debugging output
@@ -368,7 +368,7 @@ for (var i = 1; i < n_images * n_images_repeat / n_images_break; i++) {
     var images_done = n_images_break * i;
     between_blocks.push({
         type: 'html-keyboard-response',
-        stimulus: '<p>You have now completed ' + images_done + ' images out of ' + n_images * n_images_repeat + '. When ready press \'C\' to proceed to the next batch.</p>',
+        stimulus: '<p>You have now completed ' + images_done + ' images out of ' + n_images_per_participant * n_images_repeat + '. When ready press \'C\' to proceed to the next batch.</p>',
         choices: ['C']
     });
 }
