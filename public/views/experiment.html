@@ -373,10 +373,10 @@ var sentinel_codechart_input_block = {
             var given_answer = data['responses'].substring(20,23).toUpperCase();
             console.log('given_answer of sentinel image', given_answer);
             console.log('allowed codes', json_correct_codes[path_sentinel_image]['correct_codes']);
-            console.log('counter_wrong_codes', counter_wrong_codes);
             if (!json_correct_codes[path_sentinel_image]['correct_codes'].includes(given_answer)) {
                 counter_wrong_codes++;
             }
+            console.log('counter_wrong_codes', counter_wrong_codes);
             // too many wrong codes inputted
             // todo: use cookie
             if (counter_wrong_codes > allowed_wrong_codes) {
@@ -416,10 +416,20 @@ var save_data_block = {
     }
 }
 
+// black with image usef for example
+var example_block = {
+    type: 'image-keyboard-response',
+    stimulus: image_prefix + 'example-image.jpg',
+    choices: jsPsych.NO_KEYS,
+    trial_duration: 700,
+    stimulus_width: 1280,
+    stimulus_height: 720
+};
+
 // define instructions block
 var instructions_block = {
     type: 'html-keyboard-response',
-    stimulus: '<div id="instructions_div"><p>You will view ' + n_images_per_participant * n_images_repeat + ' images.<ol><li>For each one, imagine that you are a pedestrian standing on the side of the road and record what code you see on that image.</li><li>You will be shown an image for a short period of time.</li><li>Right after each image, a page with character codes will be briefly shown.</li><li>You will be asked to record what three-letter code you saw when the image disappeared.</li><li>You will be asked to input the last character code that you remember looking at.</li><li>Some images will contain just a single image of a person. For these images, follow the image with your eyes and input the code that appears in the same spot as the image.</li><li>After each ' + n_images_break + ' images, you will be able to take a short break.</li></ol> </p><p>You will now see an example with an image of the person. Press \'C\' to proceed to the first image.</p></div>',
+    stimulus: '<div id="instructions_div"><p>You will view ' + n_images_per_participant * n_images_repeat + ' images.<ol><li>For each one, imagine that you are a pedestrian standing on the side of the road and record what code you see on that image.</li><li>You will be shown an image for a short period of time.</li><li>Right after each image, a page with character codes will be briefly shown.</li><li>You will be asked to record what three-letter code you saw when the image disappeared.</li><li>You will be asked to input the last character code that you remember looking at.</li><li>Some images will contain just a single image of a person. For these images, follow the image with your eyes and input the code that appears in the same spot as the image.</li><li>After each ' + n_images_break + ' images, you will be able to take a short break.</li></ol> </p><p>You will now see two examples with an image of the road and with an image of the person. Press \'C\' to proceed to the first image.</p></div>',
     choices: ['C'],
     on_finish: function(data) {
         jsPsych.data.addDataToLastTrial({
@@ -530,13 +540,17 @@ for (var i = 1; i < n_images * n_images_repeat / n_images_break; i++) {
  **/
 var timeline = [];
 timeline.push(instructions_block);
-// example
+// example of image
+timeline.push(fixation_block);  // page with fiexation
+timeline.push(example_block);  // page with the stimulus
+timeline.push(codechart_stimuli[0]);
+timeline.push(codechart_input_block);
+timeline.push(continue_block);
+// example of sentinel image
 timeline.push(fixation_block);  // page with fiexation
 timeline.push(sentinel_stimuli[0]);  // page with the stimulus
-// gaze
 timeline.push(sentinel_codechart_stimuli[0]);
 timeline.push(sentinel_codechart_input_block);
-// continue
 timeline.push(continue_block);
 // iterate over images
 var between_blocks_count = 0;  // counter of shown between blocks
@@ -601,7 +615,6 @@ if (debug) {
 jsPsych.init({
     // auto_preload: false,
     show_preload_progress_bar: true,
-    preload_images: [image_prefix + 'fixation-cross.jpg'],
     timeline: timeline,
     max_load_time: 3000000,
     on_finish: function() {
