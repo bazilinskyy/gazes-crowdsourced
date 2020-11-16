@@ -58,7 +58,7 @@ var codeblock_duration = 700;
 var fixation_duration = 700;
 var image_duration = 2000;
 var sentinel_duration = 700;
-var allowed_wrong_codes = 1; // number of codes allowed to be inputted incorrectly
+var allowed_wrong_codes = 2; // number of codes allowed to be inputted incorrectly
 var SHOW_DEBUG = false; // switch for debugging output
 
  /**
@@ -343,7 +343,7 @@ var sentinel_codechart_input_block = {
     on_finish: function(data) {
         console.log('counter_wrong_codes before', counter_wrong_codes);
         console.log('counter_sentinel_images_shown', counter_sentinel_images_shown);
-        // if (counter_sentinel_images_shown != 0) { // skip sentinel image in example
+        if (counter_sentinel_images_shown != 0) { // skip sentinel image in example
             var path_sentinel_image = '../public/img/sentinel/sentinel_' + sentinel_ids[counter_sentinel_images_shown] + '.jpg';
             console.log('path_sentinel_image', path_sentinel_image);
             console.log("json_correct_codes[path_sentinel_image]['correct_codes']", json_correct_codes[path_sentinel_image]['correct_codes']);
@@ -364,7 +364,7 @@ var sentinel_codechart_input_block = {
                 window.location.href = 'finish?wrong_codes=' + counter_wrong_codes;
             }
             console.log('counter_wrong_codes after', counter_wrong_codes);
-        // } 
+        } 
     }
 };
 // black with text to continue before showing the image
@@ -527,7 +527,6 @@ for (var i = 0; i <= n_images_per_participant * n_images_repeat; i++) {
     if (sentinel_locations.includes(i)) {
         sentinel_last_id++; // increase counter of sentinel blocks added
         timeline.push(fixation_block);  // page with fiexation
-        console.log('sentinel_last_id', sentinel_last_id);
         timeline.push(sentinel_stimuli[sentinel_last_id]);  // page with the stimulus
         // gaze
         timeline.push(sentinel_codechart_stimuli[sentinel_last_id]);
