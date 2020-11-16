@@ -388,7 +388,7 @@ for (var i = 0; i < n_images_per_participant * n_images_repeat; i++) {
     })
 }
 // build arrays with sentinel images and corresponding codecharts
-for (var i = 0; i < n_images_per_participant * n_images_repeat; i++) {
+for (var i = 0; i < n_images_per_participant * n_images_repeat / n_images_break - 1; i++) {
     image_str = image_prefix + 'sentinel/sentinel_' + sentinel_ids[i] + '.jpg';
     sentinel_stimuli.push({
         type: 'image-keyboard-response',
