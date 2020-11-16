@@ -49,7 +49,8 @@ var n_images_per_participant = 107; // number of images to be shown per particip
 var stimulus_durations = [100, 151, 227, 342, 515, 776, 1170, 1762, 2655, 4000];
 stimulus_durations = shuffle(stimulus_durations); // randomise durations
 var n_images_repeat = 1; // number of repeats of each condition
-var n_images_break = 40; // number of images between each break
+var n_images_break = 25; // number of images between each break
+var n_images_no_break_after = 100;  // do not show breaks after this image
 var n_codeblocks = 400; // number of codeblock images generated
 var n_sentinel = 400; // number of sentintel images
 var image_prefix = 'img/'; // prefix for images
@@ -549,7 +550,7 @@ for (var i = 0; i <= n_images_per_participant * n_images_repeat; i++) {
         // console.log(i, image_stimuli[i]);
     }
     // don't add the between block after the last trial
-    if ((i + 1) % n_images_break == 0 && i != 0 && i != n_images_per_participant * n_images_repeat - 1) {
+    if ((i + 1) % n_images_break == 0 && i != 0 && i != n_images_per_participant * n_images_repeat - 1 && i < n_images_no_break_after) {
         if (debug) {
             console.log('added break', i, between_blocks[between_blocks_count], i % n_images_break, i / n_images_break);
         }
