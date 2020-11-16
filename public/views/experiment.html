@@ -271,7 +271,10 @@ for (var i = 0; i < n_images_per_participant * n_images_repeat / n_images_break 
 // block for input of code
 var codechart_input_block = {
     type: 'survey-html-form',
-    html: '<p>Please enter the character code you remember looking at last: <input name="input-codeblock" id="input-codeblock" autofocus pattern="^[A-Za-z]{1}[0-9]{2}" type="text" required /></p><p>The field will only accept input in correct format of <i>\'LetterDigitDigit\'</i> (e.g. \'F32\'). If you do not know which code to input, write \'I99\'.</p>'
+    html: '<p>Please enter the character code you remember looking at last: <input name="input-codeblock" id="input-codeblock" autofocus pattern="^[A-Za-z]{1}[0-9]{2}" type="text" required /></p><p>The field will only accept input in correct format of <i>\'LetterDigitDigit\'</i> (e.g. \'F32\'). If you do not know which code to input, write \'I99\'.</p>',
+    on_finish: function(data) {
+        alert('clicked');
+    }
 };
 // black with text to continue before showing the image
 var fixation_block = {
@@ -418,7 +421,7 @@ for (var i = 1; i < n_images * n_images_repeat / n_images_break; i++) {
 }
 
 /**
-    * Create experiment timeline array
+ * Create experiment timeline array
  **/
 var timeline = [];
 timeline.push(instructions_block);
