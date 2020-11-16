@@ -304,7 +304,7 @@ var sentinel_codechart_input_block = {
             console.log('JSON.stringify(data)', JSON.stringify(data));
             console.log('data', data);
             // check if inputted code is in list of correct codes
-            var given_answer = data['responses'][0]['input-codeblock'].toUpperCase();;
+            var given_answer = data['responses'].substring(20,23).toUpperCase();
             console.log('given_answer', given_answer);
             if (json_correct_codes[path_sentinel_image]['correct_codes'].includes(given_answer) ) {
                 counter_wrong_codes++;
