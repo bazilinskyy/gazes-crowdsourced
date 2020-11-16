@@ -157,6 +157,9 @@ function setCookie(name,value,days) {
         expires = "; expires=" + date.toUTCString();
     }
     document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+    if (debug) {
+        console.log('cookie ', name, ' saved');
+    }
 }
 function getCookie(name) {
     var nameEQ = name + "=";
@@ -166,10 +169,16 @@ function getCookie(name) {
         while (c.charAt(0)==' ') c = c.substring(1,c.length);
         if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
     }
+    if (debug) {
+        console.log('cookie ', name, ' loaded');
+    }
     return null;
 }
 function eraseCookie(name) {   
     document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+    if (debug) {
+        console.log('cookie ', name, ' erased');
+    }
 }
 
 // try to get group choice from URL
