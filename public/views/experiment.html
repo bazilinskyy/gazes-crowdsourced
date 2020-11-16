@@ -311,7 +311,7 @@ var save_data_block = {
 // define instructions block
 var instructions_block = {
     type: 'html-keyboard-response',
-     stimulus: '<p>You will view ' + n_images_per_participant * n_images_repeat + ' images.<ol><li>For each one, imagine that you are a pedestrian standing on the side of the road and record what code you see on that image.</li><li>You will be shown an image for a short period of time.</li><li>Right after each image, a page with character codes will be briefly shown.</li><li>You will be asked to record what three-letter code you saw when the image disappeared.</li><li>You will be asked to input the last character code that you remember looking at.</li><li>Some images will contain just a single image of a person. For these images, follow the image with your eyes and input the code that appears in the same spot as the image.</li><li>After each ' + n_images_break + ' images, you will be able to take a short break. .</li></ol> </p><p>You will now see an example with an image of the person. Press \'C\' to proceed to the first image</p>',
+    stimulus: '<p>You will view ' + n_images_per_participant * n_images_repeat + ' images.<ol><li>For each one, imagine that you are a pedestrian standing on the side of the road and record what code you see on that image.</li><li>You will be shown an image for a short period of time.</li><li>Right after each image, a page with character codes will be briefly shown.</li><li>You will be asked to record what three-letter code you saw when the image disappeared.</li><li>You will be asked to input the last character code that you remember looking at.</li><li>Some images will contain just a single image of a person. For these images, follow the image with your eyes and input the code that appears in the same spot as the image.</li><li>After each ' + n_images_break + ' images, you will be able to take a short break. .</li></ol> </p><p>You will now see an example with an image of the person. Press \'C\' to proceed to the first image</p>',
     choices: ['C'],
     on_finish: function(data) {
         jsPsych.data.addDataToLastTrial({
@@ -419,14 +419,14 @@ for (var i = 1; i < n_images * n_images_repeat / n_images_break; i++) {
  **/
 var timeline = [];
 timeline.push(instructions_block);
-
-// test
+// example
 timeline.push(fixation_block);  // page with fiexation
 timeline.push(sentinel_stimuli[0]);  // page with the stimulus
 // gaze
 timeline.push(sentinel_codechart_stimuli[0]);
 timeline.push(codechart_input_block);
-
+// continue
+timeline.push(continue_block);
 // iterate over images
 var between_blocks_count = 0;  // counter of shown between blocks
 var sentinel_last_id = 0;  // counter of shown between blocks
