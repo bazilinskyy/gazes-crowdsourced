@@ -48,10 +48,12 @@ stimulus_durations = shuffle(stimulus_durations); // randomise durations
 var n_images_repeat = 1; // number of repeats of each condition
 var n_images_break = 40; // number of images between each break
 var n_codeblocks = 400; // number of codeblock images generated
+var n_sentinel = 400; // number of sentintel images
 var image_prefix = 'img/'; // prefix for images
 var codeblock_duration = 700;
 var fixation_duration = 700;
 var image_duration = 2000;
+var sentinel_duration = 750;
 var SHOW_DEBUG = false; // switch for debugging output
 
  /**
@@ -149,6 +151,11 @@ if (!i_dur) {
     i_dur = image_duration;
 }
 
+var s_dur = getUrlParameter('s_dur');
+if (!s_dur) {
+    s_dur = sentinel_duration;
+}
+
 var debug = getUrlParameter('debug');
 if (!debug) {
     debug = SHOW_DEBUG;
@@ -164,9 +171,13 @@ if (debug) {
 // Arrays for storing data
 var image_ids = [];  // IDs of images in stimuli
 var codechart_ids = []; // IDs of codecharts
+var sentinel_ids = []; // IDs of sentinel images
 var between_blocks = []; // instructions between blocks
 var image_stimuli = []; // blocks with images
 var codechart_stimuli = []; // blocks with codecharts
+var sentinel_stimuli = []; // blocks with sentinel images
+var sentinel_codechart_stimuli = []; // blocks with codecharts for sentinel images
+var sentinel_locations = [];  // locations of sentinel checks
 
 // browser info
 // https://stackoverflow.com/questions/11219582/how-to-detect-my-browser-version-and-operating-system-using-javascript
@@ -241,6 +252,19 @@ for (var i = 0; i < n_codeblocks; i++) {
     codechart_ids.push(i);
 }
 codechart_ids = shuffle(codechart_ids);  // shuffle codechart blocks
+// populate array with sentinel image IDs
+for (var i = 0; i < n_sentinel; i++) {
+    sentinel_ids.push(i);
+}
+sentinel_ids = shuffle(sentinel_ids);  // shuffle codechart blocks
+
+// locations of sentinel check
+for (var i = 0; i < n_images_per_participant * n_sound_repeat / n_images_break - 1; i++) {
+    // pick location within the block
+    var id = getRandomInt(i * n_images_break, (i + 1) * n_images_break - 1);
+    sentinel_locations.push(id);
+}
+
 // block for input of code
 var codechart_input_block = {
     type: 'survey-html-form',
@@ -363,6 +387,23 @@ for (var i = 0; i < n_images_per_participant * n_images_repeat; i++) {
         trial_duration: cb_dur
     })
 }
+// build arrays with sentinel images and corresponding codecharts
+for (var i = 0; i < n_images_per_participant * n_images_repeat; i++) {
+    image_str = image_prefix + 'sentinel/sentinel_' + sentinel_stimuli[i] + '.jpg';
+    sentinel_stimuli.push({
+        type: 'image-keyboard-response',
+        stimulus: image_str,
+        choices: jsPsych.NO_KEYS,
+        trial_duration: sentinel_duration
+    })
+    image_str = image_prefix + 'codeboard_sentinel/sentinel_cb_' + sentinel_stimuli[i] + '.jpg';
+    sentinel_codechart_stimuli.push({
+        type: 'image-keyboard-response',
+        stimulus: image_str,
+        choices: jsPsych.NO_KEYS,
+        trial_duration: cb_dur
+    })
+}
 // build between blocks
 for (var i = 1; i < n_images * n_images_repeat / n_images_break; i++) {
     var images_done = n_images_break * i;
@@ -378,12 +419,33 @@ for (var i = 1; i < n_images * n_images_repeat / n_images_break; i++) {
  **/
 var timeline = [];
 timeline.push(instructions_block);
+
+// test
+timeline.push(fixation_block);  // page with fiexation
+timeline.push(sentinel_stimuli[0]);  // page with the stimulus
+// gaze
+timeline.push(sentinel_codechart_stimuli[0]);
+timeline.push(codechart_input_block);
+
 // iterate over images
 var between_blocks_count = 0;  // counter of shown between blocks
+var sentinel_last_id = 0;  // counter of shown between blocks
 for (var i = 0; i <= n_images_per_participant * n_images_repeat; i++) {
     // check if the last image was reached
     if (i >= n_images_per_participant * n_images_repeat) {
         break;
+    }
+    // add sound check block
+    if (sentinel_locations.includes(i)) {
+        sentinel_last_id++; // increase counter of sound check black added
+        timeline.push(fixation_block);  // page with fiexation
+        timeline.push(sentinel_stimuli[sentinel_last_id]);  // page with the stimulus
+        // gaze
+        timeline.push(sentinel_codechart_stimuli[sentinel_last_id]);
+        timeline.push(codechart_input_block);
+        if (debug) {
+            console.log('added sentintel image', i, sentinel_last_id, sentinel_codechart_stimuli[sentinel_last_id]);
+        }
     }
     // add the continue page before all images except for the 1st one
     if (i != 0 && (i + 1) % n_images_break != 1) {
@@ -411,6 +473,7 @@ for (var i = 0; i <= n_images_per_participant * n_images_repeat; i++) {
 timeline.push(save_data_block);
 
 if (debug) {
+    console.log('sentinel_locations', sound_check_locations);
     console.log('stimulus_durations', stimulus_durations);
     console.log('image_ids', image_ids);
     console.log('image_stimuli', image_stimuli);
@@ -418,6 +481,9 @@ if (debug) {
     console.log('between_blocks', between_blocks);
     console.log('codechart_ids', codechart_ids);
     console.log('codechart_stimuli', codechart_stimuli);
+    console.log('sentinel_ids', sentinel_ids);
+    console.log('sentinel_stimuli', sentinel_stimuli);
+    console.log('sentinel_codechart_stimuli', sentinel_codechart_stimuli);
 }
 
 /* Start the experiment */
