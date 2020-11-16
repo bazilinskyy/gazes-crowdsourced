@@ -124,6 +124,25 @@ var getUrlParameter = function getUrlParameter(sParam) {
     }
 };
 
+ /**
+ * Save data.
+ */
+function saveData() {
+    $.ajax({
+        type: 'POST',
+        url: '/experiment-data',
+        data: jsPsych.data.get().json(),
+        contentType: 'application/json'
+    })
+    .done(function() {
+        jsPsych.data.reset();
+    })
+    .fail(function() {
+        alert('A problem occurred while writing to the database. Please contact the researcher for more information.')
+        window.location.href = '/';
+    })
+}
+
 // try to get group choice from URL
 var group_choice = getUrlParameter('group');
 if (!group_choice) {
@@ -312,6 +331,9 @@ var sentinel_codechart_input_block = {
             // too many wrong codes inputted
             // todo: use cookie
             if (counter_wrong_codes > allowed_wrong_codes) {
+                // save data anyway
+                saveData();
+                // redirect to finish page
                 window.location.href = 'finish?wrong_codes=' + counter_wrong_codes;
             }
         // } 
@@ -339,19 +361,7 @@ var question_block = {
 var save_data_block = {
     type: 'call-function',
     func: function() {
-        $.ajax({
-                type: 'POST',
-                url: '/experiment-data',
-                data: jsPsych.data.get().json(),
-                contentType: 'application/json'
-            })
-            .done(function() {
-                jsPsych.data.reset();
-            })
-            .fail(function() {
-                alert('A problem occurred while writing to the database. Please contact the researcher for more information.')
-                window.location.href = '/';
-            })
+        saveData(); // save data
     }
 }
 
