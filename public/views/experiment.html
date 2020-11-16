@@ -130,7 +130,8 @@ var json_correct_codes = [];  // global var to store correct mapping
 var counter_wrong_codes = 0;  // global var to count the number of incorrect codes typed
 window.onload = function() {
     // load json file with correct mapping
-    $.getJSON("./img/sentinel/sentinel_codes.json", function(json_correct_codes){
+    $.getJSON("./img/sentinel/sentinel_codes.json", function(data){
+        json_correct_codes = data;  // save codes in global var
         $.each(json_correct_codes, function(key, val) {
             console.log(key, val);
         });
