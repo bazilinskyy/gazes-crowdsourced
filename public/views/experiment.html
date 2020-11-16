@@ -273,7 +273,7 @@ var codechart_input_block = {
     type: 'survey-html-form',
     html: '<p>Please enter the character code you remember looking at last: <input name="input-codeblock" id="input-codeblock" autofocus pattern="^[A-Za-z]{1}[0-9]{2}" type="text" required /></p><p>The field will only accept input in correct format of <i>\'LetterDigitDigit\'</i> (e.g. \'F32\'). If you do not know which code to input, write \'I99\'.</p>',
     on_finish: function(data) {
-        $.getJSON("/img/sentinel/sentinel_codes.json", function(data){
+        $.getJSON("./img/sentinel/sentinel_codes.json", function(data){
             console.log(data[sentinel_stimuli[0]]);
             console.log(data[sentinel_stimuli[1]]);
         }).fail(function(){
@@ -348,7 +348,7 @@ if (group_choice == 1) {
     for (var i = 0; i < n_images * n_images_repeat; i++) {
         image_stimuli.push({
             type: 'image-keyboard-response',
-            stimulus: [image_prefix + 'stimuli/image_' + image_ids[i] + '.png'],
+            stimulus: [image_prefix + 'stimuli/image_' + image_ids[i] + '.jpg'],
             choices: jsPsych.NO_KEYS,
             trial_duration: stimulus_durations[Math.floor(Math.random() * stimulus_durations.length)],
             stimulus_width: 1280,
@@ -365,7 +365,7 @@ if (group_choice == 1) {
         for (var j = 0; j < stimulus_durations.length; j++) {
             image_stimuli.push({
                 type: 'image-keyboard-response',
-                stimulus: [image_prefix + 'stimuli/image_' + stimuli_group_2[i] + '.png'],
+                stimulus: [image_prefix + 'stimuli/image_' + stimuli_group_2[i] + '.jpg'],
                 choices: jsPsych.NO_KEYS,
                 trial_duration: stimulus_durations[j],
                 stimulus_width: 1280,
