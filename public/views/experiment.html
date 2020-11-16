@@ -123,23 +123,6 @@ var getUrlParameter = function getUrlParameter(sParam) {
     }
 };
 
-/**
- * Process JSON with correct codes.
- */
-var json_correct_codes = [];  // global var to store correct mapping
-var counter_wrong_codes = 0;  // global var to count the number of incorrect codes typed
-window.onload = function() {
-    // load json file with correct mapping
-    $.getJSON("./img/sentinel/sentinel_codes.json", function(data){
-        json_correct_codes = data;  // save codes in global var
-        $.each(json_correct_codes, function(key, val) {
-            console.log(key, val);
-        });
-    }).fail(function(){
-        console.log("An error has occurred with working with JSON file.");
-    });
-};
-
 // try to get group choice from URL
 var group_choice = getUrlParameter('group');
 if (!group_choice) {
@@ -285,12 +268,36 @@ for (var i = 0; i < n_images_per_participant * n_images_repeat / n_images_break 
     sentinel_locations.push(id);
 }
 
+/**
+ * Process JSON with correct codes.
+ */
+var json_correct_codes = [];  // global var to store correct mapping
+var counter_sentinel_images_shown = 0;  // global var to count the number of sentinel images already shown
+var counter_wrong_codes = 0;  // global var to count the number of incorrect codes typed
+window.onload = function() {
+    // load json file with correct mapping
+    $.getJSON("./img/sentinel/sentinel_codes.json", function(data){
+        json_correct_codes = data;  // save codes in global var
+    }).fail(function(){
+        console.log("An error has occurred with working with JSON file.");
+    });
+};
+// string for input of code
+var str_input = '<p>Please enter the character code you remember looking at last: <input name="input-codeblock" id="input-codeblock" autofocus pattern="^[A-Za-z]{1}[0-9]{2}" type="text" required /></p><p>The field will only accept input in correct format of <i>\'LetterDigitDigit\'</i> (e.g. \'F32\'). If you do not know which code to input, write \'I99\'.</p>';
 // block for input of code
 var codechart_input_block = {
     type: 'survey-html-form',
-    html: '<p>Please enter the character code you remember looking at last: <input name="input-codeblock" id="input-codeblock" autofocus pattern="^[A-Za-z]{1}[0-9]{2}" type="text" required /></p><p>The field will only accept input in correct format of <i>\'LetterDigitDigit\'</i> (e.g. \'F32\'). If you do not know which code to input, write \'I99\'.</p>',
+    html: str_input
+};
+// block for input of code from sentinel image
+var sentinel_codechart_input_block = {
+    type: 'survey-html-form',
+    html: str_input,
     on_finish: function(data) {
         console.log('counter_wrong_codes', counter_wrong_codes);
+        console.log('counter_sentinel_images_shown', counter_sentinel_images_shown);
+        console.log(json_correct_codes["../public/img/sentinel/sentinel_0.jpg"]["correct_codes"]);
+        counter_wrong_codes++;
     }
 };
 // black with text to continue before showing the image
@@ -417,7 +424,10 @@ for (var i = 0; i < n_images_per_participant * n_images_repeat / n_images_break;
         type: 'image-keyboard-response',
         stimulus: image_str,
         choices: jsPsych.NO_KEYS,
-        trial_duration: sentinel_duration
+        trial_duration: sentinel_duration,
+        on_finish: function(data) {
+            counter_sentinel_images_shown++;  // increase counter of images shown
+        }
     })
     image_str = image_prefix + 'codeboard_sentinel/sentinel_cb_' + sentinel_ids[i] + '.jpg';
     sentinel_codechart_stimuli.push({
@@ -447,7 +457,7 @@ timeline.push(fixation_block);  // page with fiexation
 timeline.push(sentinel_stimuli[0]);  // page with the stimulus
 // gaze
 timeline.push(sentinel_codechart_stimuli[0]);
-timeline.push(codechart_input_block);
+timeline.push(sentinel_codechart_input_block);
 // continue
 timeline.push(continue_block);
 // iterate over images
@@ -466,7 +476,7 @@ for (var i = 0; i <= n_images_per_participant * n_images_repeat; i++) {
         timeline.push(sentinel_stimuli[sentinel_last_id]);  // page with the stimulus
         // gaze
         timeline.push(sentinel_codechart_stimuli[sentinel_last_id]);
-        timeline.push(codechart_input_block);
+        timeline.push(sentinel_codechart_input_block);
         if (debug) {
             console.log('added sentintel image', i, sentinel_last_id, sentinel_codechart_stimuli[sentinel_last_id]);
         }
