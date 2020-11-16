@@ -57,6 +57,7 @@ var codeblock_duration = 700;
 var fixation_duration = 700;
 var image_duration = 2000;
 var sentinel_duration = 700;
+var allowed_wrong_codes = 1; // number of codes allowed to be inputted incorrectly
 var SHOW_DEBUG = false; // switch for debugging output
 
  /**
@@ -293,15 +294,23 @@ var codechart_input_block = {
 var sentinel_codechart_input_block = {
     type: 'survey-html-form',
     html: str_input,
+    on_load: function() {
+        
+    }
     on_finish: function(data) {
         console.log('counter_wrong_codes', counter_wrong_codes);
         console.log('counter_sentinel_images_shown', counter_sentinel_images_shown);
         // if (counter_sentinel_images_shown != 0) { // skip sentinel image in example
             var path_sentinel_image = '../public/img/sentinel/sentinel_' + sentinel_ids[counter_sentinel_images_shown] + '.jpg';
             console.log('path_sentinel_image', path_sentinel_image);
-            console.log(json_correct_codes[path_sentinel_image]['correct_codes']);
-            console.log($("#input-codeblock").val());
+            console.log("json_correct_codes[path_sentinel_image]['correct_codes']", json_correct_codes[path_sentinel_image]['correct_codes']);
+            console.log("$('#input-codeblock').val()", $('#input-codeblock').val());
+            console.log('data', JSON.stringify(data));
             counter_wrong_codes++;
+            // too many wrong codes inputted
+            if (counter_wrong_codes >= allowed_wrong_codes) {
+                window.location.href = 'wrong_codes';
+            }
         // } 
     }
 };
