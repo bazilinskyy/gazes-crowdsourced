@@ -122,16 +122,16 @@ var getUrlParameter = function getUrlParameter(sParam) {
 var group_choice = getUrlParameter('group');
 if (!group_choice) {
     // hardcode to group 2 for 10% of participants
-	var allocation = getRandomInt(1, 10);  // group
-	if (allocation == 2) {
-		group_choice = 2;  // hardcode group for 10%
-	} else {
-		group_choice = 1;  // hardcode 1 group
-	}
+    var allocation = getRandomInt(1, 10);  // group
+    if (allocation == 2) {
+        group_choice = 2;  // hardcode group for 10%
+    } else {
+        group_choice = 1;  // hardcode 1 group
+    }
 }
 // number of stimuli in group 2
 if (group_choice == 2) {
-	n_images_per_participant = stimuli_group_2.length * stimulus_durations.length;
+    n_images_per_participant = stimuli_group_2.length * stimulus_durations.length;
 }
 // fetch ducations of showing elements from URL
 var cb_dur = getUrlParameter('cb_dur');
@@ -309,35 +309,40 @@ for (var i = 1; i <= n_images; i++) {
 }
 // build array with all images with stimuli
 if (group_choice == 1) {
-	image_ids = shuffle(image_ids);  // shuffle image IDs
-	for (var i = 0; i < n_images * n_images_repeat; i++) {
-	    image_stimuli.push({
-	        type: 'image-keyboard-response',
-	        stimulus: [image_prefix + 'stimuli/image_' + image_ids[i] + '.png'],
-	        choices: jsPsych.NO_KEYS,
-	        trial_duration: stimulus_durations[Math.floor(Math.random() * stimulus_durations.length)],
-	        stimulus_width: 1280,
-	        stimulus_height: 720
-	    });
-	}
+    image_ids = shuffle(image_ids);  // shuffle image IDs
+    for (var i = 0; i < n_images * n_images_repeat; i++) {
+        image_stimuli.push({
+            type: 'image-keyboard-response',
+            stimulus: [image_prefix + 'stimuli/image_' + image_ids[i] + '.png'],
+            choices: jsPsych.NO_KEYS,
+            trial_duration: stimulus_durations[Math.floor(Math.random() * stimulus_durations.length)],
+            stimulus_width: 1280,
+            stimulus_height: 720,
+            on_finish: function(data) {
+                jsPsych.data.addDataToLastTrial({
+                    stimulus_duration: stimulus_durations[j],
+                });
+            }
+        });
+    }
 } else if (group_choice == 2) {
-	for (var i = 0; i < n_images_group_2; i++) {
-		for (var j = 0; j < stimulus_durations.length; j++) {
-		    image_stimuli.push({
-		        type: 'image-keyboard-response',
-		        stimulus: [image_prefix + 'stimuli/image_' + stimuli_group_2[i] + '.png'],
-		        choices: jsPsych.NO_KEYS,
-		        trial_duration: stimulus_durations[j],
-		        stimulus_width: 1280,
-		        stimulus_height: 720,
-		        on_finish: function(data) {
-    		        jsPsych.data.addDataToLastTrial({
-    		            stimulus_duration: stimulus_durations[j],
-    		        });
-    		    }
-		    });
-		}
-	}
+    for (var i = 0; i < n_images_group_2; i++) {
+        for (var j = 0; j < stimulus_durations.length; j++) {
+            image_stimuli.push({
+                type: 'image-keyboard-response',
+                stimulus: [image_prefix + 'stimuli/image_' + stimuli_group_2[i] + '.png'],
+                choices: jsPsych.NO_KEYS,
+                trial_duration: stimulus_durations[j],
+                stimulus_width: 1280,
+                stimulus_height: 720,
+                on_finish: function(data) {
+                    jsPsych.data.addDataToLastTrial({
+                        stimulus_duration: stimulus_durations[j],
+                    });
+                }
+            });
+        }
+    }
 }
 image_stimuli = shuffle(image_stimuli);  // shuffle blocks with images
 image_stimuli = image_stimuli.slice(0, n_images_per_participant * n_images_repeat); // trim array of stimuli
