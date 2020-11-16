@@ -60,6 +60,8 @@ var image_duration = 2000;
 var sentinel_duration = 700;
 var allowed_wrong_codes = 2; // number of codes allowed to be inputted incorrectly
 var SHOW_DEBUG = false; // switch for debugging output
+var NAME_COOKIE = 'gazes-crowdsourced-wrong-codes';
+var SAVE_COOKIE_DAYS = 30;
 
  /**
  * Returns a random integer between min (inclusive) and max (inclusive).
@@ -211,6 +213,12 @@ if (!debug) {
     debug = SHOW_DEBUG;
 }
 
+// erase cookie by hand
+var erase_cookie = getUrlParameter('erase_cookie');
+if (erase_cookie) {
+    eraseCookie(NAME_COOKIE);
+}
+
 if (debug) {
     console.log('group_choice ', group_choice);
     console.log('cb_dur ', cb_dur);
@@ -322,6 +330,12 @@ var json_correct_codes = [];  // global var to store correct mapping
 var counter_sentinel_images_shown = -1;  // global var to count the number of sentinel images already shown
 var counter_wrong_codes = 0;  // global var to count the number of incorrect codes typed
 window.onload = function() {
+    // check if experiment was failed by giving too many wrong codes before
+    var wrong_codes_given_before = getCookie(NAME_COOKIE);
+    if (wrong_codes_given_before > allowed_wrong_codes) {
+        // redirect to finish page with message that they can't do experiment again
+        window.location.href = 'finish?wrong_codes=' + wrong_codes_given_before;
+    }
     // load json file with correct mapping
     $.getJSON("./img/sentinel/sentinel_codes.json", function(data){
         json_correct_codes = data;  // save codes in global var
@@ -341,29 +355,26 @@ var sentinel_codechart_input_block = {
     type: 'survey-html-form',
     html: str_input,
     on_finish: function(data) {
-        console.log('counter_wrong_codes before', counter_wrong_codes);
-        console.log('counter_sentinel_images_shown', counter_sentinel_images_shown);
         if (counter_sentinel_images_shown != 0) { // skip sentinel image in example
             var path_sentinel_image = '../public/img/sentinel/sentinel_' + sentinel_ids[counter_sentinel_images_shown] + '.jpg';
-            console.log('path_sentinel_image', path_sentinel_image);
-            console.log("json_correct_codes[path_sentinel_image]['correct_codes']", json_correct_codes[path_sentinel_image]['correct_codes']);
-            console.log('JSON.stringify(data)', JSON.stringify(data));
-            console.log('data', data);
             // check if inputted code is in list of correct codes
             var given_answer = data['responses'].substring(20,23).toUpperCase();
-            console.log('given_answer', given_answer);
+            console.log('given_answer of sentinel image', given_answer);
+            console.log('allowed codes', json_correct_codes[path_sentinel_image]['correct_codes']);
+            console.log('counter_wrong_codes', counter_wrong_codes);
             if (!json_correct_codes[path_sentinel_image]['correct_codes'].includes(given_answer)) {
                 counter_wrong_codes++;
             }
             // too many wrong codes inputted
             // todo: use cookie
             if (counter_wrong_codes > allowed_wrong_codes) {
+                // save cookie about failed experiment
+                setCookie(NAME_COOKIE, counter_wrong_codes, SAVE_COOKIE_DAYS);
                 // save data anyway
                 saveData();
                 // redirect to finish page
                 window.location.href = 'finish?wrong_codes=' + counter_wrong_codes;
             }
-            console.log('counter_wrong_codes after', counter_wrong_codes);
         } 
     }
 };
