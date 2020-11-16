@@ -331,7 +331,12 @@ if (group_choice == 1) {
 		        choices: jsPsych.NO_KEYS,
 		        trial_duration: stimulus_durations[j],
 		        stimulus_width: 1280,
-		        stimulus_height: 720
+		        stimulus_height: 720,
+		        on_finish: function(data) {
+		        jsPsych.data.addDataToLastTrial({
+		            trial_duration: trial_duration
+		        });
+		    }
 		    });
 		}
 	}
