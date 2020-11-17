@@ -575,7 +575,7 @@ var counter_sentinel = 0;  // count sentinel images added
 for (var i = 0; i < n_images_training + n_sentinel_training; i++) {
     if (i % 2 != 0) {  // add training image for odd ids
         console.log('added training image at', i);
-        image_str = image_prefix + 'training/image_' + training_image_ids[counter_training] + '.jpg';
+        image_str = image_prefix + 'training/training_' + training_image_ids[counter_training] + '.jpg';
         training_blocks.push(fixation_block);
         training_blocks.push({
             type: 'image-keyboard-response',
