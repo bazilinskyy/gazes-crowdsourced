@@ -26,10 +26,11 @@ body {
 }
 
 #popup {
-    position: absolute;
+    position: fixed;
     top: 40%;
-    left: 0;
-    width: 50%;
+    left: 100%;
+    z-index:9999; 
+    width: 200px;
 }
 #inner-popup {
     margin: 0 auto;
