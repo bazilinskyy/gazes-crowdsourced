@@ -387,6 +387,8 @@ var codechart_input_block = {
         if (!training_in_progress) {
             document.getElementById("code_input_dont_know").style.visibility="visible";
         }
+        // set autofocus on input
+        document.getElementById("code_input_dont_know").style.visibility="visible";
     },
     on_finish: function(data) {
         if (training_in_progress) { // only check things during training
@@ -621,7 +623,7 @@ for (var i = 1; i < n_images * n_images_repeat / n_images_break; i++) {
     var images_done = n_images_break * i;
     between_blocks.push({
         type: 'html-keyboard-response',
-        stimulus: '<p>You have now completed ' + images_done + ' images out of ' + n_images_per_participant * n_images_repeat + '. When ready press \'C\' to proceed to the next batch.</p>',
+        stimulus: '<div class="alert alert-primary" role="alert" style="width: 50%"><h4 class="alert-heading">Break</h4><p>You have now completed ' + images_done + ' images out of ' + n_images_per_participant * n_images_repeat + '.</p><hr><p class="mb-0">When ready press \'C\' to proceed to the next batch.</p></div>',
         choices: ['C']
     });
 }
