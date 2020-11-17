@@ -549,10 +549,10 @@ for (var i = 1; i <= n_images_training; i++) {
 training_image_ids = shuffle(training_image_ids);  // shuffle training images
 
 // black with text to continue before showing the image
-var stimulus_text =  '<p>Press \'C\' to continue to the next image.</p><div id="popup"> <div id="inner-popup" class="alert alert-danger collapse fade alert-dismissible" role="alert"><strong>Warning!</strong> You have provided <span class="counter_wrong_codes_span"></span> incorrect code(s). Please pay more attention in future attempts. You will not be able to continue after giving ' + allowed_wrong_codes + ' wrong codes.<button type="button" class="close" data-dismiss="alert" aria-label="Close" id="buttonClose"><span aria-hidden="true">&times;</span></button></div> </div>';
+var stimulus_str =  '<p>Press \'C\' to continue to the next image.</p><div id="popup"> <div id="inner-popup" class="alert alert-danger collapse fade alert-dismissible" role="alert"><strong>Warning!</strong> You have provided <span class="counter_wrong_codes_span"></span> incorrect code(s). Please pay more attention in future attempts. You will not be able to continue after giving ' + allowed_wrong_codes + ' wrong codes.<button type="button" class="close" data-dismiss="alert" aria-label="Close" id="buttonClose"><span aria-hidden="true">&times;</span></button></div> </div>';
 var continue_block = {
     type: 'html-keyboard-response',
-    stimulus: stimulus_text,
+    stimulus: stimulus_str,
     choices: ['C'],
     on_load: function(data) {
         if (show_popup_wrong_code) {
@@ -649,7 +649,7 @@ for (var i = 0; i < n_images_training + n_sentinel_training; i++) {
                 counter_sentinel_images_shown++;  // increase counter of images shown
             }
         });
-        training_blocks.push(sentinel_codechart_stimuli[counter_training]);
+        training_blocks.push(sentinel_codechart_stimuli[counter_sentinel]);
         training_blocks.push(sentinel_codechart_input_block);
         training_blocks.push(continue_block);
         counter_sentinel++;
