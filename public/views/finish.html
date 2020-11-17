@@ -64,8 +64,16 @@
 
         <!-- finished with wrong codes inputted -->
         <div id="wrong_codes" style="visibility: hidden;">
-          <div class="alert alert-success alert-dismissible fade" role="alert" id="alertPopup">
+          <!-- <div class="alert alert-success alert-dismissible fade" role="alert" id="alertPopup">
               <strong>Warning!</strong> You just inputted an incorrect code. Please pay more attention in future attempts <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          </div> -->
+
+          <div id="message">
+              <div style="padding: 5px;">
+                  <div id="inner-message" class="alert alert-success alert-error fade">
+                      <strong>Warning!</strong> You just inputted an incorrect code. Please pay more attention in future attempts <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                  </div>
+              </div>
           </div>
 
           <div id="jspsych_target">
