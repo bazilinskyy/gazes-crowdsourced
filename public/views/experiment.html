@@ -72,7 +72,7 @@ var counter_wrong_codes = 0;  // global var to count the number of incorrect cod
  * Global vars.
  **/
 var json_correct_codes = [];  // global var to store correct mapping
-
+var show_popup_wrong_code = false;  // gloval var to show a popup about a wrong code
  /**
  * Returns a random integer between min (inclusive) and max (inclusive).
  * The value is no lower than min (or the next integer greater than min
@@ -383,10 +383,8 @@ var sentinel_codechart_input_block = {
             console.log('allowed codes', json_correct_codes[path_sentinel_image]['correct_codes']);
             if (!json_correct_codes[path_sentinel_image]['correct_codes'].includes(given_answer)) {
                 counter_wrong_codes++;  // wrong code provided
-                console.log('wrong code provided');
-                $("#modalButton").click(function(){
-                    $("#buttonAlert").addClass('show');
-                })
+                console.log('wrong code provided and popup flag set to true');
+                show_popup_wrong_code = true;  // flag for showing a popup
             }
             console.log('counter_wrong_codes', counter_wrong_codes);
             // too many wrong codes inputted
@@ -507,11 +505,19 @@ image_stimuli = shuffle(image_stimuli);  // shuffle blocks with images
 image_stimuli = image_stimuli.slice(0, n_images_per_participant * n_images_repeat); // trim array of stimuli
 
 // black with text to continue before showing the image
+var stimulus_text =  '<p>Press \'C\' to continue to the next image.</p><div class="alert alert-success alert-dismissible fade" role="alert" id="alertPopup"> <strong>Warning!</strong> You have inputted ' + counter_wrong_codes + ' code(s). Please pay more attention in future attempts. Giving ' + allowed_wrong_codes + ' wrong codes will make it impossible to continue.<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button> </div>';
 var continue_block = {
     type: 'html-keyboard-response',
-    stimulus: '<p>Press \'C\' to continue to the next image.</p>',
-    choices: ['C']
+    stimulus: stimulus_text,
+    choices: ['C'],
+    on_load: function(data) {
+        if (show_popup_wrong_code) {
+            show_popup_wrong_code = false;  // reset flag
+            $("#buttonAlert").addClass('show');  // show popup
+        }
+    }
 };
+
 /**
  * Gazes.
  **/
