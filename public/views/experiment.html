@@ -377,7 +377,7 @@ window.onload = function() {
     });
 };
 // string for input of code
-var str_input = '<p>Please enter the character code you remember looking at last: <input name="input-codeblock" id="input-codeblock" autofocus pattern="^[A-Za-z]{1}[0-9]{2}" type="text" required /></p><p>The field will only accept input in correct format of <i>\'LetterDigitDigit\'</i> (e.g. \'F32\').</p><p id="code_input_dont_know" style="visibility: hidden;">If you do not know which code to input, write \'I99\'.</p>';
+var str_input = '<form><div class="form-group"><label for="exampleInputEmail1">Please enter the character code you remember looking at last</label> <input type="text" class="form-control" name="input-codeblock" id="input-codeblock" autofocus aria-describedby="input-help" pattern="^[A-Za-z]{1}[0-9]{2}"><small id="input-help" class="form-text text-muted">The field will only accept input in correct format of <i>'LetterDigitDigit'</i> (e.g. 'F32').<span id="code_input_dont_know" style="visibility: hidden;"><br>If you do not know which code to input, write 'I99'</span></small></div></form>';
 // block for input of code
 var codechart_input_block = {
     type: 'survey-html-form',
