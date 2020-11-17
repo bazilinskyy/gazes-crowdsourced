@@ -106,7 +106,7 @@ def make_sentinel(codechart_filename,
         for ii in range(len(valid_codes)):
             dist = np.linalg.norm(np.array(coordinates[valid_codes[ii]]) -
                                   np.array(triplet_coordinate))
-            if dist <= width/2.0:
+            if dist <= width/2.0 + 10:  # added padding for correct codes
                 correct_codes.append(valid_codes[ii])
 
         pass

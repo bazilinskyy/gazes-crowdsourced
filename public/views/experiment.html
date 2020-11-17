@@ -382,7 +382,7 @@ var codechart_input_block = {
             console.log('path_image', path_image);
             // check if inputted code is in list of correct codes
             var given_answer = data['responses'].substring(20,23).toUpperCase();
-            console.log('given_answer of image', given_answer);
+            console.log('given_answer for image', given_answer);
             console.log('allowed codes', json_correct_codes[path_image]['0']);
             if (!json_correct_codes[path_image]['0'].includes(given_answer)) {
                 counter_wrong_codes++;  // wrong code provided
@@ -412,7 +412,7 @@ var sentinel_codechart_input_block = {
             console.log('path_sentinel_image', path_sentinel_image);
             // check if inputted code is in list of correct codes
             var given_answer = data['responses'].substring(20,23).toUpperCase();
-            console.log('given_answer of sentinel image', given_answer);
+            console.log('given_answer for sentinel image', given_answer);
             console.log('allowed codes', json_correct_codes_sentinel[path_sentinel_image]['correct_codes']);
             if (!json_correct_codes_sentinel[path_sentinel_image]['correct_codes'].includes(given_answer)) {
                 counter_wrong_codes++;  // wrong code provided
