@@ -572,7 +572,7 @@ for (var i = 1; i < n_images * n_images_repeat / n_images_break; i++) {
  **/
 var counter_training = 0;  // count training images added
 var counter_sentinel = 0;  // count sentinel images added
-for (var i = 0; i < training_blocks.length; i++) {
+for (var i = 0; i < n_images_training + n_sentinel_training; i++) {
     if (i % 2 != 0) {  // add training image for odd ids
         console.log('added training image at', i);
         image_str = image_prefix + 'training/image_' + training_image_ids[counter_training] + '.jpg';
@@ -676,6 +676,7 @@ if (debug) {
     console.log('sentinel_locations', sentinel_locations);
     console.log('stimulus_durations', stimulus_durations);
     console.log('image_ids', image_ids);
+    console.log('training_image_ids', training_image_ids);
     console.log('image_stimuli', image_stimuli);
     console.log('timeline', timeline);
     console.log('between_blocks', between_blocks);
@@ -684,6 +685,7 @@ if (debug) {
     console.log('sentinel_ids', sentinel_ids);
     console.log('sentinel_stimuli', sentinel_stimuli);
     console.log('sentinel_codechart_stimuli', sentinel_codechart_stimuli);
+    console.log('training_blocks', training_blocks);
 }
 
 /* Start the experiment */
