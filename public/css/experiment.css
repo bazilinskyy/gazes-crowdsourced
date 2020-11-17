@@ -28,10 +28,18 @@ body {
 #popup {
     position: fixed;
     top: 40%;
-    left: 100%;
+    left: 0%;
     z-index:9999; 
     width: 200px;
 }
 #inner-popup {
     margin: 0 auto;
+}
+
+#input-codeblock input{
+    font-size: 18px;
+    width: 20%;
+}
+#instructions_div {
+    text-align: left;
 }
