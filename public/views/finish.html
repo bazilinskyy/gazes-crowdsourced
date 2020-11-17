@@ -33,7 +33,9 @@
           if (getUrlParameter("show_popup_wrong_codes")) {
               $("#alertPopup").addClass('show');
               console.log('popup showed');
+
               $("#buttonClose").click(function(){
+                  console.log('close clicked');
                   document.getElementById("wrong_codes").style.visibility="visible";
               }); 
           } else {
@@ -48,6 +50,12 @@
 
   </head>
   <body>
+    <!-- popup -->
+    <div class="alert alert-success alert-dismissible fade" role="alert" id="alertPopup">
+        <strong>Warning!</strong> You just inputted an incorrect code. Please pay more attention in future attempts <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="buttonClose"><span aria-hidden="true">&times;</span></button>
+    </div>
+    <!-- end of popup -->
+    
     <div class = "parent">
       <div class = "child">
         <!-- finished with code -->
@@ -67,10 +75,6 @@
 
         <!-- finished with wrong codes inputted -->
         <div id="wrong_codes" style="visibility: hidden;">
-          <div class="alert alert-success alert-dismissible fade" role="alert" id="alertPopup">
-              <strong>Warning!</strong> You just inputted an incorrect code. Please pay more attention in future attempts <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="buttonClose"><span aria-hidden="true">&times;</span></button>
-          </div>
-
           <!-- <div id="message">
               <div style="padding: 5px;">
                   <div id="inner-message" class="alert alert-success alert-error fade" id="alertPopup">
