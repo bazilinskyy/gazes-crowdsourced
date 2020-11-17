@@ -13,11 +13,11 @@ import os
 # 2. https://www.pexels.com/photo/woman-standing-near-yellow-petaled-flower-2050994/  # noqa: E501
 # 3. https://www.pexels.com/photo/person-holding-hammer-while-smiling-3267784/
 # 4. https://www.pexels.com/photo/photography-of-laughing-guy-1408196/
-# 5. https://www.pexels.com/photo/smiling-woman-wearing-black-leather-jacket-outdoors-during-day-1529621/  # noqa: E501
+# 5. https://www.pxfuel.com/en/free-photo-jmdxk
 # 6. https://www.pexels.com/photo/man-in-blue-top-2830332/
 # 7. https://www.pexels.com/photo/photo-of-man-wearing-denim-jacket-1599980/
-# 8. https://www.pexels.com/photo/photo-of-man-laughing-2529142/
-# 9. https://www.pexels.com/photo/photo-of-woman-sitting-in-shopping-cart-2473586/  # noqa: E501
+# 8. https://www.pxfuel.com/en/free-photo-eibzf
+# 9. https://www.pxfuel.com/en/free-photo-jrjqb
 
 # parameters
 text_color = ImageColor.getrgb("white")
