@@ -203,7 +203,7 @@ if __name__ == "__main__":
     rootdir = '../public/img/'
 
     target_type = "img"
-    target_im_dir = "sentinel_target_images"
+    target_im_dir = "sentinel_target_images/black_white"
 
     sentinel_image_dir = os.path.join(rootdir, 'sentinel')
     sentinel_CC_dir = os.path.join(rootdir, 'codeboard_sentinel')

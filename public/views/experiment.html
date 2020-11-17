@@ -67,9 +67,9 @@ var json_correct_codes = [];  // global var to store correct mapping for images
 var json_correct_codes_sentinel = [];  // global var to store correct mapping for sentinel images
 var show_popup_wrong_code = false;  // gloval var to show a popup about a wrong code
 var training_in_progress = true;  // flag for status of training session
-var counter_sentinel_images_shown = 0;  // global var to count the number of sentinel images already shown
+var counter_sentinel_images_shown = -1;  // global var to count the number of sentinel images already shown
 var counter_cb_shown = -1;  // global var to count the number of codeblock images already shown
-var counter_wrong_codes = -1;  // global var to count the number of incorrect codes typed
+var counter_wrong_codes = 0;  // global var to count the number of incorrect codes typed
 
  /**
  * Returns a random integer between min (inclusive) and max (inclusive).
@@ -382,7 +382,7 @@ var codechart_input_block = {
             console.log('path_image', path_image);
             // check if inputted code is in list of correct codes
             var given_answer = data['responses'].substring(20,23).toUpperCase();
-            console.log('given_answer of sentinel image', given_answer);
+            console.log('given_answer of image', given_answer);
             console.log('allowed codes', json_correct_codes[path_image]['0']);
             if (!json_correct_codes[path_image]['0'].includes(given_answer)) {
                 counter_wrong_codes++;  // wrong code provided
