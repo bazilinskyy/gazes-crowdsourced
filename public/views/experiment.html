@@ -358,13 +358,6 @@ window.onload = function() {
     }).fail(function(){
         console.log("An error has occurred with working with JSON file.");
     });
-
-    // alert
-    $(document).ready(function() {
-        $("#modalButton").click(function(){
-            $("#buttonAlert").addClass('show');
-        })
-    });
 };
 // string for input of code
 var str_input = '<p>Please enter the character code you remember looking at last: <input name="input-codeblock" id="input-codeblock" autofocus pattern="^[A-Za-z]{1}[0-9]{2}" type="text" required /></p><p>The field will only accept input in correct format of <i>\'LetterDigitDigit\'</i> (e.g. \'F32\'). If you do not know which code to input, write \'I99\'.</p>';
@@ -442,6 +435,14 @@ var instructions_block = {
     type: 'html-keyboard-response',
     stimulus: '<div id="instructions_div"><p>You will view ' + n_images_per_participant * n_images_repeat + ' images.<ol><li>For each one, imagine that you are a pedestrian standing on the side of the road and record what code you see on that image.</li><li>You will be shown an image for a short period of time.</li><li>Right after each image, a page with character codes will be briefly shown.</li><li>You will be asked to record what three-letter code you saw when the image disappeared.</li><li>You will be asked to provide the last character code that you remember looking at. <span style="color:red">Important! You will be allowed to input a total of ' + allowed_wrong_codes + ' such codes incorrectly. If you provide ' + (allowed_wrong_codes + 1) + ' codes incorrectly, you will be asked to leave this experiment without getting a payment.</span></li><li>Some images will contain just a single image of a person. For these images, follow the image with your eyes and input the code that appears in the same spot as the image.</li><li>After each ' + n_images_break + ' images, you will be able to take a short break.</li></ol> </p><p>You will now see two examples with an image of the road and with an image of a person. Press \'C\' to proceed to the first example image.</p></div><!-- Alert --> <div class="alert alert-success alert-dismissible fade" role="alert" id="buttonAlert"> <strong>Success!</strong> You just showed an alert. <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span> </button> </div> <!-- Submit Button --> <div class="form-group"> <a href="#" class="btn btn-primary" data-toggle="modal" data-target="#ModalCenter" id="modalButton">Click me</a> </div> </div>',
     choices: ['C'],
+    on_load: function() {
+        // alert
+        $(document).ready(function() {
+            $("#modalButton").click(function(){
+                $("#buttonAlert").addClass('show');
+            })
+        });
+    },
     on_finish: function(data) {
         jsPsych.data.addDataToLastTrial({
             group_choice: group_choice,
