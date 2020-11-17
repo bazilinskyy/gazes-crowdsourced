@@ -24,3 +24,13 @@ body {
 .jspsych-categorize-stimulus {
     vertical-align: middle
 }
+
+#popup {
+    position: absolute;
+    top: 40%;
+    left: 0;
+    width: 50%;
+}
+#inner-popup {
+    margin: 0 auto;
+}

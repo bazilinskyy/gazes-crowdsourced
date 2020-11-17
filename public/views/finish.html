@@ -53,20 +53,6 @@
       }
   };
   </script>
-
-   <!-- custom css -->
-    <style>
-    #message {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-    }
-    #inner-message {
-        margin: 0 auto;
-    }
-    </style>
-
   </head>
   <body>
     <!-- popup -->
@@ -75,12 +61,10 @@
           <strong>Warning!</strong> You just inputted an incorrect code. Please pay more attention in future attempts <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="buttonClose"><span aria-hidden="true">&times;</span></button>
       </div>
     </div> -->   
-    <div id="message">
-        <div style="padding: 5px;">
-            <div id="inner-message" class="alert alert-danger collapse" role="alert">
-                  <strong>Warning!</strong> You just provided an incorrect code. Please pay more attention in future attempts <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="buttonClose"><span aria-hidden="true">&times;</span></button>
-                </div>
-          </div>
+    <div id="popup">
+        <div id="inner-popup" class="alert alert-danger collapse" role="alert">
+              <strong>Warning!</strong> You just provided an incorrect code. Please pay more attention in future attempts <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="buttonClose"><span aria-hidden="true">&times;</span></button>
+        </div>
     </div>
     <!-- end of popup -->
 
