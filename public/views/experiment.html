@@ -674,6 +674,7 @@ for (var i = 0; i < n_images_training + n_sentinel_training; i++) {
  * Create experiment timeline array
  **/
 var timeline = [];
+timeline.push(between_blocks[0]);
 timeline.push(instructions_block);
 // training
 for (var i = 0; i < training_blocks.length; i++) {
