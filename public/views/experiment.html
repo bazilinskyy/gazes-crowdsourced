@@ -54,7 +54,7 @@ var codeblock_duration = 700;
 var fixation_duration = 700;
 var image_duration = 2000;
 var sentinel_duration = 700;
-var allowed_wrong_codes = 0; // number of codes allowed to be inputted incorrectly
+var allowed_wrong_codes = 1; // number of codes allowed to be inputted incorrectly
 var SHOW_DEBUG = false; // switch for debugging output
 var NAME_COOKIE = 'gazes-crowdsourced-wrong-codes';
 var SAVE_COOKIE_DAYS = 30;
@@ -173,7 +173,7 @@ function getCookie(name) {
         if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
     }
     if (debug) {
-        console.log('cookie ', name, ' loaded');
+        console.log('cookie', name, 'loaded');
     }
     return null;
 }
@@ -498,7 +498,7 @@ image_stimuli = shuffle(image_stimuli);  // shuffle blocks with images
 image_stimuli = image_stimuli.slice(0, n_images_per_participant * n_images_repeat); // trim array of stimuli
 
 // black with text to continue before showing the image
-var stimulus_text =  '<p>Press \'C\' to continue to the next image.</p><div id="popup"> <div id="inner-popup" class="alert alert-danger collapse fade alert-dismissible" role="alert"><strong>Warning!</strong> You just provided an incorrect code. Please pay more attention in future attempts <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="buttonClose"><span aria-hidden="true">&times;</span></button> </div> </div>';
+var stimulus_text =  '<p>Press \'C\' to continue to the next image.</p><div id="popup"> <div id="inner-popup" class="alert alert-danger collapse fade alert-dismissible" role="alert"><strong>Warning!</strong> You have provided ' + counter_wrong_codes +' incorrect code(s). Please pay more attention in future attempts. You will not be able to continue after giving ' + allowed_wrong_codes + ' wrong codes.<button type="button" class="close" data-dismiss="alert" aria-label="Close" id="buttonClose"><span aria-hidden="true">&times;</span></button></div> </div>';
 var continue_block = {
     type: 'html-keyboard-response',
     stimulus: stimulus_text,
