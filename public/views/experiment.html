@@ -572,8 +572,8 @@ for (var i = 1; i < n_images * n_images_repeat / n_images_break; i++) {
  **/
 var counter_training = 0;  // count training images added
 var counter_sentinel = 0;  // count sentinel images added
-for (var i = 1; i <= n_images_training + n_sentinel_training; i++) {
-    if (i % 2 == 1) {  // add training image for odd ids
+for (var i = 0; i < n_images_training + n_sentinel_training; i++) {
+    if (i % 2 == 0 || i == 0) {  // add training image for odd ids
         console.log('added training image at', i);
         image_str = image_prefix + 'training/training_' + training_image_ids[counter_training] + '.jpg';
         training_blocks.push(fixation_block);
@@ -589,7 +589,7 @@ for (var i = 1; i <= n_images_training + n_sentinel_training; i++) {
         training_blocks.push(codechart_input_block);
         training_blocks.push(continue_block);
         counter_training++;
-    } else if (i % 2 == 0) {  // add sentinel image for even ids
+    } else if (i % 2 == 1) {  // add sentinel image for even ids
         console.log('added sentinel image at', i);
         image_str = image_prefix + 'sentinel/sentinel_' + sentinel_ids[counter_sentinel] + '.jpg';
         training_blocks.push(fixation_block);
