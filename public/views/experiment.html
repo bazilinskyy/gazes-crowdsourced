@@ -59,15 +59,18 @@ var allowed_wrong_codes = 3; // number of codes allowed to be inputted incorrect
 var SHOW_DEBUG = false; // switch for debugging output
 var NAME_COOKIE = 'gazes-crowdsourced-wrong-codes';
 var SAVE_COOKIE_DAYS = 30;
-var counter_sentinel_images_shown = 0;  // global var to count the number of sentinel images already shown
-var counter_wrong_codes = 0;  // global var to count the number of incorrect codes typed
 
 /**
  * Global vars.
  **/
-var json_correct_codes = [];  // global var to store correct mapping
+var json_correct_codes = [];  // global var to store correct mapping for images
+var json_correct_codes_sentinel = [];  // global var to store correct mapping for sentinel images
 var show_popup_wrong_code = false;  // gloval var to show a popup about a wrong code
 var training_in_progress = true;  // flag for status of training session
+var counter_sentinel_images_shown = 0;  // global var to count the number of sentinel images already shown
+var counter_cb_shown = 0;  // global var to count the number of codeblock images already shown
+var counter_wrong_codes = 0;  // global var to count the number of incorrect codes typed
+
  /**
  * Returns a random integer between min (inclusive) and max (inclusive).
  * The value is no lower than min (or the next integer greater than min
@@ -354,8 +357,15 @@ window.onload = function() {
         window.location.href = 'finish?wrong_codes=' + wrong_codes_given_before;
     }
     // load json file with correct mapping
-    $.getJSON("./img/sentinel/sentinel_codes.json", function(data){
+    $.getJSON("./img/condeboard/data.json", function(data){
         json_correct_codes = data;  // save codes in global var
+    }).fail(function(){
+        console.log("An error has occurred with working with JSON file.");
+    });
+
+    // load json file with correct mapping
+    $.getJSON("./img/sentinel/sentinel_codes.json", function(data){
+        json_correct_codes_sentinel = data;  // save codes in global var
     }).fail(function(){
         console.log("An error has occurred with working with JSON file.");
     });
@@ -365,27 +375,51 @@ var str_input = '<p>Please enter the character code you remember looking at last
 // block for input of code
 var codechart_input_block = {
     type: 'survey-html-form',
-    html: str_input
-};
-// block for input of code from sentinel image
-var sentinel_codechart_input_block = {
-    type: 'survey-html-form',
     html: str_input,
     on_finish: function(data) {
-        if (training_in_progress) { // skip sentinel image in example
-            var path_sentinel_image = '../public/img/sentinel/sentinel_' + sentinel_ids[counter_sentinel_images_shown] + '.jpg';
+        if (training_in_progress) { // only check things during training
+            var path_image = '../public/img/codeboard/cb_' + codechart_ids[counter_cb_shown] + '.jpg';
             // check if inputted code is in list of correct codes
             var given_answer = data['responses'].substring(20,23).toUpperCase();
             console.log('given_answer of sentinel image', given_answer);
-            console.log('allowed codes', json_correct_codes[path_sentinel_image]['correct_codes']);
-            if (!json_correct_codes[path_sentinel_image]['correct_codes'].includes(given_answer)) {
+            console.log('allowed codes', json_correct_codes_sentinel[path_image]['correct_codes']);
+            if (!json_correct_codes[path_image]['0'].includes(given_answer)) {
                 counter_wrong_codes++;  // wrong code provided
                 console.log('wrong code provided and popup flag set to true');
                 show_popup_wrong_code = true;  // flag for showing a popup
             }
             console.log('counter_wrong_codes', counter_wrong_codes);
             // too many wrong codes inputted
-            if (counter_wrong_codes > allowed_wrong_codes) {
+            if (counter_wrong_codes >= allowed_wrong_codes) {
+                // save cookie about failed experiment
+                setCookie(NAME_COOKIE, counter_wrong_codes, SAVE_COOKIE_DAYS);
+                // save data anyway
+                saveData();
+                // redirect to finish page
+                window.location.href = 'finish?wrong_codes=' + counter_wrong_codes;
+            }
+        } 
+    }
+};
+// block for input of code from sentinel image
+var sentinel_codechart_input_block = {
+    type: 'survey-html-form',
+    html: str_input,
+    on_finish: function(data) {
+        if (training_in_progress) { // only check things during training
+            var path_sentinel_image = '../public/img/sentinel/sentinel_' + sentinel_ids[counter_sentinel_images_shown] + '.jpg';
+            // check if inputted code is in list of correct codes
+            var given_answer = data['responses'].substring(20,23).toUpperCase();
+            console.log('given_answer of sentinel image', given_answer);
+            console.log('allowed codes', json_correct_codes_sentinel[path_sentinel_image]['correct_codes']);
+            if (!json_correct_codes_sentinel[path_sentinel_image]['correct_codes'].includes(given_answer)) {
+                counter_wrong_codes++;  // wrong code provided
+                console.log('wrong code provided and popup flag set to true');
+                show_popup_wrong_code = true;  // flag for showing a popup
+            }
+            console.log('counter_wrong_codes', counter_wrong_codes);
+            // too many wrong codes inputted
+            if (counter_wrong_codes >= allowed_wrong_codes) {
                 // save cookie about failed experiment
                 setCookie(NAME_COOKIE, counter_wrong_codes, SAVE_COOKIE_DAYS);
                 // save data anyway
@@ -455,6 +489,7 @@ var instructions_block_2 = {
     choices: ['C'],
     on_finish: function(data) {
         training_in_progress = false;  // training session finished
+        console.log('training session finished');
     }
 };
 
@@ -535,7 +570,11 @@ for (var i = 0; i < n_images_per_participant * n_images_repeat; i++) {
         type: 'image-keyboard-response',
         stimulus: image_str,
         choices: jsPsych.NO_KEYS,
-        trial_duration: cb_dur
+        trial_duration: cb_dur,
+        on_finish: function() {
+            counter_cb_shown++;  // increase counter of images shown
+            console.log('counter_cb_shown', counter_cb_shown);
+        }
     })
 }
 // build arrays with sentinel images and corresponding codecharts
@@ -621,17 +660,6 @@ timeline.push(instructions_block);
 for (var i = 0; i < training_blocks.length; i++) {
     timeline.push(training_blocks[i]);
 }
-// // example of image
-// timeline.push(fixation_block);  // page with fiexation
-// timeline.push(example_block);  // page with the stimulus
-// timeline.push(codechart_stimuli[0]);
-// timeline.push(codechart_input_block);
-// timeline.push(continue_block);
-// // example of sentinel image
-// timeline.push(fixation_block);  // page with fiexation
-// timeline.push(sentinel_stimuli[0]);  // page with the stimulus
-// timeline.push(sentinel_codechart_stimuli[0]);
-// timeline.push(sentinel_codechart_input_block);
 timeline.push(instructions_block_2);
 // iterate over images
 var between_blocks_count = 0;  // counter of shown between blocks
