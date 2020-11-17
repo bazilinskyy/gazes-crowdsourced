@@ -54,7 +54,8 @@ var codeblock_duration = 700;
 var fixation_duration = 700;
 var image_duration = 2000;
 var sentinel_duration = 700;
-var allowed_wrong_codes = 1; // number of codes allowed to be inputted incorrectly
+var training_duration = 700;
+var allowed_wrong_codes = 3; // number of codes allowed to be inputted incorrectly
 var SHOW_DEBUG = false; // switch for debugging output
 var NAME_COOKIE = 'gazes-crowdsourced-wrong-codes';
 var SAVE_COOKIE_DAYS = 30;
@@ -66,6 +67,7 @@ var counter_wrong_codes = 0;  // global var to count the number of incorrect cod
  **/
 var json_correct_codes = [];  // global var to store correct mapping
 var show_popup_wrong_code = false;  // gloval var to show a popup about a wrong code
+var training_in_progress = true;  // flag for status of training session
  /**
  * Returns a random integer between min (inclusive) and max (inclusive).
  * The value is no lower than min (or the next integer greater than min
@@ -242,12 +244,14 @@ if (debug) {
 var image_ids = [];  // IDs of images in stimuli
 var codechart_ids = []; // IDs of codecharts
 var sentinel_ids = []; // IDs of sentinel images
+var training_image_ids = []; // IDs of training images
 var between_blocks = []; // instructions between blocks
 var image_stimuli = []; // blocks with images
 var codechart_stimuli = []; // blocks with codecharts
 var sentinel_stimuli = []; // blocks with sentinel images
 var sentinel_codechart_stimuli = []; // blocks with codecharts for sentinel images
 var sentinel_locations = [];  // locations of sentinel checks
+var training_blocks = [];  // blocks for training
 
 // browser info
 // https://stackoverflow.com/questions/11219582/how-to-detect-my-browser-version-and-operating-system-using-javascript
@@ -368,7 +372,7 @@ var sentinel_codechart_input_block = {
     type: 'survey-html-form',
     html: str_input,
     on_finish: function(data) {
-        // if (counter_sentinel_images_shown != 0) { // skip sentinel image in example
+        if (training_in_progress) { // skip sentinel image in example
             var path_sentinel_image = '../public/img/sentinel/sentinel_' + sentinel_ids[counter_sentinel_images_shown] + '.jpg';
             // check if inputted code is in list of correct codes
             var given_answer = data['responses'].substring(20,23).toUpperCase();
@@ -387,9 +391,9 @@ var sentinel_codechart_input_block = {
                 // save data anyway
                 saveData();
                 // redirect to finish page
-                window.location.href = 'finish?wrong_codes=' + counter_wrong_codes + '&show_popup_wrong_codes=1';
+                window.location.href = 'finish?wrong_codes=' + counter_wrong_codes;
             }
-        // } 
+        } 
     }
 };
 // black with text to continue before showing the image
@@ -449,6 +453,9 @@ var instructions_block_2 = {
     type: 'html-keyboard-response',
     stimulus: '<div id="instructions_div"><p>You have completed the examples. Press \'C\' to proceed to the first image in the experiment.</p></div>',
     choices: ['C'],
+    on_finish: function(data) {
+        training_in_progress = false;  // training session finished
+    }
 };
 
 // populate arrays with image IDs
@@ -497,6 +504,12 @@ if (group_choice == 1) {
 image_stimuli = shuffle(image_stimuli);  // shuffle blocks with images
 image_stimuli = image_stimuli.slice(0, n_images_per_participant * n_images_repeat); // trim array of stimuli
 
+// populate arrays with training image IDs
+for (var i = 1; i <= n_images_training; i++) {
+    training_image_ids.push(i);
+}
+training_image_ids = shuffle(training_image_ids);  // shuffle training images
+
 // black with text to continue before showing the image
 var stimulus_text =  '<p>Press \'C\' to continue to the next image.</p><div id="popup"> <div id="inner-popup" class="alert alert-danger collapse fade alert-dismissible" role="alert"><strong>Warning!</strong> You have provided ' + counter_wrong_codes +' incorrect code(s). Please pay more attention in future attempts. You will not be able to continue after giving ' + allowed_wrong_codes + ' wrong codes.<button type="button" class="close" data-dismiss="alert" aria-label="Close" id="buttonClose"><span aria-hidden="true">&times;</span></button></div> </div>';
 var continue_block = {
@@ -525,7 +538,7 @@ for (var i = 0; i < n_images_per_participant * n_images_repeat; i++) {
     })
 }
 // build arrays with sentinel images and corresponding codecharts
-for (var i = 0; i < n_images_per_participant * n_images_repeat / n_images_break; i++) {
+for (var i = 0; i < n_images_per_participant * n_images_repeat / n_images_break + n_sentinel_training; i++) {
     image_str = image_prefix + 'sentinel/sentinel_' + sentinel_ids[i] + '.jpg';
     sentinel_stimuli.push({
         type: 'image-keyboard-response',
@@ -555,25 +568,68 @@ for (var i = 1; i < n_images * n_images_repeat / n_images_break; i++) {
 }
 
 /**
+ * Training block. Show training images and sentinel images one by one.
+ **/
+var counter_training = 0;  // count training images added
+var counter_sentinel = 0;  // count sentinel images added
+for (var i = 0; i < training_blocks.length; i++) {
+    if (i % 2 != 0) {  // add training image for odd ids
+        console.log('added training image at', i);
+        image_str = image_prefix + 'training/image_' + training_image_ids[counter_training] + '.jpg';
+        training_blocks.push(fixation_block);
+        training_blocks.push({
+            type: 'image-keyboard-response',
+            stimulus: image_str,
+            choices: jsPsych.NO_KEYS,
+            trial_duration: training_duration,
+            stimulus_width: 1280,
+            stimulus_height: 720
+        });
+        training_blocks.push(codechart_stimuli[counter_training]);
+        training_blocks.push(codechart_input_block);
+        training_blocks.push(continue_block);
+        counter_training++;
+    } else {  // add sentinel image for even ids
+        console.log('added sentinel image at', i);
+        image_str = image_prefix + 'sentinel/sentinel_' + sentinel_ids[counter_sentinel] + '.jpg';
+        training_blocks.push(fixation_block);
+        training_blocks.push({
+            type: 'image-keyboard-response',
+            stimulus: image_str,
+            choices: jsPsych.NO_KEYS,
+            trial_duration: training_duration,
+            stimulus_width: 1280,
+            stimulus_height: 720
+        });
+        training_blocks.push(sentinel_codechart_stimuli[counter_training]);
+        training_blocks.push(sentinel_codechart_input_block[counter_sentinel]);
+        training_blocks.push(continue_block);
+        counter_sentinel++;
+    } 
+}
+
+/**
  * Create experiment timeline array
  **/
 var timeline = [];
 timeline.push(instructions_block);
-// example of image
-timeline.push(fixation_block);  // page with fiexation
-timeline.push(example_block);  // page with the stimulus
-timeline.push(codechart_stimuli[0]);
-timeline.push(codechart_input_block);
-timeline.push(continue_block);
-// example of sentinel image
-timeline.push(fixation_block);  // page with fiexation
-timeline.push(sentinel_stimuli[0]);  // page with the stimulus
-timeline.push(sentinel_codechart_stimuli[0]);
-timeline.push(sentinel_codechart_input_block);
+// training
+timeline.push(training_blocks);
+// // example of image
+// timeline.push(fixation_block);  // page with fiexation
+// timeline.push(example_block);  // page with the stimulus
+// timeline.push(codechart_stimuli[0]);
+// timeline.push(codechart_input_block);
+// timeline.push(continue_block);
+// // example of sentinel image
+// timeline.push(fixation_block);  // page with fiexation
+// timeline.push(sentinel_stimuli[0]);  // page with the stimulus
+// timeline.push(sentinel_codechart_stimuli[0]);
+// timeline.push(sentinel_codechart_input_block);
 timeline.push(instructions_block_2);
 // iterate over images
 var between_blocks_count = 0;  // counter of shown between blocks
-var sentinel_last_id = 0;  // counter of shown between blocks
+var sentinel_last_id = n_sentinel_training - 1;  // counter of shown sentintel images between blocks
 for (var i = 0; i <= n_images_per_participant * n_images_repeat; i++) {
     // check if the last image was reached
     if (i >= n_images_per_participant * n_images_repeat) {
