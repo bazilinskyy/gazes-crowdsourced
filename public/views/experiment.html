@@ -68,8 +68,8 @@ var json_correct_codes_sentinel = [];  // global var to store correct mapping fo
 var show_popup_wrong_code = false;  // gloval var to show a popup about a wrong code
 var training_in_progress = true;  // flag for status of training session
 var counter_sentinel_images_shown = 0;  // global var to count the number of sentinel images already shown
-var counter_cb_shown = 0;  // global var to count the number of codeblock images already shown
-var counter_wrong_codes = 0;  // global var to count the number of incorrect codes typed
+var counter_cb_shown = -1;  // global var to count the number of codeblock images already shown
+var counter_wrong_codes = -1;  // global var to count the number of incorrect codes typed
 
  /**
  * Returns a random integer between min (inclusive) and max (inclusive).
@@ -383,7 +383,7 @@ var codechart_input_block = {
             // check if inputted code is in list of correct codes
             var given_answer = data['responses'].substring(20,23).toUpperCase();
             console.log('given_answer of sentinel image', given_answer);
-            console.log('allowed codes', json_correct_codes_sentinel[path_image]['correct_codes']);
+            console.log('allowed codes', json_correct_codes[path_image]['0']);
             if (!json_correct_codes[path_image]['0'].includes(given_answer)) {
                 counter_wrong_codes++;  // wrong code provided
                 console.log('wrong code provided and popup flag set to true');
@@ -615,7 +615,6 @@ var counter_training = 0;  // count training images added
 var counter_sentinel = 0;  // count sentinel images added
 for (var i = 0; i < n_images_training + n_sentinel_training; i++) {
     if (i % 2 == 0 || i == 0) {  // add training image for odd ids
-        console.log('added training image at', i);
         image_str = image_prefix + 'training/training_' + training_image_ids[counter_training] + '.jpg';
         training_blocks.push(fixation_block);
         training_blocks.push({
@@ -631,7 +630,6 @@ for (var i = 0; i < n_images_training + n_sentinel_training; i++) {
         training_blocks.push(continue_block);
         counter_training++;
     } else if (i % 2 == 1) {  // add sentinel image for even ids
-        console.log('added sentinel image at', i);
         image_str = image_prefix + 'sentinel/sentinel_' + sentinel_ids[counter_sentinel] + '.jpg';
         training_blocks.push(fixation_block);
         training_blocks.push({
