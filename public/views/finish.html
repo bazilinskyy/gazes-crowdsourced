@@ -48,7 +48,7 @@
       }
       // show popup
       if (getUrlParameter("show_popup_wrong_codes")) {
-          $("#innerPopup").addClass('show');
+          $("#innerMessagePopup").addClass('show');
           console.log('popup showed');
       }
   };
@@ -56,14 +56,14 @@
 
    <!-- custom css -->
     <style>
-    #alertPopup {
+    #messagePopup {
         position: absolute;
         top: 40%;
-        /*left: 0;*/
+        left: 0;
         width: 50%;
         padding: 5px;
     }
-    #innerPopup {
+    #innerMessagePopup {
         margin: 0 auto;
     }
     </style>
@@ -76,10 +76,10 @@
           <strong>Warning!</strong> You just inputted an incorrect code. Please pay more attention in future attempts <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="buttonClose"><span aria-hidden="true">&times;</span></button>
       </div>
     </div> -->   
-    <div id="alertPopup">
+    <div id="messagePopup">
         <div style="padding: 5px;">
-            <div class="alert alert-error alert-dismissible fade" role="alert" id="innerPopup">
-              <strong>Warning!</strong> You just inputted an incorrect code. Please pay more attention in future attempts <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="buttonClose"><span aria-hidden="true">&times;</span></button>
+            <div class="alert alert-error alert-dismissible fade collapse" role="alert" id="innerMessagePopup">
+              <strong>Warning!</strong> You just provided an incorrect code. Please pay more attention in future attempts <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="buttonClose"><span aria-hidden="true">&times;</span></button>
           </div>
         </div>
     </div>
