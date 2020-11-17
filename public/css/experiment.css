@@ -27,8 +27,8 @@ body {
 
 #popup {
     position: fixed;
-    top: 10em;
-    right: 10em;
+    top: 1em;
+    right: 1em;
     z-index:9999; 
     width: 400px;
 }
