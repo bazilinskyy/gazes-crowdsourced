@@ -498,7 +498,7 @@ image_stimuli = shuffle(image_stimuli);  // shuffle blocks with images
 image_stimuli = image_stimuli.slice(0, n_images_per_participant * n_images_repeat); // trim array of stimuli
 
 // black with text to continue before showing the image
-var stimulus_text =  '<div id="message" style="visibility: hidden;"><p>Press \'C\' to continue to the next image.</p></div><div class="alert alert-success alert-dismissible fade" role="alert" id="alertPopup"> <strong>Warning!</strong> You have inputted ' + counter_wrong_codes + ' code(s). Please pay more attention in future attempts. Giving ' + allowed_wrong_codes + ' wrong codes will make it impossible to continue.<button type="button" class="close" data-dismiss="alert" aria-label="Close" id="buttonClose"><span aria-hidden="true">&times;</span></button></div>';
+var stimulus_text =  '<p>Press \'C\' to continue to the next image.</p><div id="popup"> <div id="inner-popup" class="alert alert-danger collapse fade alert-dismissible" role="alert"><strong>Warning!</strong> You just provided an incorrect code. Please pay more attention in future attempts <button type="button" class="close" data-dismiss="alert" aria-label="Close" id="buttonClose"><span aria-hidden="true">&times;</span></button> </div> </div>';
 var continue_block = {
     type: 'html-keyboard-response',
     stimulus: stimulus_text,
@@ -506,11 +506,7 @@ var continue_block = {
     on_load: function(data) {
         if (show_popup_wrong_code) {
             show_popup_wrong_code = false;  // reset flag
-            $("#buttonAlert").addClass('show');  // show popup
-            // show the rest of the screen on button close
-            $("#buttonClose").click(function(){
-                document.getElementById("message").style.visibility="visible";
-            }); 
+            $("#inner-popup").addClass('show');  // show popup
         } else {
             document.getElementById("message").style.visibility="visible";
         }
