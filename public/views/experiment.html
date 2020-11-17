@@ -357,7 +357,7 @@ window.onload = function() {
         window.location.href = 'finish?wrong_codes=' + wrong_codes_given_before;
     }
     // load json file with correct mapping
-    $.getJSON("./img/condeboard/data.json", function(data){
+    $.getJSON("./img/codeboard/data.json", function(data){
         json_correct_codes = data;  // save codes in global var
     }).fail(function(){
         console.log("An error has occurred with working with JSON file.");
@@ -379,6 +379,7 @@ var codechart_input_block = {
     on_finish: function(data) {
         if (training_in_progress) { // only check things during training
             var path_image = '../public/img/codeboard/cb_' + codechart_ids[counter_cb_shown] + '.jpg';
+            console.log('path_image', path_image);
             // check if inputted code is in list of correct codes
             var given_answer = data['responses'].substring(20,23).toUpperCase();
             console.log('given_answer of sentinel image', given_answer);
