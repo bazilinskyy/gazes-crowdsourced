@@ -30,7 +30,7 @@ body {
     top: 1em;
     right: 1em;
     z-index:9999; 
-    width: 400px;
+    width: 500px;
 }
 #inner-popup {
     margin: 0 auto;
