@@ -30,20 +30,26 @@
       if (getUrlParameter('work')) {  // worker code given
           document.getElementById("finish_code").style.visibility="visible";   
       } else if (getUrlParameter('wrong_codes')) {  // too many wrong codes
-          if (getUrlParameter("show_popup_wrong_codes")) {
-              $("#alertPopup").addClass('show');
-              console.log('popup showed');
+          // if (getUrlParameter("show_popup_wrong_codes")) {
+          //     $("#alertPopup").addClass('show');
+          //     console.log('popup showed');
 
-              $("#buttonClose").click(function(){
-                  console.log('close clicked');
-                  document.getElementById("wrong_codes").style.visibility="visible";
-              }); 
-          } else {
-              // show popup
-              document.getElementById("wrong_codes").style.visibility="visible";
-          }
+          //     $("#buttonClose").click(function(){
+          //         console.log('close clicked');
+          //         document.getElementById("wrong_codes").style.visibility="visible";
+          //     }); 
+          // } else {
+          //     // show popup
+          //     document.getElementById("wrong_codes").style.visibility="visible";
+          // }
+          document.getElementById("wrong_codes").style.visibility="visible";
       } else {  // wrong parameters given to this page
           document.getElementById("wrong_params").style.visibility="visible";
+      }
+      // show popup
+      if (getUrlParameter("show_popup_wrong_codes")) {
+          $("#alertPopup").addClass('show');
+          console.log('popup showed');
       }
   };
   </script>
@@ -51,10 +57,10 @@
    <!-- custom css -->
     <style>
     #alertPopup {
-        position: fixed;
+        position: absolute;
         top: 40%;
-        left: 0;
-        width: 100%;
+        /*left: 0;*/
+        width: 50%;
         padding: 5px;
     }
     #innerPopup {
