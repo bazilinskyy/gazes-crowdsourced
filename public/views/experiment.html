@@ -66,6 +66,14 @@ var allowed_wrong_codes = 2; // number of codes allowed to be inputted incorrect
 var SHOW_DEBUG = false; // switch for debugging output
 var NAME_COOKIE = 'gazes-crowdsourced-wrong-codes';
 var SAVE_COOKIE_DAYS = 30;
+var counter_sentinel_images_shown = -1;  // global var to count the number of sentinel images already shown
+var counter_wrong_codes = 0;  // global var to count the number of incorrect codes typed
+
+/**
+ * Global vars.
+ **/
+var json_correct_codes = [];  // global var to store correct mapping
+var show_popup_wrong_codes = false;  // whow alert popup
 
  /**
  * Returns a random integer between min (inclusive) and max (inclusive).
@@ -339,9 +347,7 @@ for (var i = 0; i < n_images_per_participant * n_images_repeat / n_images_break 
 /**
  * Process JSON with correct codes.
  */
-var json_correct_codes = [];  // global var to store correct mapping
-var counter_sentinel_images_shown = -1;  // global var to count the number of sentinel images already shown
-var counter_wrong_codes = 0;  // global var to count the number of incorrect codes typed
+
 window.onload = function() {
     // check if experiment was failed by giving too many wrong codes before
     var wrong_codes_given_before = getCookie(NAME_COOKIE);
@@ -360,7 +366,7 @@ window.onload = function() {
     });
 };
 // string for input of code
-var str_input = '<p>Please enter the character code you remember looking at last: <input name="input-codeblock" id="input-codeblock" autofocus pattern="^[A-Za-z]{1}[0-9]{2}" type="text" required /></p><p>The field will only accept input in correct format of <i>\'LetterDigitDigit\'</i> (e.g. \'F32\'). If you do not know which code to input, write \'I99\'.</p><!-- Alert --> <div class="alert alert-success alert-dismissible fade" role="alert" id="buttonAlert"> <strong>Warning!</strong> You just inputted an incorrect code. Please pay more attention in future attempts <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span> </button> </div>';
+var str_input = '<p>Please enter the character code you remember looking at last: <input name="input-codeblock" id="input-codeblock" autofocus pattern="^[A-Za-z]{1}[0-9]{2}" type="text" required /></p><p>The field will only accept input in correct format of <i>\'LetterDigitDigit\'</i> (e.g. \'F32\'). If you do not know which code to input, write \'I99\'.</p>';
 // block for input of code
 var codechart_input_block = {
     type: 'survey-html-form',
@@ -370,15 +376,7 @@ var codechart_input_block = {
 var sentinel_codechart_input_block = {
     type: 'survey-html-form',
     html: str_input,
-    // on_load: function() {
-    //     // alert
-    //     $(document).ready(function() {
-    //         $("#modalButton").click(function(){
-    //             $("#buttonAlert").addClass('show');
-    //         })
-    //     });
-    // },
-    on_trial_finish: function(data) {
+    on_finish: function(data) {
         // if (counter_sentinel_images_shown != 0) { // skip sentinel image in example
             var path_sentinel_image = '../public/img/sentinel/sentinel_' + sentinel_ids[counter_sentinel_images_shown] + '.jpg';
             // check if inputted code is in list of correct codes
@@ -400,7 +398,10 @@ var sentinel_codechart_input_block = {
                 // save data anyway
                 saveData();
                 // redirect to finish page
-                window.location.href = 'finish?wrong_codes=' + counter_wrong_codes;
+                // window.location.href = 'failed_trials?wrong_codes=' + counter_wrong_codes;
+                show_popup_wrong_codes = true;
+                // show popup
+                $("#buttonAlert").addClass('show');
             }
         // } 
     }
@@ -509,13 +510,27 @@ if (group_choice == 1) {
 }
 image_stimuli = shuffle(image_stimuli);  // shuffle blocks with images
 image_stimuli = image_stimuli.slice(0, n_images_per_participant * n_images_repeat); // trim array of stimuli
+
 // black with text to continue before showing the image
 var continue_block = {
     type: 'html-keyboard-response',
-    stimulus: '<p>Press \'C\' to continue to the next image.</p>',
-    choices: ['C']
+    stimulus: '<p>Press \'C\' to continue to the next image.</p><!-- Alert --> <div class="alert alert-success alert-dismissible fade" role="alert" id="buttonAlert"> <strong>Warning!</strong> You just inputted an incorrect code. Please pay more attention in future attempts <button type="button" class="close" data-dismiss="alert" aria-label="Close"> <span aria-hidden="true">&times;</span> </button> </div>',
+    choices: ['C'],
+    on_load: function() {
+        // show popup if needed
+        if (show_popup_wrong_codes) {
+            show_popup_wrong_codes = false;  // unset flag
+            $(document).ready(function() {
+                $("#modalButton").click(function(){
+                    $("#buttonAlert").addClass('show');
+                })
+            });
+        }
+    }
 };
-// gazes
+/**
+ * Gazes.
+ **/
 // build array with codecharts
 for (var i = 0; i < n_images_per_participant * n_images_repeat; i++) {
     image_str = image_prefix + 'codeboard/cb_' + codechart_ids[i] + '.jpg';
