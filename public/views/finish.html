@@ -7,7 +7,9 @@
     <link href="jsPsych/css/jspsych.css" rel="stylesheet" type="text/css"></link>
     <link href="css/experiment.css" rel="stylesheet" type="text/css"></link>
     <link rel="icon" type="image/png" href="/img/favicon.png" />
-
+    <!-- bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/css/bootstrap.min.css" integrity="sha384-TX8t27EcRE3e/ihU7zmQxVncDAy5uIKz4rEkgIXeMed4M0jlfIDPvg6uqKI2xXr2" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
   <script>
     var getUrlParameter = function getUrlParameter(sParam) {
       var sPageURL = decodeURIComponent(window.location.search.substring(1)),
@@ -31,6 +33,11 @@
           document.getElementById("wrong_codes").style.visibility="visible";  
       } else {  // wrong parameters given to this page
           document.getElementById("wrong_params").style.visibility="visible";
+      }
+
+      // show popup
+      if document.getElementById("show_popup_wrong_codes") {
+          $("#alertPopup").addClass('show');
       }
   };
   </script>
@@ -56,6 +63,10 @@
 
         <!-- finished with wrong codes inputted -->
         <div id="wrong_codes" style="visibility: hidden;">
+          <div class="alert alert-success alert-dismissible fade" role="alert" id="alertPopup">
+              <strong>Warning!</strong> You just inputted an incorrect code. Please pay more attention in future attempts <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          </div>
+
           <div id="jspsych_target">
             You have provided <script>document.write(getUrlParameter('wrong_codes'));</script> wrong three-letter codes. It is more than the allow number. Please close this page and do not attempt to do this experiment again. You may close the Appen page as well, since the experiment will be reallocated to a different person. You were warned that not following the instructions will result in the experiment finishing and you not getting the payment. <strong>Please do not attempt to start this experiment on Appen again.</strong> You will not be allowed to participate.
             <br>
@@ -66,7 +77,7 @@
         <!-- wrong parameters given -->
         <div id="wrong_params" style="visibility: hidden;">
           <div id="jspsych_target">
-            Wrong parameters given.  
+            Wrong parameters given.
           </div>
         </div>
 
