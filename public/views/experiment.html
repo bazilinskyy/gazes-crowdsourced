@@ -387,6 +387,8 @@ var sentinel_codechart_input_block = {
             console.log('allowed codes', json_correct_codes[path_sentinel_image]['correct_codes']);
             if (!json_correct_codes[path_sentinel_image]['correct_codes'].includes(given_answer)) {
                 counter_wrong_codes++;  // wrong code provided
+                console.log('wrong code provided');
+                console.log('counter_wrong_codes', counter_wrong_codes);
                 $("#modalButton").click(function(){
                     $("#buttonAlert").addClass('show');
                 })
