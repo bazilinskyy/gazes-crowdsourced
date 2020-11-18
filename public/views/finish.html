@@ -31,7 +31,7 @@
     var html_text = ''
     window.onload = function() {
       if (getUrlParameter('work')) {  // worker code given
-          html_text = '<div class="alert alert-primary show" role="alert" style="text-align: left;"><h4 class="alert-heading">Experiment completed</h4><p> You have now completed the experiment. Thank you for your participation. Please note down or copy to your clipboard the following code: <br><strong>' + getUrlParameter('work')  + '</strong></p><hr><p class="mb-0"><strong>Do not forget to enter the code we gave in the Appen page in the field "Type code that you received after the end of the test." to finalise the job and receive your money.</strong> You will find this field under the link you clicked to open this tab. You may now close this tab. </p></div>';
+          html_text = '<div class="alert alert-primary show" role="alert" style="text-align: left;"><h4 class="alert-heading">Experiment completed</h4><p> You have now completed the experiment. Thank you for your participation. Please note down or copy to your clipboard the following code: <strong>' + getUrlParameter('work')  + '</strong></p><hr><p class="mb-0"><strong>Do not forget to enter the code we gave in the Appen page in the field "Type code that you received after the end of the test." to finalise the job and receive your money.</strong> You will find this field under the link you clicked to open this tab. You may now close this tab. </p></div>';
       } else if (getUrlParameter('failed_attempts')) {  // too many failed attempts
           // show meme for too many failed attempts
           if (getUrlParameter("failed_attempts") < 5) {
