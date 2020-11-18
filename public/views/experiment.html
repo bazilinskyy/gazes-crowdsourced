@@ -363,6 +363,7 @@ window.onload = function() {
     if (counter_failed_attempts_before > allowed_failed_attempts) {
         // increase counter of failed attempts
         counter_failed_attempts++;
+        // save cookie about failed experiment
         setCookie(NAME_COOKIE, counter_failed_attempts, SAVE_COOKIE_DAYS);
         // redirect to finish page with message that they can't do experiment again
         window.location.href = 'finish?failed_attempts=' + counter_failed_attempts_before;
@@ -411,13 +412,14 @@ var codechart_input_block = {
             console.log('counter_wrong_codes', counter_wrong_codes);
             // too many wrong codes inputted
             if (counter_wrong_codes >= allowed_wrong_codes) {
-                // save cookie about failed experiment
+                // increase counter of failed attempts
                 counter_failed_attempts++;
+                // save cookie about failed experiment
                 setCookie(NAME_COOKIE, counter_failed_attempts, SAVE_COOKIE_DAYS);
                 // save data anyway
                 saveData();
                 // redirect to finish page
-                window.location.href = 'finish?wrong_codes=' + counter_wrong_codes;
+                window.location.href = 'finish?failed_attempts=' + counter_failed_attempts;
             }
         } 
     }
@@ -442,12 +444,14 @@ var sentinel_codechart_input_block = {
             console.log('counter_wrong_codes', counter_wrong_codes);
             // too many wrong codes inputted
             if (counter_wrong_codes >= allowed_wrong_codes) {
+                // increase counter of failed attempts
+                counter_failed_attempts++;
                 // save cookie about failed experiment
-                setCookie(NAME_COOKIE, counter_wrong_codes, SAVE_COOKIE_DAYS);
+                setCookie(NAME_COOKIE, counter_failed_attempts, SAVE_COOKIE_DAYS);
                 // save data anyway
                 saveData();
                 // redirect to finish page
-                window.location.href = 'finish?wrong_codes=' + counter_wrong_codes;
+                window.location.href = 'finish?failed_attempts=' + counter_failed_attempts;
             }
         } 
     }
