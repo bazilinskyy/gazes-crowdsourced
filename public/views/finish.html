@@ -30,14 +30,14 @@
       if (getUrlParameter('work')) {  // worker code given
           document.getElementById("finish_code").style.visibility="visible";   
       } else if (getUrlParameter('failed_attempts')) {  // too many failed attempts
+      // show meme for too many failed attempts
+      if (getUrlParameter("failed_attempts_limit") < 5) {
           document.getElementById("failed_attempts").style.visibility="visible";
+      } else {  // more than limit
+          document.getElementById("failed_attempts_limit").style.visibility="visible";
+      }
       } else {  // wrong parameters given to this page
           document.getElementById("wrong_params").style.visibility="visible";
-      }
-
-      // show meme for too many failed attempts
-      if (getUrlParameter("failed_attempts") >= 5) {
-          document.getElementById("failed_meme").style.visibility="visible";
       }
   };
   </script>
@@ -73,11 +73,21 @@
           <div id="jspsych_target">
             <div class="alert alert-danger" role="alert" style="text-align: left" style="visibility: hidden;">
               <h4 class="alert-heading">Failed</h4>
-              <!-- meme for more than 5 attempts with failed training session -->
-              <div id="failed_meme" style="visibility: hidden;">
-                <img src="img/fail-meme.jpg">
-              </div>
+              <p>You have failed the training session <script>document.write(getUrlParameter('failed_attempts'));</script> times, which is more than the allowed number.</p>
+              <hr>
+              <p class="mb-0">You were warned that not following the instructions will result in the experiment being discontinued and you not getting paid. You may now close this page as well as the Appen page. <strong>It will not be possible for you to restart this experiment on Appen.</strong></p>
+            </div>
+          </div>
+        </div>
 
+        <!-- meme for more than 5 attempts with failed training session -->
+        <div id="failed_attempts_limit" style="visibility: hidden;">
+          <div id="jspsych_target">
+            <div id="failed_meme" style="visibility: hidden;">
+              <img src="img/fail-meme.jpg">
+            </div>
+            <div class="alert alert-danger" role="alert" style="text-align: left" style="visibility: hidden;">
+              <h4 class="alert-heading">Failed</h4>
               <p>You have failed the training session <script>document.write(getUrlParameter('failed_attempts'));</script> times, which is more than the allowed number.</p>
               <hr>
               <p class="mb-0">You were warned that not following the instructions will result in the experiment being discontinued and you not getting paid. You may now close this page as well as the Appen page. <strong>It will not be possible for you to restart this experiment on Appen.</strong></p>
