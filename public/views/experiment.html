@@ -383,7 +383,7 @@ window.onload = function() {
     });
 };
 // string for input of code
-var str_input = '<div class="form-group"><label for="exampleInputEmail1">Please enter the character code you remember looking at last</label> <input type="text" class="form-control" name="input-codeblock" id="input-codeblock" autofocus aria-describedby="input-help" pattern="^[A-Za-z]{1}[0-9]{2}"><small id="input-help" class="form-text text-muted">The field will only accept input in correct format of <i>\'LetterDigitDigit\'</i> (e.g. \'F32\').<span id="code_input_dont_know" style="visibility: hidden;"><br>If you do not know which code to input, write \'I99\'</span></small></div>';
+var str_input = '<div class="form-group"><label for="exampleInputEmail1">Please enter the character code you remember looking at last</label><input type="text" class="form-control" name="input-codeblock" id="input-codeblock" autofocus aria-describedby="input-help" pattern="^[A-Za-z]{1}[0-9]{2}"><small id="input-help" class="form-text text-muted">The field will only accept input in correct format of <i>\'LetterDigitDigit\'</i> (e.g. \'F32\').<span id="code_input_dont_know" style="visibility: hidden;"><br>If you do not know which code to input, write \'I99\'</span></small></div>';
 // block for input of code
 var codechart_input_block = {
     type: 'survey-html-form',
@@ -496,7 +496,7 @@ var example_block = {
 var num_breaks = Math.round(n_images_no_break_after / n_images_break);  // calculate number of breaks
 var instructions_block = {
     type: 'html-keyboard-response',
-    stimulus: '<div class="jumbotron jumbotron-fluid" style="text-align: left;"><div class="container"><h1 class="display-4">Instructions</h1> <p class="lead">You will view ' + n_images_per_participant * n_images_repeat + ' images of traffic scenes. Directly after each image, the screen will be briefly filled with three-character codes. Type down the code you remember looking at.</p><p>You will first do ' + (n_images_training + n_sentinel_training) + ' practice trials. After the practice trials, the experiment starts.</p><p><span style="color:red">Important! During the practice session, you will be allowed to enter a maximum of ' + allowed_wrong_codes + ' three-character codes incorrectly. If you fail the practice session, the experiment will end and you will not get a payment.</span></p><p>Press \'C\' to proceed to the first practice trial.</p></div></div>',
+    stimulus: '<div class="jumbotron jumbotron-fluid" style="text-align: left;"><div class="container"><h1 class="display-4">Instructions</h1><p class="lead">You will view ' + n_images_per_participant * n_images_repeat + ' images of traffic scenes. Directly after each image, the screen will be briefly filled with three-character codes. Type down the code you remember looking at.</p><p class="lead">You will first do ' + (n_images_training + n_sentinel_training) + ' practice trials. After the practice trials, the experiment starts.</p><p class="lead"><span style="color:red">Important! During the practice session, you will be allowed to enter a maximum of ' + allowed_wrong_codes + ' three-character codes incorrectly. If you fail the practice session, the experiment will end and you will not get a payment.</span></p><hr><p>Press \'C\' to proceed to the first practice trial.</p></div></div>',
     choices: ['C'],
     on_finish: function(data) {
         jsPsych.data.addDataToLastTrial({
@@ -512,7 +512,7 @@ var instructions_block = {
 };
 var instructions_block_2 = {
     type: 'html-keyboard-response',
-    stimulus: '<div class="jumbotron jumbotron-fluid" style="text-align: left;"><div class="container"> <h1 class="display-4">Training completed</h1> <p class="lead">You have completed the practice trials.</p></p>Press \'C\' to proceed to the first image in the experiment.</p></div></div>',
+    stimulus: '<div class="jumbotron jumbotron-fluid" style="text-align: left;"><div class="container"><h1 class="display-4">Training completed</h1><p class="lead">You have completed the practice trials.</p><hr><p>Press \'C\' to proceed to the first image in the experiment.</p></div></div>',
     choices: ['C'],
     on_finish: function(data) {
         training_in_progress = false;  // training session finished
@@ -573,7 +573,7 @@ for (var i = 1; i <= n_images_training; i++) {
 training_image_ids = shuffle(training_image_ids);  // shuffle training images
 
 // black with text to continue before showing the image
-var stimulus_str =  '<p>Press \'C\' to continue to the next image.</p><div id="popup"><div id="inner-popup" class="alert alert-danger collapse fade alert-dismissible" role="alert"><strong>Warning!</strong> You have provided <span class="counter_wrong_codes_span"></span> incorrect code(s). Please pay more attention in future attempts. You will not be able to continue after giving ' + allowed_wrong_codes + ' wrong codes.<button type="button" class="close" data-dismiss="alert" aria-label="Close" id="buttonClose"><span aria-hidden="true">&times;</span></button></div> </div>';
+var stimulus_str =  '<p>Press \'C\' to continue to the next image.</p><div id="popup"><div id="inner-popup" class="alert alert-danger collapse fade alert-dismissible" role="alert"><strong>Warning!</strong> You have provided <span class="counter_wrong_codes_span"></span> incorrect code(s). Please pay more attention in future attempts. You will not be able to continue after giving ' + allowed_wrong_codes + ' wrong codes.<button type="button" class="close" data-dismiss="alert" aria-label="Close" id="buttonClose"><span aria-hidden="true">&times;</span></button></div></div>';
 var continue_block = {
     type: 'html-keyboard-response',
     stimulus: stimulus_str,
