@@ -360,6 +360,10 @@ window.onload = function() {
     if (debug) {
         console.log('counter_failed_attempts_before from cookie', counter_failed_attempts_before);
     }
+    // update current counter
+    if (counter_failed_attempts_before > 0) {
+        counter_wrong_codes = counter_failed_attempts_before;
+    }
     if (counter_failed_attempts_before > allowed_failed_attempts) {
         // increase counter of failed attempts
         counter_failed_attempts_before++;
