@@ -25,13 +25,15 @@
           }
       }
     };
+    console.log('work', getUrlParameter('work'));
+    console.log('failed_attempts', getUrlParameter('failed_attempts'));
 
     window.onload = function() {
       if (getUrlParameter('work')) {  // worker code given
           document.getElementById("finish_code").style.visibility="visible";   
       } else if (getUrlParameter('failed_attempts')) {  // too many failed attempts
           // show meme for too many failed attempts
-          if (getUrlParameter("failed_attempts_limit") < 5) {
+          if (getUrlParameter("failed_attempts") < 5) {
               document.getElementById("failed_attempts").style.visibility="visible";
           } else {  // more than limit
               document.getElementById("failed_attempts_limit").style.visibility="visible";
