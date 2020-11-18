@@ -387,7 +387,7 @@ window.onload = function() {
 };
 
 // string for input of code
-var str_input = '<div class="form-group"><label for="exampleInputEmail1">Please enter the character code you remember looking at last</label><input type="text" class="form-control" name="input-codeblock" id="input-codeblock" autofocus aria-describedby="input-help" pattern="^[A-Za-z]{1}[0-9]{2}"><small id="input-help" class="form-text text-muted">The field will only accept input in correct format of <i>\'LetterDigitDigit\'</i> (e.g. \'F32\').<span id="code_input_dont_know"></span></small></div>';
+var str_input = '<div class="form-group"><label for="exampleInputEmail1">Please enter the character code you remember looking at last</label><input type="text" class="form-control" name="input-codeblock" id="input-codeblock" autofocus aria-describedby="input-help" pattern="^[A-Za-z]{1}[0-9]{2}"><small id="input-help" class="form-text text-muted">The field will only accept input in correct format of <i>\'LetterDigitDigit\'</i> (e.g. \'F32\'). <span id="code_input_dont_know"></span></small></div>';
 // block for input of code
 var codechart_input_block = {
     type: 'survey-html-form',
@@ -538,7 +538,9 @@ var instructions_block_2 = {
     choices: ['C'],
     on_finish: function(data) {
         training_in_progress = false;  // training session finished
-        console.log('training session finished');
+        if (debug) {
+            console.log('training session finished');
+        }
     }
 };
 
@@ -554,7 +556,7 @@ if (group_choice == 1) {
     for (var i = 0; i < n_images * n_images_repeat; i++) {
         image_stimuli.push({
             type: 'image-keyboard-response',
-            stimulus: [image_prefix + 'stimuli/image_' + image_ids[i] + '.jpg'],
+            stimulus: image_prefix + 'stimuli/image_' + image_ids[i] + '.jpg',
             choices: jsPsych.NO_KEYS,
             trial_duration: stimulus_durations[Math.floor(Math.random() * stimulus_durations.length)],
             stimulus_width: 1280,
@@ -571,7 +573,7 @@ if (group_choice == 1) {
         for (var j = 0; j < stimulus_durations.length; j++) {
             image_stimuli.push({
                 type: 'image-keyboard-response',
-                stimulus: [image_prefix + 'stimuli/image_' + stimuli_group_2[i] + '.jpg'],
+                stimulus: image_prefix + 'stimuli/image_' + stimuli_group_2[i] + '.jpg',
                 choices: jsPsych.NO_KEYS,
                 trial_duration: stimulus_durations[j],
                 stimulus_width: 1280,
@@ -650,7 +652,7 @@ for (var i = 1; i < n_images * n_images_repeat / n_images_break; i++) {
     var images_done = n_images_break * i;
     between_blocks.push({
         type: 'html-keyboard-response',
-        stimulus: '<div class="alert alert-primary" role="alert" style="text-align: left; max-width: 400px;"><h4 class="alert-heading">Break</h4><p>You have now completed ' + images_done + ' images out of ' + n_images_per_participant * n_images_repeat + '.</p><hr><p class="mb-0">When ready press \'N\' to proceed to the next batch.</p></div>',
+        stimulus: '<div class="alert alert-primary" role="alert" style="text-align: left;"><h4 class="alert-heading">Break</h4><p>You have now completed ' + images_done + ' images out of ' + n_images_per_participant * n_images_repeat + '.</p><hr><p class="mb-0">When ready press \'N\' to proceed to the next batch.</p></div>',
         choices: ['N']
     });
 }
