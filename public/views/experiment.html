@@ -403,8 +403,10 @@ var codechart_input_block = {
             console.log('path_image', path_image);
             // check if inputted code is in list of correct codes
             var given_answer = data['responses'].substring(20,23).toUpperCase();
-            console.log('given_answer for image', given_answer);
-            console.log('allowed codes', json_correct_codes[path_image]['0']);
+            if (debug) {
+                console.log('given_answer for image', given_answer);
+                console.log('allowed codes', json_correct_codes[path_image]['0']);
+            }
             if (!json_correct_codes[path_image]['0'].includes(given_answer)) {
                 counter_wrong_codes++;  // wrong code provided
                 console.log('wrong code provided and popup flag set to true');
@@ -441,8 +443,10 @@ var sentinel_codechart_input_block = {
             console.log('path_sentinel_image', path_sentinel_image);
             // check if inputted code is in list of correct codes
             var given_answer = data['responses'].substring(20,23).toUpperCase();
-            console.log('given_answer for sentinel image', given_answer);
-            console.log('allowed codes', json_correct_codes_sentinel[path_sentinel_image]['correct_codes']);
+            if (debug) {
+                console.log('given_answer for sentinel image', given_answer);
+                console.log('allowed codes', json_correct_codes_sentinel[path_sentinel_image]['correct_codes']);
+            }
             if (!json_correct_codes_sentinel[path_sentinel_image]['correct_codes'].includes(given_answer)) {
                 counter_wrong_codes++;  // wrong code provided
                 console.log('wrong code provided and popup flag set to true');
@@ -607,7 +611,6 @@ for (var i = 0; i < n_images_per_participant * n_images_repeat; i++) {
         trial_duration: cb_dur,
         on_finish: function() {
             counter_cb_shown++;  // increase counter of images shown
-            console.log('counter_cb_shown', counter_cb_shown);
         }
     })
 }
@@ -621,7 +624,6 @@ for (var i = 0; i < n_images_per_participant * n_images_repeat / n_images_break 
         trial_duration: sentinel_duration,
         on_finish: function() {
             counter_sentinel_images_shown++;  // increase counter of images shown
-            console.log('sentinel_ids[i]', sentinel_ids[i]);
         }
     })
     image_str = image_prefix + 'codeboard_sentinel/sentinel_cb_' + sentinel_ids[i] + '.jpg';
@@ -629,10 +631,7 @@ for (var i = 0; i < n_images_per_participant * n_images_repeat / n_images_break 
         type: 'image-keyboard-response',
         stimulus: image_str,
         choices: jsPsych.NO_KEYS,
-        trial_duration: cb_dur,
-        on_finish: function() {
-            console.log('sentinel_ids[i]', sentinel_ids[i]);
-        }
+        trial_duration: cb_dur
     })
 }
 // build between blocks
