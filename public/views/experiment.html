@@ -411,6 +411,9 @@ var codechart_input_block = {
                 counter_wrong_codes++;  // wrong code provided
                 show_popup_wrong_code = true;  // flag for showing a popup
             }
+            if (debug) {
+                console.log('counter_wrong_codes', counter_wrong_codes);
+            }
             // too many wrong codes inputted
             if (counter_wrong_codes >= allowed_wrong_codes) {
                 // increase counter of failed attempts
@@ -449,7 +452,9 @@ var sentinel_codechart_input_block = {
                 counter_wrong_codes++;  // wrong code provided
                 show_popup_wrong_code = true;  // flag for showing a popup
             }
-            console.log('counter_wrong_codes', counter_wrong_codes);
+            if (debug) {
+                console.log('counter_wrong_codes', counter_wrong_codes);
+            }
             // too many wrong codes inputted
             if (counter_wrong_codes >= allowed_wrong_codes) {
                 // increase counter of failed attempts
