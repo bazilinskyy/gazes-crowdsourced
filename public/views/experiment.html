@@ -385,6 +385,7 @@ window.onload = function() {
         console.log("An error has occurred with working with JSON file.");
     });
 };
+
 // string for input of code
 var str_input = '<div class="form-group"><label for="exampleInputEmail1">Please enter the character code you remember looking at last</label><input type="text" class="form-control" name="input-codeblock" id="input-codeblock" autofocus aria-describedby="input-help" pattern="^[A-Za-z]{1}[0-9]{2}"><small id="input-help" class="form-text text-muted">The field will only accept input in correct format of <i>\'LetterDigitDigit\'</i> (e.g. \'F32\').<span id="code_input_dont_know"></span></small></div>';
 // block for input of code
@@ -425,7 +426,11 @@ var codechart_input_block = {
                 // redirect to finish page
                 window.location.href = 'finish?failed_attempts=' + counter_failed_attempts + '&allowed_failed_attempts=' + allowed_failed_attempts;
             }
-        } 
+        }
+        // add worker code
+        jsPsych.data.addDataToLastTrial({
+            worker_code: finish_code
+        }); 
     }
 };
 // block for input of code from sentinel image
@@ -466,7 +471,11 @@ var sentinel_codechart_input_block = {
                 // redirect to finish page
                 window.location.href = 'finish?failed_attempts=' + counter_failed_attempts + '&allowed_failed_attempts=' + allowed_failed_attempts;
             }
-        } 
+        }
+        // add worker code
+        jsPsych.data.addDataToLastTrial({
+            worker_code: finish_code
+        }); 
     }
 };
 // black with text to continue before showing the image
@@ -641,8 +650,8 @@ for (var i = 1; i < n_images * n_images_repeat / n_images_break; i++) {
     var images_done = n_images_break * i;
     between_blocks.push({
         type: 'html-keyboard-response',
-        stimulus: '<div class="alert alert-primary" role="alert" style="text-align: left;"><h4 class="alert-heading">Break</h4><p>You have now completed ' + images_done + ' images out of ' + n_images_per_participant * n_images_repeat + '.</p><hr><p class="mb-0">When ready press \'C\' to proceed to the next batch.</p></div>',
-        choices: ['C']
+        stimulus: '<div class="alert alert-primary" role="alert" style="text-align: left;"><h4 class="alert-heading">Break</h4><p>You have now completed ' + images_done + ' images out of ' + n_images_per_participant * n_images_repeat + '.</p><hr><p class="mb-0">When ready press \'N\' to proceed to the next batch.</p></div>',
+        choices: ['N']
     });
 }
 
@@ -727,18 +736,17 @@ for (var i = 0; i <= n_images_per_participant * n_images_repeat; i++) {
     // gaze
     timeline.push(codechart_stimuli[i]);
     timeline.push(codechart_input_block);
-    // timeline.push(question_block);
-    if (debug) {
-        // console.log(i, image_stimuli[i]);
-    }
     // don't add the between block after the last trial
     if ((i + 1) % n_images_break == 0 && i != 0 && i != n_images_per_participant * n_images_repeat - 1 && i < n_images_no_break_after) {
         if (debug) {
             console.log('added break', i, between_blocks[between_blocks_count], i % n_images_break, i / n_images_break);
         }
+        // save data
+        timeline.push(save_data_block);
+        // between block
         timeline.push(between_blocks[between_blocks_count]);
         between_blocks_count++;
-    }   
+    }
 }
 // save data
 timeline.push(save_data_block);
