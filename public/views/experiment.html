@@ -739,7 +739,7 @@ for (var i = 0; i <= n_images_per_participant * n_images_repeat; i++) {
     timeline.push(codechart_stimuli[i]);
     timeline.push(codechart_input_block);
     // don't add the between block after the last trial
-    if ((i + 1) % n_images_break == 0 && i != 0 && i != n_images_per_participant * n_images_repeat - 1 && i < n_images_no_break_after) {
+    if ((i + 1) % n_images_break == 0 && i != 0 && i != n_images_per_participant * n_images_repeat - 1 && i < n_images_no_break_after - 1) {
         if (debug) {
             console.log('added break', i, between_blocks[between_blocks_count], i % n_images_break, i / n_images_break);
         }
