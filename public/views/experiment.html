@@ -362,11 +362,11 @@ window.onload = function() {
     }
     if (counter_failed_attempts_before > allowed_failed_attempts) {
         // increase counter of failed attempts
-        counter_failed_attempts++;
+        counter_failed_attempts_before++;
         // save cookie about failed experiment
-        setCookie(NAME_COOKIE, counter_failed_attempts, SAVE_COOKIE_DAYS);
+        setCookie(NAME_COOKIE, counter_failed_attempts_before, SAVE_COOKIE_DAYS);
         // redirect to finish page with message that they can't do experiment again
-        window.location.href = 'finish?failed_attempts=' + counter_failed_attempts_before;
+        window.location.href = 'finish?failed_attempts=' + counter_failed_attempts_before + '&allowed_failed_attempts=' + allowed_failed_attempts;
     }
     // load json file with correct mapping
     $.getJSON("./img/codeboard/data.json", function(data){
@@ -419,7 +419,7 @@ var codechart_input_block = {
                 // save data anyway
                 saveData();
                 // redirect to finish page
-                window.location.href = 'finish?failed_attempts=' + counter_failed_attempts;
+                window.location.href = 'finish?failed_attempts=' + counter_failed_attempts + '&allowed_failed_attempts=' + allowed_failed_attempts;
             }
         } 
     }
@@ -451,7 +451,7 @@ var sentinel_codechart_input_block = {
                 // save data anyway
                 saveData();
                 // redirect to finish page
-                window.location.href = 'finish?failed_attempts=' + counter_failed_attempts;
+                window.location.href = 'finish?failed_attempts=' + counter_failed_attempts + '&allowed_failed_attempts=' + allowed_failed_attempts;
             }
         } 
     }
