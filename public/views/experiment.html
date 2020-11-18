@@ -351,9 +351,8 @@ for (var i = 0; i < n_images_per_participant * n_images_repeat / n_images_break 
 }
 
 /**
- * Process JSON with correct codes.
+ * On load of experiment.
  */
-
 window.onload = function() {
     // check if experiment was failed by giving too many wrong codes before
     var counter_failed_attempts_before = getCookie(NAME_COOKIE);
@@ -364,6 +363,7 @@ window.onload = function() {
     if (counter_failed_attempts_before > 0) {
         counter_failed_attempts = counter_failed_attempts_before;
     }
+    // more attemps than limit
     if (counter_failed_attempts_before >= allowed_failed_attempts) {
         // increase counter of failed attempts
         counter_failed_attempts_before++;
@@ -378,7 +378,6 @@ window.onload = function() {
     }).fail(function(){
         console.log("An error has occurred with working with JSON file.");
     });
-
     // load json file with correct mapping
     $.getJSON("./img/sentinel/sentinel_codes.json", function(data){
         json_correct_codes_sentinel = data;  // save codes in global var
