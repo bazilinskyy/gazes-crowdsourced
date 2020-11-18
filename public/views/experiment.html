@@ -447,7 +447,6 @@ var sentinel_codechart_input_block = {
             }
             if (!json_correct_codes_sentinel[path_sentinel_image]['correct_codes'].includes(given_answer)) {
                 counter_wrong_codes++;  // wrong code provided
-                console.log('wrong code provided and popup flag set to true');
                 show_popup_wrong_code = true;  // flag for showing a popup
             }
             console.log('counter_wrong_codes', counter_wrong_codes);
