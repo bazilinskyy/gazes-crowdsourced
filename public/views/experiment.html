@@ -62,8 +62,9 @@ var image_duration = 2000;
 var sentinel_duration = 700;
 var training_duration = 700;
 var allowed_wrong_codes = 5; // number of codes allowed to be inputted incorrectly
+var allowed_failed_attempts = 0; // number of allowed attempts to start the experiment
 var SHOW_DEBUG = false; // switch for debugging output
-var NAME_COOKIE = 'gazes-crowdsourced-wrong-codes';
+var NAME_COOKIE = 'gazes-crowdsourced-failed-attempts';
 var SAVE_COOKIE_DAYS = 30;
 
 /**
@@ -76,6 +77,7 @@ var training_in_progress = true;  // flag for status of training session
 var counter_sentinel_images_shown = -1;  // global var to count the number of sentinel images already shown
 var counter_cb_shown = -1;  // global var to count the number of codeblock images already shown
 var counter_wrong_codes = 0;  // global var to count the number of incorrect codes typed
+var counter_failed_attempts = 0;  // global var to count the number of failed attempts to do the experiment
 
  /**
  * Returns a random integer between min (inclusive) and max (inclusive).
@@ -354,13 +356,16 @@ for (var i = 0; i < n_images_per_participant * n_images_repeat / n_images_break 
 
 window.onload = function() {
     // check if experiment was failed by giving too many wrong codes before
-    var wrong_codes_given_before = getCookie(NAME_COOKIE);
+    var counter_failed_attempts_before = getCookie(NAME_COOKIE);
     if (debug) {
-        console.log('wrong_codes_given_before from cookie', wrong_codes_given_before);
+        console.log('counter_failed_attempts_before from cookie', counter_failed_attempts_before);
     }
-    if (wrong_codes_given_before > allowed_wrong_codes) {
+    if (counter_failed_attempts_before > allowed_failed_attempts) {
+        // increase counter of failed attempts
+        counter_failed_attempts++;
+        setCookie(NAME_COOKIE, counter_failed_attempts, SAVE_COOKIE_DAYS);
         // redirect to finish page with message that they can't do experiment again
-        window.location.href = 'finish?wrong_codes=' + wrong_codes_given_before;
+        window.location.href = 'finish?failed_attempts=' + counter_failed_attempts_before;
     }
     // load json file with correct mapping
     $.getJSON("./img/codeboard/data.json", function(data){
@@ -407,7 +412,8 @@ var codechart_input_block = {
             // too many wrong codes inputted
             if (counter_wrong_codes >= allowed_wrong_codes) {
                 // save cookie about failed experiment
-                setCookie(NAME_COOKIE, counter_wrong_codes, SAVE_COOKIE_DAYS);
+                counter_failed_attempts++;
+                setCookie(NAME_COOKIE, counter_failed_attempts, SAVE_COOKIE_DAYS);
                 // save data anyway
                 saveData();
                 // redirect to finish page
@@ -486,7 +492,7 @@ var example_block = {
 var num_breaks = Math.round(n_images_no_break_after / n_images_break);  // calculate number of breaks
 var instructions_block = {
     type: 'html-keyboard-response',
-    stimulus: '<div id="instructions_div"><p>You will view ' + n_images_per_participant * n_images_repeat + ' images of traffic scenes. For each one, imagine that you are a pedestrian standing on the side of the road, and observe the scene.<ol><li>Each image will be shown for a short period of time.</li><li>Right after each image, a page with three-character codes will be shown very briefly.</li><li>After the page with the character codes disappears, you will be asked to type down the last three-character code you remember looking at.</li><li>Among the images of traffic scenes, a few oval-shaped images with a single human face will be shown, followed again by a page with character codes. For these oval-shaped images, try to focus on the face with your eyes and then input the three-character code that appears at the same spot as the face.</li><li>You will be able to take ' + num_breaks + ' short breaks during the experiment.</li></ol></p><p>You will now do ' + (n_images_training + n_sentinel_training) + ' practice trials: ' + n_images_training + ' with a traffic-scene image and ' + n_sentinel_training + ' with an image with a face. They will be shown in pairs. Each image will be followed by the three-character code page. After these practice trials, the experiment will start. <span style="color:red">Important! During the practice trials, you will be allowed to input a maximum of ' + allowed_wrong_codes + ' three-character codes incorrectly. If you provide ' + (allowed_wrong_codes + 1) + ' codes incorrectly, the training session will be discontinued and you will be asked to leave this experiment without getting a payment.</span></p><p>Press \'C\' to proceed to the first practice trial.</p></div>',
+    stimulus: '<div id="instructions_div"><p>You will view ' + n_images_per_participant * n_images_repeat + ' images of traffic scenes. Directly after each image, the screen will be briefly filled with three-character codes. Type down the code you remember looking at.</p><p>You will first do ' + (n_images_training + n_sentinel_training) + 'practice trials. After the practice trials, the experiment starts.</p><p><span style="color:red">Important! During the practice session, you will be allowed to enter a maximum of ' + allowed_wrong_codes + ' three-character codes incorrectly. If you fail the practice session, the experiment will end and you will not get a payment.</span></p><p>Press \'C\' to proceed to the first practice trial.</p></div>',
     choices: ['C'],
     on_finish: function(data) {
         jsPsych.data.addDataToLastTrial({

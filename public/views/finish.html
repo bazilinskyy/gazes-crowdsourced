@@ -29,8 +29,8 @@
     window.onload = function() {
       if (getUrlParameter('work')) {  // worker code given
           document.getElementById("finish_code").style.visibility="visible";   
-      } else if (getUrlParameter('wrong_codes')) {  // too many wrong codes
-          document.getElementById("wrong_codes").style.visibility="visible";
+      } else if (getUrlParameter('failed_attempts')) {  // too many failed attempts
+          document.getElementById("failed_attempts").style.visibility="visible";
       } else {  // wrong parameters given to this page
           document.getElementById("wrong_params").style.visibility="visible";
       }
@@ -38,6 +38,11 @@
       // show popup
       if (getUrlParameter("show_popup_wrong_codes")) {
           $("#inner-popup").addClass('show');
+      }
+
+      // show meme for too many failed attempts
+      if (getUrlParameter("failed_attempts")) {
+          document.getElementById("failed_meme").style.visibility="visible";
       }
   };
   </script>
@@ -67,10 +72,14 @@
           </div>
         </div>
 
-        <!-- finished with wrong codes inputted -->
-        <div id="wrong_codes" style="visibility: hidden;">
+        <!-- finished with failed training session -->
+        <div id="failed_attempts" style="visibility: hidden;">
           <div id="jspsych_target">
-            You have provided <script>document.write(getUrlParameter('wrong_codes'));</script> wrong three-letter codes. It is more than the allow number. Please close this page and do not attempt to do this experiment again. You may close the Appen page as well, since the experiment will be reallocated to a different person. You were warned that not following the instructions will result in the experiment finishing and you not getting the payment. <strong>Please do not attempt to start this experiment on Appen again.</strong> You will not be allowed to participate.
+            <!-- meme for more than 5 attempts with failed training session -->
+            <div id="failed_meme" style="visibility: hidden;">
+              <img src="img/fail-meme.jpg">
+            </div>
+            You have failed the training session <script>document.write(getUrlParameter('failed_attempts'));</script> times, which is more than the allowed number. You were warned that not following the instructions will result in the experiment being discontinued and you not getting paid. You may now close this page as well as the Appen page. <strong>It will not be possible for you to restart this experiment on Appen.</strong>
             <br>
              Thank you for your participation and your time! We look forward to seeing you in our future experiments.
           </div>
