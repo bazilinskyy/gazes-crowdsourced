@@ -35,60 +35,62 @@
           document.getElementById("wrong_params").style.visibility="visible";
       }
 
-      // show popup
-      if (getUrlParameter("show_popup_wrong_codes")) {
-          $("#inner-popup").addClass('show');
-      }
-
       // show meme for too many failed attempts
-      if (getUrlParameter("failed_attempts")) {
+      if (getUrlParameter("failed_attempts") >= 5) {
           document.getElementById("failed_meme").style.visibility="visible";
       }
   };
   </script>
   </head>
-  <body>  
-    <div id="popup">
-        <div id="inner-popup" class="alert alert-danger collapse fade alert-dismissible" role="alert">
-              <strong>Warning!</strong> You just provided an incorrect code.<button type="button" class="close" data-dismiss="alert" aria-label="Close" id="buttonClose"><span aria-hidden="true">&times;</span></button>
-        </div>
-    </div>
-    <!-- end of popup -->
-
+  <body>
     <div class = "parent">
       <div class = "child">
         <!-- finished with code -->
         <div id="finish_code" style="visibility: hidden;">
           <div id="jspsych_target">
-          You have now completed the experiment. Thank you for your participation. Please note down or copy to your clipboard the following code:  
-          <br>
-          <strong>
-            <script>
-              document.write(getUrlParameter('work'));
-            </script>
-          </strong>
-          <br>
-            Do not forget to enter the code we gave in the Appen page in the field "Type code that you received after the end of the test." to finalise the job and receive your money. You will find this field under the link you clicked to open this tab. You may now close this tab.
+          <div class="alert alert-primary" role="alert" style="text-align: left; visibility: hidden;" style="visibility: hidden;">
+              <h4 class="alert-heading">Experiment completed</h4>
+              <p>
+                You have now completed the experiment. Thank you for your participation. Please note down or copy to your clipboard the following code:  
+                <br>
+                <strong>
+                  <script>
+                    document.write(getUrlParameter('work'));
+                  </script>
+                </strong>
+                <br>
+                  Do not forget to enter the code we gave in the Appen page in the field "Type code that you received after the end of the test." to finalise the job and receive your money. You will find this field under the link you clicked to open this tab. You may now close this tab.
+              </p>
+              <hr>
+              <p class="mb-0">
+                <strong>Do not forget to enter the code we gave in the Appen page in the field "Type code that you received after the end of the test." to finalise the job and receive your money.</strong> You will find this field under the link you clicked to open this tab. You may now close this tab.
+              </p>
           </div>
         </div>
 
         <!-- finished with failed training session -->
         <div id="failed_attempts" style="visibility: hidden;">
           <div id="jspsych_target">
-            <!-- meme for more than 5 attempts with failed training session -->
-            <div id="failed_meme" style="visibility: hidden;">
-              <img src="img/fail-meme.jpg">
+            <div class="alert alert-danger" role="alert" style="text-align: left" style="visibility: hidden;">
+              <h4 class="alert-heading">Failed</h4>
+              <!-- meme for more than 5 attempts with failed training session -->
+              <div id="failed_meme" style="visibility: hidden;">
+                <img src="img/fail-meme.jpg">
+              </div>
+
+              <p>You have failed the training session <script>document.write(getUrlParameter('failed_attempts'));</script> times, which is more than the allowed number.</p>
+              <hr>
+              <p class="mb-0">You were warned that not following the instructions will result in the experiment being discontinued and you not getting paid. You may now close this page as well as the Appen page. <strong>It will not be possible for you to restart this experiment on Appen.</strong></p>
             </div>
-            You have failed the training session <script>document.write(getUrlParameter('failed_attempts'));</script> times, which is more than the allowed number. You were warned that not following the instructions will result in the experiment being discontinued and you not getting paid. You may now close this page as well as the Appen page. <strong>It will not be possible for you to restart this experiment on Appen.</strong>
-            <br>
-             Thank you for your participation and your time! We look forward to seeing you in our future experiments.
           </div>
         </div>
 
         <!-- wrong parameters given -->
         <div id="wrong_params" style="visibility: hidden;">
           <div id="jspsych_target">
-            Wrong parameters given.
+            <div class="alert alert-danger" role="alert" style="text-align: left" style="visibility: hidden;">
+                Wrong parameters given.
+            </div>
           </div>
         </div>
 
