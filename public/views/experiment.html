@@ -149,7 +149,7 @@ var getUrlParameter = function getUrlParameter(sParam) {
  */
 function saveData() {
     // check if data needs to be saved
-    if (save_data_param) {
+    if (save_data) {
         if (debug) {
             console.log('saving data', jsPsych.data.get().json());
         }
@@ -248,9 +248,9 @@ if (!debug) {
     debug = SHOW_DEBUG;
 }
 
-var save_data_param = getUrlParameter('save_data');
-if (!save_data_param) {
-    save_data_param = SAVE_DATA;
+var save_data = getUrlParameter('save_data');
+if (!save_data) {
+    save_data = SAVE_DATA;
 }
 
 // erase cookie by hand
