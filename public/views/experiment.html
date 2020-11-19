@@ -66,6 +66,7 @@ var allowed_failed_attempts = 2; // number of allowed attempts to start the expe
 var SHOW_DEBUG = false; // switch for debugging output
 var NAME_COOKIE = 'gazes-crowdsourced-failed-attempts';
 var SAVE_COOKIE_DAYS = 30;
+var SAVE_DATA = 1;  // save data or not
 
 /**
  * Global vars.
@@ -147,19 +148,22 @@ var getUrlParameter = function getUrlParameter(sParam) {
  * Save data.
  */
 function saveData() {
-    $.ajax({
-        type: 'POST',
-        url: '/experiment-data',
-        data: jsPsych.data.get().json(),
-        contentType: 'application/json'
-    })
-    .done(function() {
-        jsPsych.data.reset();
-    })
-    .fail(function() {
-        alert('A problem occurred while writing to the database. Please contact the researcher for more information.')
-        window.location.href = '/';
-    })
+    // check if data needs to be saved
+    if (save_data_param) {
+        $.ajax({
+            type: 'POST',
+            url: '/experiment-data',
+            data: jsPsych.data.get().json(),
+            contentType: 'application/json'
+        })
+        .done(function() {
+            jsPsych.data.reset();
+        })
+        .fail(function() {
+            alert('A problem occurred while writing to the database. Please contact the researcher for more information.')
+            window.location.href = '/';
+        })
+    }
 }
 
  /**
@@ -236,6 +240,11 @@ if (!s_dur) {
 var debug = getUrlParameter('debug');
 if (!debug) {
     debug = SHOW_DEBUG;
+}
+
+var save_data_param = getUrlParameter('save_data');
+if (!save_data_param) {
+    save_data_param = SAVE_DATA;
 }
 
 // erase cookie by hand
