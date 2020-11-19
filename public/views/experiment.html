@@ -709,6 +709,8 @@ for (var i = 0; i < training_blocks.length; i++) {
     timeline.push(training_blocks[i]);
 }
 timeline.push(instructions_block_2);
+// save data
+timeline.push(save_data_block);
 // iterate over images
 var between_blocks_count = 0;  // counter of shown between blocks
 var sentinel_last_id = n_sentinel_training - 1;  // counter of shown sentintel images between blocks
@@ -725,6 +727,8 @@ for (var i = 0; i <= n_images_per_participant * n_images_repeat; i++) {
         // gaze
         timeline.push(sentinel_codechart_stimuli[sentinel_last_id]);
         timeline.push(sentinel_codechart_input_block);
+        // save data
+        timeline.push(save_data_block);
         if (debug) {
             console.log('added sentintel image', i, sentinel_last_id, sentinel_codechart_stimuli[sentinel_last_id]);
         }
@@ -738,13 +742,13 @@ for (var i = 0; i <= n_images_per_participant * n_images_repeat; i++) {
     // gaze
     timeline.push(codechart_stimuli[i]);
     timeline.push(codechart_input_block);
+    // save data
+    timeline.push(save_data_block);
     // don't add the between block after the last trial
     if ((i + 1) % n_images_break == 0 && i != 0 && i != n_images_per_participant * n_images_repeat - 1 && i < n_images_no_break_after - 1) {
         if (debug) {
             console.log('added break', i, between_blocks[between_blocks_count], i % n_images_break, i / n_images_break);
         }
-        // save data
-        timeline.push(save_data_block);
         // between block
         timeline.push(between_blocks[between_blocks_count]);
         between_blocks_count++;
