@@ -150,6 +150,9 @@ var getUrlParameter = function getUrlParameter(sParam) {
 function saveData() {
     // check if data needs to be saved
     if (save_data_param) {
+        if (debug) {
+            console.log('saving data', jsPsych.data.get().json());
+        }
         $.ajax({
             type: 'POST',
             url: '/experiment-data',
@@ -163,6 +166,9 @@ function saveData() {
             alert('A problem occurred while writing to the database. Please contact the researcher for more information.')
             window.location.href = '/';
         })
+        if (debug) {
+            console.log('data saved');
+        }
     }
 }
 
