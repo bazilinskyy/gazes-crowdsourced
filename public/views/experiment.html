@@ -17,9 +17,7 @@
   </head>
   <body>
   </body>
-  <script>
-
-
+<script>
 // by Pavlo Bazilinskyy <p.bazilinskyy@tudelft.nl>
 // photos used in the training set:
 // 1. https://www.pxfuel.com/en/free-photo-xpoyf
@@ -34,7 +32,7 @@
 var n_images = 107; // number of images
 // var stimuli_group_2 = [6, 36, 57, 67, 70, 76, 94, 112, 148, 149]; // stimuli for group 2
 var stimuli_group_2 = [8, 21, 28, 39, 48, 50, 60, 66, 82, 84]; // stimuli for group 2
-var n_images_group_2 = stimuli_group_2.length;  // number of images for group 2
+var n_images_group_2 = stimuli_group_2.length; // number of images for group 2
 var n_images_per_participant = 107; // number of images to be shown per participant
 // durations of stimulus
 // var stimulus_durations = [];
@@ -50,11 +48,11 @@ var stimulus_durations = [100, 151, 227, 342, 515, 776, 1170, 1762, 2655, 4000];
 stimulus_durations = shuffle(stimulus_durations); // randomise durations
 var n_images_repeat = 1; // number of repeats of each condition
 var n_images_break = 25; // number of images between each break
-var n_images_no_break_after = 100;  // do not show breaks after this image
+var n_images_no_break_after = 100; // do not show breaks after this image
 var n_codeblocks = 400; // number of codeblock images generated
 var n_sentinel = 400; // number of sentintel images
-var n_images_training = 5;  // number of stimuli images in training
-var n_sentinel_training = 5;  // number of sentinel images in training
+var n_images_training = 5; // number of stimuli images in training
+var n_sentinel_training = 5; // number of sentinel images in training
 var image_prefix = 'img/'; // prefix for images
 var codeblock_duration = 700;
 var fixation_duration = 700;
@@ -66,21 +64,21 @@ var allowed_failed_attempts = 2; // number of allowed attempts to start the expe
 var SHOW_DEBUG = false; // switch for debugging output
 var NAME_COOKIE = 'gazes-crowdsourced-failed-attempts';
 var SAVE_COOKIE_DAYS = 30;
-var SAVE_DATA = 1;  // save data or not
+var SAVE_DATA = 1; // save data or not
 
 /**
  * Global vars.
  **/
-var json_correct_codes = [];  // global var to store correct mapping for images
-var json_correct_codes_sentinel = [];  // global var to store correct mapping for sentinel images
-var show_popup_wrong_code = false;  // gloval var to show a popup about a wrong code
-var training_in_progress = true;  // flag for status of training session
-var counter_sentinel_images_shown = -1;  // global var to count the number of sentinel images already shown
-var counter_cb_shown = -1;  // global var to count the number of codeblock images already shown
-var counter_wrong_codes = 0;  // global var to count the number of incorrect codes typed
-var counter_failed_attempts = 0;  // global var to count the number of failed attempts to do the experiment
+var json_correct_codes = []; // global var to store correct mapping for images
+var json_correct_codes_sentinel = []; // global var to store correct mapping for sentinel images
+var show_popup_wrong_code = false; // gloval var to show a popup about a wrong code
+var training_in_progress = true; // flag for status of training session
+var counter_sentinel_images_shown = -1; // global var to count the number of sentinel images already shown
+var counter_cb_shown = -1; // global var to count the number of codeblock images already shown
+var counter_wrong_codes = 0; // global var to count the number of incorrect codes typed
+var counter_failed_attempts = 0; // global var to count the number of failed attempts to do the experiment
 
- /**
+/**
  * Returns a random integer between min (inclusive) and max (inclusive).
  * The value is no lower than min (or the next integer greater than min
  * if min isn't an integer) and no greater than max (or the next integer
@@ -124,7 +122,7 @@ function shuffle(a) {
 /**
  * Get unique elements from the array.
  */
-function onlyUnique(value, index, self) { 
+function onlyUnique(value, index, self) {
     return self.indexOf(value) === index;
 }
 
@@ -154,54 +152,56 @@ function saveData() {
             console.log('saving data', jsPsych.data.get().json());
         }
         $.ajax({
-            type: 'POST',
-            url: '/experiment-data',
-            data: jsPsych.data.get().json(),
-            contentType: 'application/json'
-        })
-        .done(function() {
-            jsPsych.data.reset();
-        })
-        .fail(function() {
-            alert('A problem occurred while writing to the database. Please contact the researcher for more information.')
-            window.location.href = '/';
-        })
+                type: 'POST',
+                url: '/experiment-data',
+                data: jsPsych.data.get().json(),
+                contentType: 'application/json'
+            })
+            .done(function() {
+                jsPsych.data.reset();
+            })
+            .fail(function() {
+                alert('A problem occurred while writing to the database. Please contact the researcher for more information.')
+                window.location.href = '/';
+            })
         if (debug) {
             console.log('data saved');
         }
     }
 }
 
- /**
+/**
  * Working with cookies.
  */
-function setCookie(name,value,days) {
+function setCookie(name, value, days) {
     var expires = "";
     if (days) {
         var date = new Date();
-        date.setTime(date.getTime() + (days*24*60*60*1000));
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
         expires = "; expires=" + date.toUTCString();
     }
-    document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
     if (debug) {
         console.log('cookie', name, 'saved');
     }
 }
+
 function getCookie(name) {
     var nameEQ = name + "=";
     var ca = document.cookie.split(';');
-    for(var i=0;i < ca.length;i++) {
+    for (var i = 0; i < ca.length; i++) {
         var c = ca[i];
-        while (c.charAt(0)==' ') c = c.substring(1,c.length);
-        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+        while (c.charAt(0) == ' ') c = c.substring(1, c.length);
+        if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
     }
     if (debug) {
         console.log('cookie', name, 'loaded');
     }
     return null;
 }
-function eraseCookie(name) {   
-    document.cookie = name +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
+
+function eraseCookie(name) {
+    document.cookie = name + '=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     if (debug) {
         console.log('cookie', name, 'erased');
     }
@@ -211,11 +211,11 @@ function eraseCookie(name) {
 var group_choice = getUrlParameter('group');
 if (!group_choice) {
     // hardcode to group 2 for 10% of participants
-    var allocation = getRandomInt(1, 10);  // group
+    var allocation = getRandomInt(1, 10); // group
     if (allocation == 2) {
-        group_choice = 2;  // hardcode group for 10%
+        group_choice = 2; // hardcode group for 10%
     } else {
-        group_choice = 1;  // hardcode 1 group
+        group_choice = 1; // hardcode 1 group
     }
 }
 // number of stimuli in group 2
@@ -270,7 +270,7 @@ if (debug) {
 }
 
 // Arrays for storing data
-var image_ids = [];  // IDs of images in stimuli
+var image_ids = []; // IDs of images in stimuli
 var codechart_ids = []; // IDs of codecharts
 var sentinel_ids = []; // IDs of sentinel images
 var training_image_ids = []; // IDs of training images
@@ -279,67 +279,66 @@ var image_stimuli = []; // blocks with images
 var codechart_stimuli = []; // blocks with codecharts
 var sentinel_stimuli = []; // blocks with sentinel images
 var sentinel_codechart_stimuli = []; // blocks with codecharts for sentinel images
-var sentinel_locations = [];  // locations of sentinel checks
-var training_blocks = [];  // blocks for training
+var sentinel_locations = []; // locations of sentinel checks
+var training_blocks = []; // blocks for training
 
 // browser info
 // https://stackoverflow.com/questions/11219582/how-to-detect-my-browser-version-and-operating-system-using-javascript
 var nVer = navigator.appVersion;
 var nAgt = navigator.userAgent;
-var br_name  = navigator.appName;
-var br_full_version  = ''+parseFloat(navigator.appVersion); 
-var br_major_version = parseInt(navigator.appVersion,10);
-var nameOffset,verOffset,ix;
+var br_name = navigator.appName;
+var br_full_version = '' + parseFloat(navigator.appVersion);
+var br_major_version = parseInt(navigator.appVersion, 10);
+var nameOffset, verOffset, ix;
 
 // In Opera, the true version is after "Opera" or after "Version"
-if ((verOffset=nAgt.indexOf("Opera"))!=-1) {
- br_name = "Opera";
- br_full_version = nAgt.substring(verOffset+6);
- if ((verOffset=nAgt.indexOf("Version"))!=-1) 
-   br_full_version = nAgt.substring(verOffset+8);
+if ((verOffset = nAgt.indexOf("Opera")) != -1) {
+    br_name = "Opera";
+    br_full_version = nAgt.substring(verOffset + 6);
+    if ((verOffset = nAgt.indexOf("Version")) != -1)
+        br_full_version = nAgt.substring(verOffset + 8);
 }
 // In MSIE, the true version is after "MSIE" in userAgent
-else if ((verOffset=nAgt.indexOf("MSIE"))!=-1) {
- br_name = "Microsoft Internet Explorer";
- br_full_version = nAgt.substring(verOffset+5);
+else if ((verOffset = nAgt.indexOf("MSIE")) != -1) {
+    br_name = "Microsoft Internet Explorer";
+    br_full_version = nAgt.substring(verOffset + 5);
 }
 // In Chrome, the true version is after "Chrome" 
-else if ((verOffset=nAgt.indexOf("Chrome"))!=-1) {
- br_name = "Chrome";
- br_full_version = nAgt.substring(verOffset+7);
+else if ((verOffset = nAgt.indexOf("Chrome")) != -1) {
+    br_name = "Chrome";
+    br_full_version = nAgt.substring(verOffset + 7);
 }
 // In Safari, the true version is after "Safari" or after "Version" 
-else if ((verOffset=nAgt.indexOf("Safari"))!=-1) {
- br_name = "Safari";
- br_full_version = nAgt.substring(verOffset+7);
- if ((verOffset=nAgt.indexOf("Version"))!=-1) 
-   br_full_version = nAgt.substring(verOffset+8);
+else if ((verOffset = nAgt.indexOf("Safari")) != -1) {
+    br_name = "Safari";
+    br_full_version = nAgt.substring(verOffset + 7);
+    if ((verOffset = nAgt.indexOf("Version")) != -1)
+        br_full_version = nAgt.substring(verOffset + 8);
 }
 // In Firefox, the true version is after "Firefox" 
-else if ((verOffset=nAgt.indexOf("Firefox"))!=-1) {
- browserName = "Firefox";
- br_full_version = nAgt.substring(verOffset+8);
+else if ((verOffset = nAgt.indexOf("Firefox")) != -1) {
+    browserName = "Firefox";
+    br_full_version = nAgt.substring(verOffset + 8);
 }
 // In most other browsers, "name/version" is at the end of userAgent 
-else if ( (nameOffset=nAgt.lastIndexOf(' ')+1) < 
-          (verOffset=nAgt.lastIndexOf('/')) ) 
-{
- browserName = nAgt.substring(nameOffset,verOffset);
- br_full_version = nAgt.substring(verOffset+1);
- if (browserName.toLowerCase()==browserName.toUpperCase()) {
-  browserName = navigator.appName;
- }
+else if ((nameOffset = nAgt.lastIndexOf(' ') + 1) <
+    (verOffset = nAgt.lastIndexOf('/'))) {
+    browserName = nAgt.substring(nameOffset, verOffset);
+    br_full_version = nAgt.substring(verOffset + 1);
+    if (browserName.toLowerCase() == browserName.toUpperCase()) {
+        browserName = navigator.appName;
+    }
 }
 // trim the br_full_version string at semicolon/space if present
-if ((ix=br_full_version.indexOf(";"))!=-1)
-   br_full_version=br_full_version.substring(0,ix);
-if ((ix=br_full_version.indexOf(" "))!=-1)
-   br_full_version=br_full_version.substring(0,ix);
+if ((ix = br_full_version.indexOf(";")) != -1)
+    br_full_version = br_full_version.substring(0, ix);
+if ((ix = br_full_version.indexOf(" ")) != -1)
+    br_full_version = br_full_version.substring(0, ix);
 
-br_major_version = parseInt(''+br_full_version,10);
+br_major_version = parseInt('' + br_full_version, 10);
 if (isNaN(br_major_version)) {
- br_full_version  = ''+parseFloat(navigator.appVersion); 
- br_major_version = parseInt(navigator.appVersion,10);
+    br_full_version = '' + parseFloat(navigator.appVersion);
+    br_major_version = parseInt(navigator.appVersion, 10);
 }
 
 if (debug) {
@@ -354,12 +353,12 @@ if (debug) {
 for (var i = 0; i < n_codeblocks; i++) {
     codechart_ids.push(i);
 }
-codechart_ids = shuffle(codechart_ids);  // shuffle codechart blocks
+codechart_ids = shuffle(codechart_ids); // shuffle codechart blocks
 // populate array with sentinel image IDs
 for (var i = 0; i < n_sentinel; i++) {
     sentinel_ids.push(i);
 }
-sentinel_ids = shuffle(sentinel_ids);  // shuffle codechart blocks
+sentinel_ids = shuffle(sentinel_ids); // shuffle codechart blocks
 
 // locations of sentinel check
 for (var i = 0; i < n_images_per_participant * n_images_repeat / n_images_break - 1; i++) {
@@ -391,15 +390,15 @@ window.onload = function() {
         window.location.href = 'finish?failed_attempts=' + counter_failed_attempts_before + '&allowed_failed_attempts=' + allowed_failed_attempts;
     }
     // load json file with correct mapping
-    $.getJSON("./img/codeboard/data.json", function(data){
-        json_correct_codes = data;  // save codes in global var
-    }).fail(function(){
+    $.getJSON("./img/codeboard/data.json", function(data) {
+        json_correct_codes = data; // save codes in global var
+    }).fail(function() {
         console.log("An error has occurred with working with JSON file.");
     });
     // load json file with correct mapping
-    $.getJSON("./img/sentinel/sentinel_codes.json", function(data){
-        json_correct_codes_sentinel = data;  // save codes in global var
-    }).fail(function(){
+    $.getJSON("./img/sentinel/sentinel_codes.json", function(data) {
+        json_correct_codes_sentinel = data; // save codes in global var
+    }).fail(function() {
         console.log("An error has occurred with working with JSON file.");
     });
 };
@@ -420,15 +419,15 @@ var codechart_input_block = {
         if (training_in_progress) { // only check things during training
             var path_image = '../public/img/codeboard/cb_' + codechart_ids[counter_cb_shown] + '.jpg';
             // check if inputted code is in list of correct codes
-            var given_answer = data['responses'].substring(20,23).toUpperCase();
+            var given_answer = data['responses'].substring(20, 23).toUpperCase();
             if (debug) {
                 console.log('path_image', path_image);
                 console.log('given_answer for image', given_answer);
                 console.log('allowed codes', json_correct_codes[path_image]['0']);
             }
             if (!json_correct_codes[path_image]['0'].includes(given_answer)) {
-                counter_wrong_codes++;  // wrong code provided
-                show_popup_wrong_code = true;  // flag for showing a popup
+                counter_wrong_codes++; // wrong code provided
+                show_popup_wrong_code = true; // flag for showing a popup
             }
             if (debug) {
                 console.log('counter_wrong_codes', counter_wrong_codes);
@@ -448,7 +447,7 @@ var codechart_input_block = {
         // add worker code
         jsPsych.data.addDataToLastTrial({
             worker_code: finish_code
-        }); 
+        });
     }
 };
 // block for input of code from sentinel image
@@ -465,15 +464,15 @@ var sentinel_codechart_input_block = {
         if (training_in_progress) { // only check things during training
             var path_sentinel_image = '../public/img/sentinel/sentinel_' + sentinel_ids[counter_sentinel_images_shown] + '.jpg';
             // check if inputted code is in list of correct codes
-            var given_answer = data['responses'].substring(20,23).toUpperCase();
+            var given_answer = data['responses'].substring(20, 23).toUpperCase();
             if (debug) {
                 console.log('path_sentinel_image', path_sentinel_image);
                 console.log('given_answer for sentinel image', given_answer);
                 console.log('allowed codes', json_correct_codes_sentinel[path_sentinel_image]['correct_codes']);
             }
             if (!json_correct_codes_sentinel[path_sentinel_image]['correct_codes'].includes(given_answer)) {
-                counter_wrong_codes++;  // wrong code provided
-                show_popup_wrong_code = true;  // flag for showing a popup
+                counter_wrong_codes++; // wrong code provided
+                show_popup_wrong_code = true; // flag for showing a popup
             }
             if (debug) {
                 console.log('counter_wrong_codes', counter_wrong_codes);
@@ -493,10 +492,11 @@ var sentinel_codechart_input_block = {
         // add worker code
         jsPsych.data.addDataToLastTrial({
             worker_code: finish_code
-        }); 
+        });
     }
 };
-// black with text to continue before showing the image
+
+// block with text to continue before showing the image
 var fixation_block = {
     type: 'image-keyboard-response',
     stimulus: image_prefix + 'fixation-cross.jpg',
@@ -509,9 +509,11 @@ var fixation_block = {
 // block with text question in the end of the study
 var question_block = {
     type: 'survey-multi-choice',
-    questions: [
-      {prompt: "In the situation on the image that you just saw, would you brake or continue pedaling as a cyclist?", options: ["Brake", "Continue pedaling"], required: true}
-    ],
+    questions: [{
+        prompt: "In the situation on the image that you just saw, would you brake or continue pedaling as a cyclist?",
+        options: ["Brake", "Continue pedaling"],
+        required: true
+    }],
 };
 
 // block for sending data
@@ -522,7 +524,7 @@ var save_data_block = {
     }
 }
 
-// black with image usef for example
+// block with image usef for example
 var example_block = {
     type: 'image-keyboard-response',
     stimulus: image_prefix + 'example-image.jpg',
@@ -532,8 +534,8 @@ var example_block = {
     stimulus_height: 720
 };
 
-// define instructions blocks
-var num_breaks = Math.round(n_images_no_break_after / n_images_break);  // calculate number of breaks
+// block with instructions 
+var num_breaks = Math.round(n_images_no_break_after / n_images_break); // calculate number of breaks
 var instructions_block = {
     type: 'html-keyboard-response',
     stimulus: '<div class="jumbotron jumbotron-fluid" style="text-align: left;"><div class="container"><h1 class="display-4">Instructions</h1><p class="lead">You will view ' + n_images_per_participant * n_images_repeat + ' images of traffic scenes. Directly after each image, the screen will be briefly filled with three-character codes. Type down the code you remember looking at.</p><p class="lead">You will first do ' + (n_images_training + n_sentinel_training) + ' practice trials. After the practice trials, the experiment starts.</p><p class="lead"><span style="color:red">Important! During the practice session, you will be allowed to enter a maximum of ' + allowed_wrong_codes + ' three-character codes incorrectly. If you fail the practice session, the experiment will end and you will not get a payment.</span></p><hr><p>Press \'C\' to proceed to the first practice trial.</p></div></div>',
@@ -550,12 +552,14 @@ var instructions_block = {
         });
     }
 };
+
+// block with instructions 2
 var instructions_block_2 = {
     type: 'html-keyboard-response',
     stimulus: '<div class="jumbotron jumbotron-fluid" style="text-align: left;"><div class="container"><h1 class="display-4">Training completed</h1><p class="lead">You have completed the practice trials.</p><hr><p>Press \'C\' to proceed to the first image in the experiment.</p></div></div>',
     choices: ['C'],
     on_finish: function(data) {
-        training_in_progress = false;  // training session finished
+        training_in_progress = false; // training session finished
         if (debug) {
             console.log('training session finished');
         }
@@ -564,13 +568,14 @@ var instructions_block_2 = {
 
 // populate arrays with image IDs
 for (var i = 1; i <= n_images; i++) {
-    for (var j = 1; j <= n_images_repeat; j++) { 
+    for (var j = 1; j <= n_images_repeat; j++) {
         image_ids.push(i);
     }
 }
+
 // build array with all images with stimuli
 if (group_choice == 1) {
-    image_ids = shuffle(image_ids);  // shuffle image IDs
+    image_ids = shuffle(image_ids); // shuffle image IDs
     for (var i = 0; i < n_images * n_images_repeat; i++) {
         image_stimuli.push({
             type: 'image-keyboard-response',
@@ -605,17 +610,18 @@ if (group_choice == 1) {
         }
     }
 }
-image_stimuli = shuffle(image_stimuli);  // shuffle blocks with images
+
+image_stimuli = shuffle(image_stimuli); // shuffle blocks with images
 image_stimuli = image_stimuli.slice(0, n_images_per_participant * n_images_repeat); // trim array of stimuli
 
 // populate arrays with training image IDs
 for (var i = 1; i <= n_images_training; i++) {
     training_image_ids.push(i);
 }
-training_image_ids = shuffle(training_image_ids);  // shuffle training images
+training_image_ids = shuffle(training_image_ids); // shuffle training images
 
 // black with text to continue before showing the image
-var stimulus_str =  '<p>Press \'C\' to continue to the next image.</p><div id="popup"><div id="inner-popup" class="alert alert-danger collapse fade alert-dismissible" role="alert"><strong>Warning!</strong> You have provided <span class="counter_wrong_codes_span"></span> incorrect code(s). Please pay more attention in future attempts. You will not be able to continue after giving ' + allowed_wrong_codes + ' wrong codes.<button type="button" class="close" data-dismiss="alert" aria-label="Close" id="buttonClose"><span aria-hidden="true">&times;</span></button></div></div>';
+var stimulus_str = '<p>Press \'C\' to continue to the next image.</p><div id="popup"><div id="inner-popup" class="alert alert-danger collapse fade alert-dismissible" role="alert"><strong>Warning!</strong> You have provided <span class="counter_wrong_codes_span"></span> incorrect code(s). Please pay more attention in future attempts. You will not be able to continue after giving ' + allowed_wrong_codes + ' wrong codes.<button type="button" class="close" data-dismiss="alert" aria-label="Close" id="buttonClose"><span aria-hidden="true">&times;</span></button></div></div>';
 var continue_block = {
     type: 'html-keyboard-response',
     stimulus: stimulus_str,
@@ -623,15 +629,12 @@ var continue_block = {
     on_load: function(data) {
         if (show_popup_wrong_code) {
             $('.counter_wrong_codes_span').html(counter_wrong_codes);
-            show_popup_wrong_code = false;  // reset flag
-            $("#inner-popup").addClass('show');  // show popup
+            show_popup_wrong_code = false; // reset flag
+            $("#inner-popup").addClass('show'); // show popup
         }
     }
 };
 
-/**
- * Gazes.
- **/
 // build array with codecharts
 for (var i = 0; i < n_images_per_participant * n_images_repeat; i++) {
     image_str = image_prefix + 'codeboard/cb_' + codechart_ids[i] + '.jpg';
@@ -641,10 +644,11 @@ for (var i = 0; i < n_images_per_participant * n_images_repeat; i++) {
         choices: jsPsych.NO_KEYS,
         trial_duration: cb_dur,
         on_finish: function() {
-            counter_cb_shown++;  // increase counter of images shown
+            counter_cb_shown++; // increase counter of images shown
         }
     })
 }
+
 // build arrays with sentinel images and corresponding codecharts
 for (var i = 0; i < n_images_per_participant * n_images_repeat / n_images_break + n_sentinel_training; i++) {
     image_str = image_prefix + 'sentinel/sentinel_' + sentinel_ids[i] + '.jpg';
@@ -654,7 +658,7 @@ for (var i = 0; i < n_images_per_participant * n_images_repeat / n_images_break 
         choices: jsPsych.NO_KEYS,
         trial_duration: sentinel_duration,
         on_finish: function() {
-            counter_sentinel_images_shown++;  // increase counter of images shown
+            counter_sentinel_images_shown++; // increase counter of images shown
         }
     })
     image_str = image_prefix + 'codeboard_sentinel/sentinel_cb_' + sentinel_ids[i] + '.jpg';
@@ -665,6 +669,7 @@ for (var i = 0; i < n_images_per_participant * n_images_repeat / n_images_break 
         trial_duration: cb_dur
     })
 }
+
 // build between blocks
 for (var i = 1; i < n_images * n_images_repeat / n_images_break; i++) {
     var images_done = n_images_break * i;
@@ -678,10 +683,10 @@ for (var i = 1; i < n_images * n_images_repeat / n_images_break; i++) {
 /**
  * Training block. Show training images and sentinel images one by one.
  **/
-var counter_training = 0;  // count training images added
-var counter_sentinel = 0;  // count sentinel images added
+var counter_training = 0; // count training images added
+var counter_sentinel = 0; // count sentinel images added
 for (var i = 0; i < n_images_training + n_sentinel_training; i++) {
-    if (i % 2 == 0 || i == 0) {  // add training image for odd ids
+    if (i % 2 == 0 || i == 0) { // add training image for odd ids
         image_str = image_prefix + 'training/training_' + training_image_ids[counter_training] + '.jpg';
         training_blocks.push(fixation_block);
         training_blocks.push({
@@ -696,7 +701,7 @@ for (var i = 0; i < n_images_training + n_sentinel_training; i++) {
         training_blocks.push(codechart_input_block);
         training_blocks.push(continue_block);
         counter_training++;
-    } else if (i % 2 == 1) {  // add sentinel image for even ids
+    } else if (i % 2 == 1) { // add sentinel image for even ids
         image_str = image_prefix + 'sentinel/sentinel_' + sentinel_ids[counter_sentinel] + '.jpg';
         training_blocks.push(fixation_block);
         training_blocks.push({
@@ -707,14 +712,14 @@ for (var i = 0; i < n_images_training + n_sentinel_training; i++) {
             stimulus_width: 1280,
             stimulus_height: 720,
             on_finish: function() {
-                counter_sentinel_images_shown++;  // increase counter of images shown
+                counter_sentinel_images_shown++; // increase counter of images shown
             }
         });
         training_blocks.push(sentinel_codechart_stimuli[counter_sentinel]);
         training_blocks.push(sentinel_codechart_input_block);
         training_blocks.push(continue_block);
         counter_sentinel++;
-    } 
+    }
 }
 
 /**
@@ -730,8 +735,8 @@ timeline.push(instructions_block_2);
 // save data
 timeline.push(save_data_block);
 // iterate over images
-var between_blocks_count = 0;  // counter of shown between blocks
-var sentinel_last_id = n_sentinel_training - 1;  // counter of shown sentintel images between blocks
+var between_blocks_count = 0; // counter of shown between blocks
+var sentinel_last_id = n_sentinel_training - 1; // counter of shown sentintel images between blocks
 for (var i = 0; i <= n_images_per_participant * n_images_repeat; i++) {
     // check if the last image was reached
     if (i >= n_images_per_participant * n_images_repeat) {
@@ -740,8 +745,8 @@ for (var i = 0; i <= n_images_per_participant * n_images_repeat; i++) {
     // add sentinel block
     if (sentinel_locations.includes(i)) {
         sentinel_last_id++; // increase counter of sentinel blocks added
-        timeline.push(fixation_block);  // page with fiexation
-        timeline.push(sentinel_stimuli[sentinel_last_id]);  // page with the stimulus
+        timeline.push(fixation_block); // page with fiexation
+        timeline.push(sentinel_stimuli[sentinel_last_id]); // page with the stimulus
         // gaze
         timeline.push(sentinel_codechart_stimuli[sentinel_last_id]);
         timeline.push(sentinel_codechart_input_block);
@@ -755,8 +760,8 @@ for (var i = 0; i <= n_images_per_participant * n_images_repeat; i++) {
     if (i != 0 && (i + 1) % n_images_break != 1) {
         timeline.push(continue_block);
     }
-    timeline.push(fixation_block);  // page with fiexation
-    timeline.push(image_stimuli[i]);  // page with the stimulus
+    timeline.push(fixation_block); // page with fiexation
+    timeline.push(image_stimuli[i]); // page with the stimulus
     // gaze
     timeline.push(codechart_stimuli[i]);
     timeline.push(codechart_input_block);
