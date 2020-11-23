@@ -92,17 +92,17 @@ function getRandomInt(min, max) {
 }
 
 /**
- * Get finish code for the worker.
+ * Get code for the worker.
  */
-function getFinishCode() {
+function getWorkerCode() {
     var timestamp = window.performance.timing.navigationStart + window.performance.now();
     var current_time = Math.round(timestamp);
     var random_num = getRandomInt(1, 10000);
-    finish_code = 'R7' + current_time + 'CM' + random_num + '8J';
-    return finish_code;
+    worker_code = 'R7' + current_time + 'CM' + random_num + '8J';
+    return worker_code;
 }
 
-var finish_code = getFinishCode();
+var worker_code = getWorkerCode();
 
 /**
  * Shuffles array in place.
@@ -148,6 +148,11 @@ var getUrlParameter = function getUrlParameter(sParam) {
 function saveData() {
     // check if data needs to be saved
     if (save_data) {
+        // add worker ID 
+        jsPsych.data.get().addToLast({
+            worker_code: worker_code
+        });
+
         if (debug) {
             console.log('saving data', jsPsych.data.get().json());
         }
@@ -444,10 +449,6 @@ var codechart_input_block = {
                 window.location.href = 'finish?failed_attempts=' + counter_failed_attempts + '&allowed_failed_attempts=' + allowed_failed_attempts;
             }
         }
-        // add worker code
-        jsPsych.data.addDataToLastTrial({
-            worker_code: finish_code
-        });
     }
 };
 // block for input of code from sentinel image
@@ -489,10 +490,6 @@ var sentinel_codechart_input_block = {
                 window.location.href = 'finish?failed_attempts=' + counter_failed_attempts + '&allowed_failed_attempts=' + allowed_failed_attempts;
             }
         }
-        // add worker code
-        jsPsych.data.addDataToLastTrial({
-            worker_code: finish_code
-        });
     }
 };
 
@@ -543,7 +540,6 @@ var instructions_block = {
     on_finish: function(data) {
         jsPsych.data.addDataToLastTrial({
             group_choice: group_choice,
-            worker_code: finish_code,
             browser_name: br_name,
             browser_full_version: br_full_version,
             browser_major_version: br_major_version,
@@ -803,7 +799,7 @@ jsPsych.init({
     timeline: timeline,
     max_load_time: 3000000,
     on_finish: function() {
-        window.location.href = 'finish?work=' + finish_code;
+        window.location.href = 'finish?work=' + worker_code;
     }
 });
 </script>
