@@ -4,7 +4,6 @@ import os
 import pandas as pd
 from tqdm import tqdm
 import re
-import pickle
 
 import gazes as gz
 
@@ -13,8 +12,7 @@ logger = gz.CustomLogger(__name__)  # use custom logger
 
 class Heroku:
     files_data = []  # list of files with heroku data
-    dict_all = {}  # dictionary with data
-    heroku_data = []
+    heroku_data = pd.DataFrame()  # pandas dataframe with extracted data
     save_p = False  # save data as pickle file
     load_p = False  # load data as pickle file
     save_csv = False  # save data as csv file
@@ -47,33 +45,24 @@ class Heroku:
         self.load_p = load_p
         self.save_csv = save_csv
 
-    def save_data(self, file, data):
-        with open(file, "wb") as f:
-            pickle.dump(data, f)
-        logger.info('Saved heroku data to the pickle file {}.', file)
-
-    def load_data(self, file):
-        with open(file, "rb") as f:
-            self.heroku_data = pickle.load(f)
-        logger.info('Loaded heroku data from the pickle file {}.',
-                    self.file_p)
-
     def read_data(self):
         # load data
         if self.load_p:
-            self.load_data(self.file_p)
+            self.heroku_data = gz.common.load_from_p(self.file_p,
+                                                     'heroku data')
         # process data
         else:
             # read files with heroku data one by one
-            data = []
+            data_list = []
+            data_dict = {}  # dictionary with data
             for file in self.files_data:
                 logger.info('Reading heroku data from {}.', file)
                 f = open(file, 'r')
                 # add data from the file to the dictionary
-                data += f.readlines()
+                data_list += f.readlines()
                 f.close()
             # read rows in data
-            for row in tqdm(data):  # tqdm adds progress bar
+            for row in tqdm(data_list):  # tqdm adds progress bar
                 # use dict to store data
                 dict_row = {}
                 # load data from a single row into a list
@@ -187,24 +176,23 @@ class Heroku:
                             sent_found = False
                             sent_name = ''
                 try:
-                    self.dict_all[dict_row['worker_code']].update(dict_row)
+                    data_dict[dict_row['worker_code']].update(dict_row)
                 except Exception as e:
-                    self.dict_all[dict_row['worker_code']] = dict_row
+                    data_dict[dict_row['worker_code']] = dict_row
             # turn into panda's dataframe
-            self.heroku_data = pd.DataFrame(self.dict_all)
+            self.heroku_data = pd.DataFrame(data_dict)
             self.heroku_data = self.heroku_data.transpose()
         # save to pickle
         if self.save_p:
-            self.save_data(self.file_p,  self.heroku_data)
+            gz.common.save_to_p(self.file_p,  self.heroku_data, 'heroku data')
         # save to csv
         if self.save_csv:
             self.heroku_data.to_csv(gz.settings.output_dir + '/' +
                                     self.file_csv)
-            logger.info('Saved heroku data to the csv file {}.', self.file_csv)
+            logger.info('Saved heroku data to csv file {}.', self.file_csv)
 
         print(self.heroku_data.head)
-        print(self.heroku_data.head)
-        print(self.heroku_data['training_3-in'])
+        print(self.heroku_data.keys())
 
         # return df with data
         return self.heroku_data
