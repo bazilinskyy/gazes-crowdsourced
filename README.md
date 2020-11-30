@@ -2,7 +2,7 @@ Gaze detection with crowdsourcing
 =======
 This project defines a framework for the detection of gazes in a crowdsourced environment. It was inspired by http://turkeyes.mit.edu.
 
-##Setup
+## Setup
 `pip install -e <PATH with setup.py>`
 
 ## Implementation on heroku
@@ -15,6 +15,7 @@ todo
 todo
 
 The following royalty-free base images were used to create the sentinel images:
+
 0. https://www.pexels.com/photo/women-s-white-and-black-button-up-collared-shirt-774909/
 1. https://www.pexels.com/photo/woman-near-house-2804282/
 2. https://www.pexels.com/photo/woman-standing-near-yellow-petaled-flower-2050994/
