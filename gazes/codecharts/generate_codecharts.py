@@ -1,5 +1,5 @@
 # based on https://github.com/turkeyes/codecharts
-# adapted by Pavlo Bazilinskyy <p.bazilinskyy@tudelft.nl>
+# adapted by Pavlo Bazilinskyy <pavlo.bazilinskyy@gmail.com>
 from PIL import Image, ImageDraw, ImageColor, ImageFont
 import matplotlib.pyplot as plt
 import numpy as np
