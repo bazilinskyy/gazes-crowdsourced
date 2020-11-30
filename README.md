@@ -3,7 +3,9 @@ Gaze detection with crowdsourcing
 This project defines a framework for the detection of gazes in a crowdsourced environment. It was inspired by http://turkeyes.mit.edu.
 
 ## Setup
-`pip install -e <PATH with setup.py>`
+To setup environment run these two commands:
+- `pip install -e gazes-crowdsourced`
+- `pip install -r gazes-crowdsourced/requirements.txt`
 
 ## Implementation on heroku
 We use https://www.heroku.com/ to host the node.js implementation.
@@ -34,13 +36,13 @@ We use http://appen.com to run a crowdsourcing job. You need to create a cusotme
 One of the disadvangtes of crowdsourcing is having to deal with workers that accept and do crowdsourcing jobs just for money (i.e., `cheaters`). The framework offers filtering mechanisms to remove data from such people from the dataset used for the analysis.
 
 ### Flagging cheaters
-Cheaters can be reported by running `python /gazes/analysis/run_analysis.py` (required packages need to be installed). Running this script also rejects rows of data from cheaters in appen dats and triggers appen to acquire more data to replace the filtered rows.
+Cheaters can be reported by running `python gazes-crowdsourced/gazes/analysis/run_analysis.py` (required packages need to be installed). Running this script also rejects rows of data from cheaters in appen dats and triggers appen to acquire more data to replace the filtered rows.
 
 ## Analysis
-Analysis can be started by running `python /gazes/qa/flag_cheaters.py` (required packages need to be installed).
+Analysis can be started by running `python gazes-crowdsourced/gazes/qa/flag_cheaters.py` (required packages need to be installed).
 
 ### Visualisation
 todo
 
 ### Config of analysis
-Configuration of analysis needs to bde defined in `/gazes/analysis/config`. Please use the `config example` file for the required structure of the file.
+Configuration of analysis needs to bde defined in `gazes-crowdsourced/gazes/analysis/config`. Please use the `config example` file for the required structure of the file.

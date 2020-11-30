@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 
 class Appen:
-    files_data = []  # list of files with heroku data
+    files_data = []  # list of files with appen data
 
     def __init__(self, files_data: list):
         self.files_data = files_data

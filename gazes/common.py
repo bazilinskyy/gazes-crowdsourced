@@ -28,3 +28,23 @@ def get_configs(entry_name: str, config_file_name: str = 'config',
         with open(os.path.join(settings.root_dir, config_default_file_name)) as f:  # noqa: E501
             content = json.load(f)
     return content[entry_name]
+
+
+def search_dict(dictionary, search_for, nested=False):
+    """
+    Search if dictionary value contains certain string search_for. If
+    nested=True multiple levels are traversed.
+    """
+    for k in dictionary:
+        if nested:
+            for v in dictionary[k]:
+                if search_for in v:
+                    return k
+                elif v in search_for:
+                    return k
+        else:
+            if search_for in dictionary[k]:
+                return k
+            elif dictionary[k] in search_for:
+                return k
+    return None
