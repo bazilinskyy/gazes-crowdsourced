@@ -2,6 +2,7 @@
 import json
 import os
 import pandas as pd
+import numpy as np
 from tqdm import tqdm
 import re
 
@@ -45,6 +46,11 @@ class Heroku:
         self.load_p = load_p
         self.save_csv = save_csv
 
+    def set_data(self, heroku_data):
+        """
+        Setter for the data object
+        """
+
     def read_data(self):
         # load data
         if self.load_p:
@@ -87,7 +93,8 @@ class Heroku:
                             # piece of meta data found, update dictionary
                             dict_row[key] = data_cell[key]
                             if key == 'worker_code':
-                                logger.debug('Working with row for worker_code {}.',
+                                logger.debug('Working with row for' +
+                                             'worker_code {}.',
                                              data_cell['worker_code'])
                     # check if stimulus data is present
                     if 'stimulus' in data_cell.keys():
@@ -97,18 +104,19 @@ class Heroku:
                         stim_no_path = os.path.splitext(stim_no_path)[0]
                         # Check if it is a block with stimulus and not an
                         # instructions block
-                        if gz.common.search_dict(self.prefixes, stim_no_path) != None:
+                        if (gz.common.search_dict(self.prefixes, stim_no_path)
+                           is not None):
                             # stimulus is found
                             logger.debug('Found stimulus {}.', stim_no_path)
                             if self.prefixes['training'] in stim_no_path:
-                                # record that stimulus was detected for the cells
-                                # to follow
+                                # Record that stimulus was detected for the
+                                # cells to follow
                                 train_found = True
                                 train_name = stim_no_path
                             # training image is found
                             elif self.prefixes['stimulus'] in stim_no_path:
-                                # record that stimulus was detected for the cells
-                                # to follow
+                                # Record that stimulus was detected for the
+                                # cells to follow
                                 stim_found = True
                                 stim_name = stim_no_path
                             # codeblock for sentinel image is found
@@ -116,7 +124,8 @@ class Heroku:
                                 # record codeblock name for last stimulus
                                 if sent_name != '':
                                     # extract ID of codeblock
-                                    num_found = re.findall(r'\d+', stim_no_path)
+                                    num_found = re.findall(r'\d+',
+                                                           stim_no_path)
                                     # recored ID of codeblock
                                     dict_row[sent_name + '-cb'] = num_found[0]
                             # codeblock image is found
@@ -125,18 +134,20 @@ class Heroku:
                                 # training image
                                 if train_name != '':
                                     # extract ID of codeblock
-                                    num_found = re.findall(r'\d+', stim_no_path)
+                                    num_found = re.findall(r'\d+',
+                                                           stim_no_path)
                                     # recored ID of codeblock
                                     dict_row[train_name + '-cb'] = num_found[0]
                                 elif stim_name != '':
                                     # extract ID of codeblock
-                                    num_found = re.findall(r'\d+', stim_no_path)
+                                    num_found = re.findall(r'\d+',
+                                                           stim_no_path)
                                     # recored ID of codeblock
                                     dict_row[stim_name + '-cb'] = num_found[0]
                             # sentinel image is found
                             elif self.prefixes['sentinel'] in stim_no_path:
-                                # record that stimulus was detected for the cells
-                                # to follow
+                                # Record that stimulus was detected for the
+                                # cells to follow
                                 sent_found = True
                                 sent_name = stim_no_path
                     # data entry following a codechart found
@@ -196,3 +207,46 @@ class Heroku:
 
         # return df with data
         return self.heroku_data
+
+    def cb_to_coords(self):
+        """
+        Create arrays with coordinates for images.
+        """
+        # todo: check why there are nans for stimuli
+        # load mapping of codes and coordinates
+        with open(gz.common.get_configs('mapping_cb')) as f:
+            mapping = json.load(f)
+        # dictionary to store points
+        points = {}
+        # number of stimuli to process
+        num_stimuli = gz.common.get_configs('num_stimuli')
+        logger.info('Extracting coordinates for {} stimuli.', num_stimuli)
+        # loop over stimuli from 1 to num_stimuli
+        # tqdm adds progress bar
+        for stim_id in tqdm(range(1, num_stimuli + 1)):
+            # create empty list to store points for the stimulus
+            points[stim_id] = []
+            # build names of columns in df
+            image_cb = 'image_' + str(stim_id) + '-cb'
+            image_in = 'image_' + str(stim_id) + '-in'
+            # trim df
+            stimulus_from_df = self.heroku_data[[image_cb, image_in]]
+            # iterate of data from participants for the given stimulus
+            for pp in range(len(stimulus_from_df)):
+                # input given by participant
+                given_in = stimulus_from_df.iloc[pp][image_in]
+                # check if data from participant is present for the given
+                # stimulus
+                if (not stimulus_from_df.iloc[pp][image_cb] or
+                   pd.isna(stimulus_from_df.iloc[pp][image_cb])):
+                    # if no data present, move to the next participant
+                    continue
+                # check if input is in mapping
+                mapping_cb = '../public/img/codeboard/cb_' + \
+                             stimulus_from_df.iloc[pp][image_cb] + \
+                             '.jpg'
+                if (given_in in mapping[mapping_cb][1].keys()):
+                    coords = mapping[mapping_cb][1][given_in]
+                points[stim_id].append([coords[0], coords[1]])
+        # return points
+        return points

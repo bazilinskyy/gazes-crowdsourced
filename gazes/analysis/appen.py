@@ -29,6 +29,12 @@ class Appen:
         self.load_p = load_p
         self.save_csv = save_csv
 
+    def set_data(self, appen_data):
+        """
+        Setter for the data object
+        """
+        self.appen_data = appen_data
+
     def read_data(self):
         # load data
         if self.load_p:
@@ -39,7 +45,7 @@ class Appen:
             # load from csv
             self.appen_data = pd.read_csv(self.file_data)
             # set index to worker code
-            self.appen_data = self.appen_data.set_index('type_the_code_that_you_received_at_the_end_of_the_experiment')
+            self.appen_data = self.appen_data.set_index('type_the_code_that_you_received_at_the_end_of_the_experiment')  # noqa: E501
         # save to pickle
         if self.save_p:
             gz.common.save_to_p(self.file_p,  self.appen_data, 'appen data')
