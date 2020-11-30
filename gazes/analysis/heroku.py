@@ -50,6 +50,7 @@ class Heroku:
         """
         Setter for the data object
         """
+        self.heroku_data = heroku_data
 
     def read_data(self):
         # load data
@@ -238,7 +239,7 @@ class Heroku:
                 # check if data from participant is present for the given
                 # stimulus
                 if (not stimulus_from_df.iloc[pp][image_cb] or
-                   pd.isna(stimulus_from_df.iloc[pp][image_cb])):
+                    pd.isna(stimulus_from_df.iloc[pp][image_cb])):
                     # if no data present, move to the next participant
                     continue
                 # check if input is in mapping
