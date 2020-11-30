@@ -1,1 +1,15 @@
+# macOS
 **/.DS_Store
+
+# sublime text project files
+*.sublime-project
+*.sublime-workspace
+
+# Instance specific files
+config
+secret
+
+# Python
+*/__pycache__
+*.pyc
+*.egg-info/
