@@ -40,7 +40,12 @@ Participants need to go through a training session before starting the experimen
 We use http://appen.com to run a crowdsourcing job. You need to create a client account to be able to create a launch crowdsourcing job. Preview of the appen job used in this experiment is at https://view.appen.io/channels/cf_internal/jobs/1670895/editor_preview?token=ne2tN-bKLMxl-YCvOGV-YA.
 
 ### Filtering of data
-todo describe filtering
+Data from appen is filtered based on the following criteria:
+1. People who did not read instructions;
+2. People that are under 18 years of age;
+3. People who completed the study in under 5 min;
+4. People who completed the study from the same IP more than once (the 1st data entry is retained);
+5. People who used the same `worker_code` multiple times.
 
 #### Cheaters
 One of the disadvantages of crowdsourcing is having to deal with workers that accept and do crowdsourcing jobs just for money (i.e., `cheaters`). The framework offers filtering mechanisms to remove data from such people from the dataset used for the analysis.

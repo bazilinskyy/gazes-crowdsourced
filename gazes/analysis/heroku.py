@@ -60,7 +60,7 @@ class Heroku:
                     self.heroku_data.shape)
 
     def read_data(self):
-        # todo: process group 2
+        # todo: filter data based on mistakes with salient images
         # load data
         if self.load_p:
             self.heroku_data = gz.common.load_from_p(self.file_p,
