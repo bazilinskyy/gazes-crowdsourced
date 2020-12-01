@@ -54,7 +54,7 @@ class Analysis:
         plt.gca().yaxis.set_major_locator(plt.NullLocator())
         # save image
         if save_file:
-            self.save_fig(image, fig, '/heatmaps/', '_gazes.png')
+            self.save_fig(image, fig, '/heatmaps/', '_gazes.jpg')
 
     def create_heatmap(self,
                        image,
