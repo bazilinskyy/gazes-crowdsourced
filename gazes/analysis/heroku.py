@@ -245,19 +245,20 @@ class Heroku:
                 except Exception as e:
                     data_dict[dict_row['worker_code']] = dict_row
             # turn into panda's dataframe
-            self.heroku_data = pd.DataFrame(data_dict)
-            self.heroku_data = self.heroku_data.transpose()
+            df = pd.DataFrame(data_dict)
+            df = df.transpose()
         # save to pickle
         if self.save_p:
-            gz.common.save_to_p(self.file_p,  self.heroku_data, 'heroku data')
+            gz.common.save_to_p(self.file_p,  df, 'heroku data')
         # save to csv
         if self.save_csv:
-            self.heroku_data.to_csv(gz.settings.output_dir + '/' +
-                                    self.file_data_csv)
-            logger.info('Saved heroku data to csv file {}.', self.file_data_csv)
-
+            df.to_csv(gz.settings.output_dir + '/' + self.file_data_csv)
+            logger.info('Saved heroku data to csv file {}.',
+                        self.file_data_csv)
+        # assign to attribute
+        self.heroku_data = df
         # return df with data
-        return self.heroku_data
+        return df
 
     def cb_to_coords(self):
         """

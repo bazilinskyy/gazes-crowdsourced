@@ -19,7 +19,9 @@ class Appen:
     file_p = 'appen_data.p'  # pickle file for saving data
     file_csv = 'appen_data.csv'  # csv file for saving data
     # mapping between appen column names and readable names
-    columns_mapping = {'about_how_many_kilometers_miles_did_you_drive_in_the_last_12_months': 'milage',  # noqa: E501
+    columns_mapping = {'_started_at': 'start',
+                       '_created_at': 'end',
+                       'about_how_many_kilometers_miles_did_you_drive_in_the_last_12_months': 'milage',  # noqa: E501
                        'at_which_age_did_you_obtain_your_first_license_for_driving_a_car_or_motorcycle': 'year_license',  # noqa: E501
                        'have_you_read_and_understood_the_above_instructions': 'instructions',  # noqa: E501
                        'how_many_accidents_were_you_involved_in_when_driving_a_car_in_the_last_3_years_please_include_all_accidents_regardless_of_how_they_were_caused_how_slight_they_were_or_where_they_happened': 'accidents',  # noqa: E501
@@ -70,21 +72,65 @@ class Appen:
         # process data
         else:
             # load from csv
-            self.appen_data = pd.read_csv(self.file_data)
+            df = pd.read_csv(self.file_data)
             # drop legcy worker code column
-            self.appen_data = self.appen_data.drop('worker_code', axis=1)
+            df = df.drop('worker_code', axis=1)
             # drop _gold columns
-            self.appen_data = self.appen_data.drop((x for x in self.appen_data.columns.tolist() if '_gold' in x), axis=1)  # noqa: E501
+            df = df.drop((x for x in df.columns.tolist() if '_gold' in x),  # noqa: E501
+                                                   axis=1)
             # rename columns to readable names
-            self.appen_data.rename(columns=self.columns_mapping, inplace = True)  # noqa: E501
+            df.rename(columns=self.columns_mapping, inplace=True)  # noqa: E501
+            # convert to time
+            df['start'] = pd.to_datetime(df['start'])
+            df['end'] = pd.to_datetime(df['end'])
+            df['time'] = (df['end'] - df['start']) / pd.Timedelta(minutes=1)
+            # filter data
+            df = self.filter_data(df)
+            # info on duration
+            logger.info('Time of participation: mean={:,.2f} min, \
+                         median={:,.2f} min, sd={:,.2f} min',
+                        df['time'].mean(),
+                        df['time'].median(),
+                        df['time'].std())
         # save to pickle
         if self.save_p:
-            gz.common.save_to_p(self.file_p,  self.appen_data, 'appen data')
+            gz.common.save_to_p(self.file_p,  df, 'appen data')
         # save to
         if self.save_csv:
-            self.appen_data.to_csv(gz.settings.output_dir + '/' +
-                                   self.file_csv)
+            df.to_csv(gz.settings.output_dir + '/' +
+                      self.file_csv)
             logger.info('Saved appen data to csv file {}.', self.file_csv)
-
+        # assign to attribute
+        self.appen_data = df
         # return df with data
-        return self.appen_data
+        return df
+
+    def filter_data(self, df):
+        logger.info('Filteirng appen data.')
+        # people that did not read instructions
+        df_1 = df.loc[df['instructions'] == 'no']
+        logger.info('People who did not read instructions: {}', df_1.shape[0])
+        # people that are underages
+        df_2 = df.loc[df['age'] < 18]
+        logger.info('People that are under 18 years of age: {}', df_2.shape[0])
+        # people that took less than 5 minues to complete the study
+        df_3 = df.loc[df['time'] < 5]
+        logger.info('People who completed the study in under 5 min: {}',
+                    df_3.shape[0])
+        # people that completed the study from the same IP address
+        df_4 = df[df['_ip'].duplicated(keep='first')]
+        logger.info('People who completed the study from the same IP: {}',
+                    df_4.shape[0])
+        # people that entered the same worker_code more than once
+        df_5 = df[df['worker_code'].duplicated(keep='first')]
+        logger.info('People who used the same worker_code: {}', df_5.shape[0])
+        # concatanate dfs with filtered data
+        old_size = df.shape[0]
+        df_filtered = pd.concat([df_1, df_1, df_3, df_4, df_5])
+        df_filtered = df_filtered.drop_duplicates().reset_index(drop=True)
+        # drop rows with filtered data
+        df = pd.merge(df, df_filtered, indicator=True, how='outer')
+        df = df.query('_merge=="left_only"')
+        df = df.drop('_merge', axis=1)
+        logger.info('Filtered in total: {}', old_size - df.shape[0])
+        return df
