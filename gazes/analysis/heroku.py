@@ -21,7 +21,8 @@ class Heroku:
     load_p = False  # load data as pickle file
     save_csv = False  # save data as csv file
     file_p = 'heroku_data.p'  # pickle file for saving data
-    file_csv = 'heroku_data.csv'  # csv file for saving data
+    file_data_csv = 'heroku_data.csv'  # csv file for saving data
+    file_points_csv = 'points.csv'  # csv file for saving data
     # keys with meta information
     meta_keys = ['worker_code',
                  'browser_user_agent',
@@ -254,8 +255,8 @@ class Heroku:
         # save to csv
         if self.save_csv:
             self.heroku_data.to_csv(gz.settings.output_dir + '/' +
-                                    self.file_csv)
-            logger.info('Saved heroku data to csv file {}.', self.file_csv)
+                                    self.file_data_csv)
+            logger.info('Saved heroku data to csv file {}.', self.file_data_csv)
 
         # return df with data
         return self.heroku_data
@@ -315,5 +316,15 @@ class Heroku:
                     if (given_in[val] in mapping[mapping_cb][1].keys()):
                         coords = mapping[mapping_cb][1][given_in[val]]
                     points[stim_id].append([coords[0], coords[1]])
+        # save to csv
+        if self.save_csv:
+            # create a dataframe to save to csv
+            df = pd.DataFrame(dict([(k, pd.Series(v)) for k, v in points.items()]))
+            df = df.transpose()
+            # save to csv
+            df.to_csv(gz.settings.output_dir + '/' +
+                      self.file_points_csv)
+            logger.info('Saved points ditctionary to csv file {}.',
+                        self.file_points_csv)
         # return points
         return points
