@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 import gazes as gz
 
-gz.logs(show_level='debug', show_color=True)
+gz.logs(show_level='info', show_color=True)
 logger = gz.CustomLogger(__name__)  # use custom logger
 
 
@@ -12,7 +12,7 @@ if __name__ == '__main__':
     # create object for working with heroku data
     files_heroku = gz.common.get_configs('files_heroku')
     heroku = gz.analysis.Heroku(files_data=files_heroku,
-                                save_p=True,
+                                save_p=False,
                                 load_p=False,
                                 save_csv=False)
     # read heroku data
@@ -21,11 +21,27 @@ if __name__ == '__main__':
     file_appen = gz.common.get_configs('file_appen')
     appen = gz.analysis.Appen(file_data=file_appen,
                               save_p=False,
-                              load_p=True,
+                              load_p=False,
                               save_csv=False)
     # read heroku data
     appen_data = appen.read_data()
     # todo: filter data
+    # filter data
+    # get keys in data files
+    heroku_data_keys = heroku_data.keys()
+    appen_data_keys = appen_data.keys()
+
+    # merge heroku and appen dataframes into one
+    all_data = heroku_data.merge(appen_data,
+                                 left_on='worker_code',
+                                 right_on='worker_code')
+    # update original data files
+    heroku_data = all_data[all_data.columns.intersection(heroku_data_keys)]
+    heroku_data = heroku_data.set_index('worker_code')
+    heroku.set_data(heroku_data)  # update object with filtered data
+    appen_data = all_data[all_data.columns.intersection(appen_data_keys)]
+    appen_data = appen_data.set_index('worker_code')
+    appen.set_data(appen_data)  # update object with filtered data
 
     # create arrays with coordinates for stimuli
     points = heroku.cb_to_coords()

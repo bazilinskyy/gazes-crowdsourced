@@ -37,7 +37,7 @@ The following royalty-free base images were used to create the sentinel images:
 Participants need to go through a training session before starting the experiment. They are allowed to fail the training a limited number of times. If they do not manage to finish the training session, they are not allowed to start the experiment. It is implemented by means of a cookie file.
 
 ## Crowdsourcing job on appen
-We use http://appen.com to run a crowdsourcing job. You need to create a client account to be able to create a launch crowdsourcing job. Preview of the appen job used in this experiment is at https://view.appen.io/channels/cf_internal/jobs/1670895/editor_preview?token=ne2tN-bKLMxl-YCvOGV-YA
+We use http://appen.com to run a crowdsourcing job. You need to create a client account to be able to create a launch crowdsourcing job. Preview of the appen job used in this experiment is at https://view.appen.io/channels/cf_internal/jobs/1670895/editor_preview?token=ne2tN-bKLMxl-YCvOGV-YA.
 
 ### Filtering of data
 todo describe filtering
@@ -49,10 +49,11 @@ One of the disadvantages of crowdsourcing is having to deal with workers that ac
 Cheaters can be reported by running `python gazes-crowdsourced/gazes/analysis/run_analysis.py`. Running this script also rejects rows of data from cheaters in appen data and triggers appen to acquire more data to replace the filtered rows.
 
 ## Analysis
-Analysis can be started by running `python gazes-crowdsourced/gazes/qa/flag_cheaters.py`.
+Analysis can be started by running `python gazes-crowdsourced/gazes/qa/flag_cheaters.py`. A number of csv files are saved in `gazes-crowdsourced/_output`.
 
 ### Visualisation
+Heatmaps and visualisations of gazes are saved in `gazes-crowdsourced/_output`. 
 todo: add example image with heatmap
 
-### Config of analysis
+### Configuration of analysis
 Configuration of analysis needs to be defined in `gazes-crowdsourced/gazes/analysis/config`. Please use the `default.config` file for the required structure of the file. If no custom config file is provided, `default.config` is used. 

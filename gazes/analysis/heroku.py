@@ -8,6 +8,9 @@ import re
 
 import gazes as gz
 
+# warning about partial assignment
+pd.options.mode.chained_assignment = None  # default='warn'
+
 logger = gz.CustomLogger(__name__)  # use custom logger
 
 
@@ -27,15 +30,13 @@ class Heroku:
                  'browser_full_version',
                  'browser_name',
                  'group_choice',
-                 'image_ids'
-                 ]
+                 'image_ids']
     # prefixes used for files in node.js implementation
     prefixes = {'training': 'training_',
                 'stimulus': 'image_',
                 'codeblock': 'cb_',
                 'sentinel': 'sentinel_',
-                'sentinel_cb': 'sentinel_cb_'
-                }
+                'sentinel_cb': 'sentinel_cb_'}
 
     def __init__(self,
                  files_data: list,
@@ -51,7 +52,11 @@ class Heroku:
         """
         Setter for the data object
         """
+        old_shape = self.heroku_data.shape  # store old shape for logging
         self.heroku_data = heroku_data
+        logger.info('Updated heroku_data. Old shape: {}. New shape: {}.',
+                    old_shape,
+                    self.heroku_data.shape)
 
     def read_data(self):
         # todo: process group 2
@@ -241,6 +246,8 @@ class Heroku:
             # turn into panda's dataframe
             self.heroku_data = pd.DataFrame(data_dict)
             self.heroku_data = self.heroku_data.transpose()
+            # set index to worker code
+            # self.heroku_data = self.heroku_data.set_index('worker_code')
         # save to pickle
         if self.save_p:
             gz.common.save_to_p(self.file_p,  self.heroku_data, 'heroku data')
@@ -249,9 +256,6 @@ class Heroku:
             self.heroku_data.to_csv(gz.settings.output_dir + '/' +
                                     self.file_csv)
             logger.info('Saved heroku data to csv file {}.', self.file_csv)
-
-        print(self.heroku_data.head)
-        print(self.heroku_data.keys())
 
         # return df with data
         return self.heroku_data
@@ -278,8 +282,7 @@ class Heroku:
             image_cb = 'image_' + str(stim_id) + '-cb'
             image_in = 'image_' + str(stim_id) + '-in'
             # trim df
-            stim_from_df = self.heroku_data[['worker_code',
-                                             'group_choice',
+            stim_from_df = self.heroku_data[['group_choice',
                                              image_cb,
                                              image_in]]
             # replace nans with empty lists
@@ -293,7 +296,7 @@ class Heroku:
                 given_in = stim_from_df.iloc[pp][image_in]
                 logger.debug('For {} from group {} found values {} input '
                              + 'for stimulus {}.',
-                             stim_from_df.iloc[pp]['worker_code'],
+                             stim_from_df.index[pp],
                              stim_from_df.iloc[pp]['group_choice'],
                              given_in,
                              stim_id)

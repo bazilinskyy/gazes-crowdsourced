@@ -33,7 +33,11 @@ class Appen:
         """
         Setter for the data object
         """
+        old_shape = self.appen_data.shape  # store old shape for logging
         self.appen_data = appen_data
+        logger.info('Updated appen_data. Old shape: {}. New shape: {}.',
+                    old_shape,
+                    self.appen_data.shape)
 
     def read_data(self):
         # load data
@@ -44,8 +48,12 @@ class Appen:
         else:
             # load from csv
             self.appen_data = pd.read_csv(self.file_data)
+            # rename legcy worker code column
+            self.appen_data = self.appen_data.rename(columns={'worker_code': 'worker_code_legacy'})  # noqa: E501
+            # rename column with worker code
+            self.appen_data = self.appen_data.rename(columns={'type_the_code_that_you_received_at_the_end_of_the_experiment': 'worker_code'})  # noqa: E501
             # set index to worker code
-            self.appen_data = self.appen_data.set_index('type_the_code_that_you_received_at_the_end_of_the_experiment')  # noqa: E501
+            # self.appen_data = self.appen_data.set_index('worker_code')
         # save to pickle
         if self.save_p:
             gz.common.save_to_p(self.file_p,  self.appen_data, 'appen data')
@@ -54,9 +62,6 @@ class Appen:
             self.appen_data.to_csv(gz.settings.output_dir + '/' +
                                    self.file_csv)
             logger.info('Saved appen data to csv file {}.', self.file_csv)
-
-        print(self.appen_data.head)
-        print(self.appen_data.keys())
 
         # return df with data
         return self.appen_data
