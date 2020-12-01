@@ -183,15 +183,15 @@ class Heroku:
                         if train_name != '':
                             # turn input to upper case
                             str_in = responses['input-codeblock'].upper()
-                            # Check if inputted values were recorded previously  # noqa: E501
-                            if train_name + '-in' not in dict_row.keys():  # noqa: E501
+                            # Check if inputted values were recorded previously
+                            if train_name + '-in' not in dict_row.keys():
                                 # first value
-                                dict_row[train_name + '-in'] = [str_in]  # noqa: E501
+                                dict_row[train_name + '-in'] = [str_in]
                             else:
                                 # previous values found
-                                dict_row[train_name + '-in'].append(str_in)  # noqa: E501
+                                dict_row[train_name + '-in'].append(str_in)
                             # Check if time spent values were recorded previously  # noqa: E501
-                            if train_name + '-rt' not in dict_row.keys():  # noqa: E501
+                            if train_name + '-rt' not in dict_row.keys():
                                 # first value
                                 dict_row[train_name + '-rt'] = [data_cell['rt']]  # noqa: E501
                             else:
@@ -204,16 +204,16 @@ class Heroku:
                             # turn input to upper case
                             str_in = responses['input-codeblock'].upper()
                             # Check if inputted values were recorded previously  # noqa: E501
-                            if stim_name + '-in' not in dict_row.keys():  # noqa: E501
+                            if stim_name + '-in' not in dict_row.keys():
                                 # first value
-                                dict_row[stim_name + '-in'] = [str_in]  # noqa: E501
+                                dict_row[stim_name + '-in'] = [str_in]
                             else:
                                 # previous values found
-                                dict_row[stim_name + '-in'].append(str_in)  # noqa: E501
+                                dict_row[stim_name + '-in'].append(str_in)
                             # Check if time spent values were recorded previously  # noqa: E501
-                            if stim_name + '-rt' not in dict_row.keys():  # noqa: E501
+                            if stim_name + '-rt' not in dict_row.keys():
                                 # first value
-                                dict_row[stim_name + '-rt'] = [data_cell['rt']]  # noqa: E501
+                                dict_row[stim_name + '-rt'] = [data_cell['rt']]
                             else:
                                 # previous values found
                                 dict_row[stim_name + '-rt'].append(data_cell['rt'])  # noqa: E501
@@ -223,17 +223,17 @@ class Heroku:
                         elif sent_name != '':
                             # turn input to upper case
                             str_in = responses['input-codeblock'].upper()
-                            # Check if inputted values were recorded previously  # noqa: E501
-                            if sent_name + '-in' not in dict_row.keys():  # noqa: E501
+                            # Check if inputted values were recorded previously
+                            if sent_name + '-in' not in dict_row.keys():
                                 # first value
-                                dict_row[sent_name + '-in'] = [str_in]  # noqa: E501
+                                dict_row[sent_name + '-in'] = [str_in]
                             else:
                                 # previous values found
-                                dict_row[sent_name + '-in'].append(str_in)  # noqa: E501
+                                dict_row[sent_name + '-in'].append(str_in)
                             # Check if time spent values were recorded previously  # noqa: E501
-                            if sent_name + '-rt' not in dict_row.keys():  # noqa: E501
+                            if sent_name + '-rt' not in dict_row.keys():
                                 # first value
-                                dict_row[sent_name + '-rt'] = [data_cell['rt']]  # noqa: E501
+                                dict_row[sent_name + '-rt'] = [data_cell['rt']]
                             else:
                                 # previous values found
                                 dict_row[sent_name + '-rt'].append(data_cell['rt'])  # noqa: E501
@@ -266,7 +266,6 @@ class Heroku:
         """
         Create arrays with coordinates for images.
         """
-        # todo: check why there are nans for stimuli
         # load mapping of codes and coordinates
         with open(gz.common.get_configs('mapping_cb')) as f:
             mapping = json.load(f)
@@ -334,7 +333,7 @@ class Heroku:
         """
         Filter data based on the folllowing criteria:
             1. People who entered incorrect codes for sentinel images more than
-               5 times.
+               gz.common.get_configs('allowed_mistakes_sent') times.
         """
         # more than allowed number of mistake with codes for sentinel images
         # load mapping of codes and coordinates

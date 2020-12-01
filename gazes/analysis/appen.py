@@ -76,10 +76,10 @@ class Appen:
             # drop legcy worker code column
             df = df.drop('worker_code', axis=1)
             # drop _gold columns
-            df = df.drop((x for x in df.columns.tolist() if '_gold' in x),  # noqa: E501
-                                                   axis=1)
+            df = df.drop((x for x in df.columns.tolist() if '_gold' in x),
+                         axis=1)
             # rename columns to readable names
-            df.rename(columns=self.columns_mapping, inplace=True)  # noqa: E501
+            df.rename(columns=self.columns_mapping, inplace=True)
             # convert to time
             df['start'] = pd.to_datetime(df['start'])
             df['end'] = pd.to_datetime(df['end'])
