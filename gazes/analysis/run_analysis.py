@@ -25,8 +25,6 @@ if __name__ == '__main__':
                               save_csv=True)
     # read heroku data
     appen_data = appen.read_data()
-    # todo: filter data
-    # filter data
     # get keys in data files
     heroku_data_keys = heroku_data.keys()
     appen_data_keys = appen_data.keys()

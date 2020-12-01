@@ -247,6 +247,8 @@ class Heroku:
             # turn into panda's dataframe
             df = pd.DataFrame(data_dict)
             df = df.transpose()
+            # filter data
+            df = self.filter_data(df)
         # save to pickle
         if self.save_p:
             gz.common.save_to_p(self.file_p,  df, 'heroku data')
@@ -318,7 +320,7 @@ class Heroku:
         # save to csv
         if self.save_csv:
             # create a dataframe to save to csv
-            df = pd.DataFrame(dict([(k, pd.Series(v)) for k, v in points.items()]))
+            df = pd.DataFrame(dict([(k, pd.Series(v)) for k, v in points.items()]))  # noqa: E501
             df = df.transpose()
             # save to csv
             df.to_csv(gz.settings.output_dir + '/' +
@@ -327,3 +329,82 @@ class Heroku:
                         self.file_points_csv)
         # return points
         return points
+
+    def filter_data(self, df):
+        """
+        Filter data based on the folllowing criteria:
+            1. People who entered incorrect codes for sentinel images more than
+               5 times.
+        """
+        # more than allowed number of mistake with codes for sentinel images
+        # load mapping of codes and coordinates
+        with open(gz.common.get_configs('mapping_sentinel_cb')) as f:
+            mapping = json.load(f)
+        allowed_mistakes = gz.common.get_configs('allowed_mistakes_sent')
+        # number of sentinel images in trainig
+        training_total = 5
+        # df to store data to filter out
+        df_1 = pd.DataFrame()
+        logger.info('Filteirng heroku data.')
+        # loop over rows in data
+        # tqdm adds progress bar
+        for index, row in tqdm(df.iterrows()):
+            # fill nans with empty lists
+            empty = pd.Series([[] for _ in range(len(row.index))],
+                              index=row.index)
+            row = row.fillna(empty)
+            # counter mistakes
+            mistakes_counter = 0
+            # counter sentinel images found in training
+            training_counter = 0
+            # loop over values in the row
+            for index_r, value_r in row.iteritems():
+                # check if input is given
+                if (value_r == []):
+                    # if no data present, move to the next cell
+                    continue
+                # sentinel image
+                if 'sentinel_' in index_r and '-in' in index_r:
+                    # sentinel image in training found
+                    if training_counter < training_total:
+                        # increase counter of sentinel images
+                        training_counter = training_counter + 1
+                        # skip since we are still in training data
+                        continue
+                    # sentinel image not in training found
+                    else:
+                        # increase counter of sentinel images
+                        training_counter = training_counter + 1
+                        sent_found = True
+                        # extract ID of image
+                        num_found = re.findall(r'\d+',
+                                               index_r)
+                        sent_name = num_found[0]
+                        # check if input is in list of correct codes
+                        mapping_cb = '../public/img/sentinel/sentinel_' + \
+                                     str(sent_name) + \
+                                     '.jpg'
+                        if (value_r[0] not in mapping[mapping_cb]['correct_codes']):  # noqa: E501
+                            # mistake found
+                            mistakes_counter = mistakes_counter + 1
+                            # check if limit was reached
+                            if mistakes_counter > allowed_mistakes:
+                                logger.debug('Found {} mistakes for sentinel '
+                                             + 'images for worker_code {}.',
+                                             mistakes_counter,
+                                             row['worker_code'])
+                                # add to df with data to filter out
+                                df_1 = df_1.append(row)
+                                break
+        logger.info('People who made more than {} mistakes with sentinel '
+                    + 'image: {}',
+                    allowed_mistakes,
+                    df_1.shape[0])
+        # concatanate dfs with filtered data
+        old_size = df.shape[0]
+        df_filtered = pd.concat([df_1])
+        # drop rows with filtered data
+        unique_worker_codes = df_filtered['worker_code'].drop_duplicates()
+        df = df[~df['worker_code'].isin(unique_worker_codes)]
+        logger.info('Filtered in total: {}', old_size - df.shape[0])
+        return df

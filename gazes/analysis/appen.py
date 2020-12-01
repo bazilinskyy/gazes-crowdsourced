@@ -87,8 +87,8 @@ class Appen:
             # filter data
             df = self.filter_data(df)
             # info on duration
-            logger.info('Time of participation: mean={:,.2f} min, \
-                         median={:,.2f} min, sd={:,.2f} min',
+            logger.info('Time of participation: mean={:,.2f} min, '
+                        + 'median={:,.2f} min, std={:,.2f} min.',
                         df['time'].mean(),
                         df['time'].median(),
                         df['time'].std())
@@ -106,6 +106,15 @@ class Appen:
         return df
 
     def filter_data(self, df):
+        """
+        Filter data based on the folllowing criteria:
+            1. People who did not read instructions.
+            2. People that are under 18 years of age.
+            3. People who completed the study in under 5 min.
+            4. People who completed the study from the same IP more than once
+               (the 1st data entry is retained).
+            5. People who used the same `worker_code` multiple times.
+        """
         logger.info('Filteirng appen data.')
         # people that did not read instructions
         df_1 = df.loc[df['instructions'] == 'no']
@@ -126,11 +135,9 @@ class Appen:
         logger.info('People who used the same worker_code: {}', df_5.shape[0])
         # concatanate dfs with filtered data
         old_size = df.shape[0]
-        df_filtered = pd.concat([df_1, df_1, df_3, df_4, df_5])
-        df_filtered = df_filtered.drop_duplicates().reset_index(drop=True)
+        df_filtered = pd.concat([df_1, df_2, df_3, df_4, df_5])
         # drop rows with filtered data
-        df = pd.merge(df, df_filtered, indicator=True, how='outer')
-        df = df.query('_merge=="left_only"')
-        df = df.drop('_merge', axis=1)
+        unique_worker_codes = df_filtered['worker_code'].drop_duplicates()
+        df = df[~df['worker_code'].isin(unique_worker_codes)]
         logger.info('Filtered in total: {}', old_size - df.shape[0])
         return df
