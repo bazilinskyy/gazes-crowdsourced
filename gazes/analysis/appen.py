@@ -18,6 +18,29 @@ class Appen:
     save_csv = False  # save data as csv file
     file_p = 'appen_data.p'  # pickle file for saving data
     file_csv = 'appen_data.csv'  # csv file for saving data
+    # mapping between appen column names and readable names
+    columns_mapping = {'about_how_many_kilometers_miles_did_you_drive_in_the_last_12_months': 'milage',  # noqa: E501
+                       'at_which_age_did_you_obtain_your_first_license_for_driving_a_car_or_motorcycle': 'year_license',  # noqa: E501
+                       'have_you_read_and_understood_the_above_instructions': 'instructions',  # noqa: E501
+                       'how_many_accidents_were_you_involved_in_when_driving_a_car_in_the_last_3_years_please_include_all_accidents_regardless_of_how_they_were_caused_how_slight_they_were_or_where_they_happened': 'accidents',  # noqa: E501
+                       'how_often_do_you_do_the_following_becoming_angered_by_a_particular_type_of_driver_and_indicate_your_hostility_by_whatever_means_you_can': 'dbq1_anger',  # noqa: E501
+                       'how_often_do_you_do_the_following_disregarding_the_speed_limit_on_a_motorway': 'dbq2_speed_motorway',  # noqa: E501
+                       'how_often_do_you_do_the_following_disregarding_the_speed_limit_on_a_residential_road': 'dbq3_speed_residential',  # noqa: E501
+                       'how_often_do_you_do_the_following_driving_so_close_to_the_car_in_front_that_it_would_be_difficult_to_stop_in_an_emergency': 'dbq4_headway',  # noqa: E501
+                       'how_often_do_you_do_the_following_racing_away_from_traffic_lights_with_the_intention_of_beating_the_driver_next_to_you': 'dbq5_traffic_lights',  # noqa: E501
+                       'how_often_do_you_do_the_following_sounding_your_horn_to_indicate_your_annoyance_with_another_road_user': 'dbq6_horn',  # noqa: E501
+                       'how_often_do_you_do_the_following_using_a_mobile_phone_without_a_hands_free_kit': 'dbq7_mobile',  # noqa: E501
+                       'if_you_answered_other_in_the_previous_question_please_decribe_the_place_where_you_located_now_below': 'place_other',  # noqa: E501
+                       'if_you_answered_other_in_the_previous_question_please_decribe_your_input_device_below': 'device_other',  # noqa: E501
+                       'in_which_type_of_place_are_you_located_now': 'place',
+                       'in_which_year_do_you_think_that_most_cars_will_be_able_to_drive_fully_automatically_in_your_country_of_residence': 'year_ad',  # noqa: E501
+                       'on_average_how_often_did_you_drive_a_vehicle_in_the_last_12_months': 'driving_freq',  # noqa: E501
+                       'please_provide_any_suggestions_that_could_help_engineers_to_build_safe_and_enjoyable_automated_cars': 'suggestions_ad',  # noqa: E501
+                       'type_the_code_that_you_received_at_the_end_of_the_experiment': 'worker_code',  # noqa: E501
+                       'what_is_your_age': 'age',
+                       'what_is_your_gender': 'gender',
+                       'what_is_your_primary_mode_of_transportation': 'mode_transportation',  # noqa: E501
+                       'which_input_device_are_you_using_now': 'device'}
 
     def __init__(self,
                  file_data: list,
@@ -48,12 +71,12 @@ class Appen:
         else:
             # load from csv
             self.appen_data = pd.read_csv(self.file_data)
-            # rename legcy worker code column
-            self.appen_data = self.appen_data.rename(columns={'worker_code': 'worker_code_legacy'})  # noqa: E501
-            # rename column with worker code
-            self.appen_data = self.appen_data.rename(columns={'type_the_code_that_you_received_at_the_end_of_the_experiment': 'worker_code'})  # noqa: E501
-            # set index to worker code
-            # self.appen_data = self.appen_data.set_index('worker_code')
+            # drop legcy worker code column
+            self.appen_data = self.appen_data.drop('worker_code', axis=1)
+            # drop _gold columns
+            self.appen_data = self.appen_data.drop((x for x in self.appen_data.columns.tolist() if '_gold' in x), axis=1)  # noqa: E501
+            # rename columns to readable names
+            self.appen_data.rename(columns=self.columns_mapping, inplace = True)  # noqa: E501
         # save to pickle
         if self.save_p:
             gz.common.save_to_p(self.file_p,  self.appen_data, 'appen data')

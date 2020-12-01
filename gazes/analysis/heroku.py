@@ -247,8 +247,6 @@ class Heroku:
             # turn into panda's dataframe
             self.heroku_data = pd.DataFrame(data_dict)
             self.heroku_data = self.heroku_data.transpose()
-            # set index to worker code
-            # self.heroku_data = self.heroku_data.set_index('worker_code')
         # save to pickle
         if self.save_p:
             gz.common.save_to_p(self.file_p,  self.heroku_data, 'heroku data')
