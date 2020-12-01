@@ -1,6 +1,6 @@
 Gaze detection with crowdsourcing
 =======
-This project defines a framework for the detection of gazes in a crowdsourced environment. It was inspired by http://turkeyes.mit.edu. In the description below, it is assumed that that the repo is stored in the folder `gazes-crowdsourced`. Commands before assume macOS.
+This project defines a framework for the detection of gazes in a crowdsourced environment. It was inspired by http://turkeyes.mit.edu. In the description below, it is assumed that that the repo is stored in the folder `gazes-crowdsourced`. Commands lower assume macOS.
 
 ## Setup
 To setup environment run these two commands:

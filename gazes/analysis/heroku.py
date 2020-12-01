@@ -26,7 +26,8 @@ class Heroku:
                  'browser_major_version',
                  'browser_full_version',
                  'browser_name',
-                 'group_choice'
+                 'group_choice',
+                 'image_ids'
                  ]
     # prefixes used for files in node.js implementation
     prefixes = {'training': 'training_',
