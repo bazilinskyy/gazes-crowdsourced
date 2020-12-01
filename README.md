@@ -45,10 +45,10 @@ We use http://appen.com to run a crowdsourcing job. You need to create a client 
 
 ### Filtering of appen data
 Data from appen is filtered based on the following criteria:
-1. People who did not read instructions;
-2. People that are under 18 years of age;
-3. People who completed the study in under 5 min;
-4. People who completed the study from the same IP more than once (the 1st data entry is retained);
+1. People who did not read instructions.
+2. People that are under 18 years of age.
+3. People who completed the study in under 5 min.
+4. People who completed the study from the same IP more than once (the 1st data entry is retained).
 5. People who used the same `worker_code` multiple times.
 
 #### Cheaters
