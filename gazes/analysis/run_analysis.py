@@ -12,8 +12,8 @@ if __name__ == '__main__':
     # create object for working with heroku data
     files_heroku = gz.common.get_configs('files_heroku')
     heroku = gz.analysis.Heroku(files_data=files_heroku,
-                                save_p=False,
-                                load_p=True,
+                                save_p=True,
+                                load_p=False,
                                 save_csv=False)
     # read heroku data
     heroku_data = heroku.read_data()
@@ -35,7 +35,7 @@ if __name__ == '__main__':
     # number of stimuli to process
     num_stimuli = gz.common.get_configs('num_stimuli')
     logger.info('Creating images with gazes and heatmaps for {} stimuli.',
-                 num_stimuli)
+                num_stimuli)
     # loop over stimuli from 1 to num_stimuli
     # tqdm adds progress bar
     for stim_id in tqdm(range(1, num_stimuli + 1)):
@@ -54,4 +54,4 @@ if __name__ == '__main__':
                                 points[stim_id],
                                 save_file=True)
     # show images
-    # plt.show()
+    plt.show()

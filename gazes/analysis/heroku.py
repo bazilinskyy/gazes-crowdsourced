@@ -53,6 +53,7 @@ class Heroku:
         self.heroku_data = heroku_data
 
     def read_data(self):
+        # todo: process group 2
         # load data
         if self.load_p:
             self.heroku_data = gz.common.load_from_p(self.file_p,
@@ -94,7 +95,7 @@ class Heroku:
                             # piece of meta data found, update dictionary
                             dict_row[key] = data_cell[key]
                             if key == 'worker_code':
-                                logger.debug('Working with row for' +
+                                logger.debug('Working with row for ' +
                                              'worker_code {}.',
                                              data_cell['worker_code'])
                     # check if stimulus data is present
@@ -127,8 +128,13 @@ class Heroku:
                                     # extract ID of codeblock
                                     num_found = re.findall(r'\d+',
                                                            stim_no_path)
-                                    # recored ID of codeblock
-                                    dict_row[sent_name + '-cb'] = num_found[0]
+                                    # Check if codeblocks were recorded previously  # noqa: E501
+                                    if sent_name + '-cb' not in dict_row.keys():  # noqa: E501
+                                        # first value
+                                        dict_row[sent_name + '-cb'] = [num_found[0]]  # noqa: E501
+                                    else:
+                                        # previous values found
+                                        dict_row[sent_name + '-cb'].append(num_found[0])  # noqa: E501
                             # codeblock image is found
                             elif self.prefixes['codeblock'] in stim_no_path:
                                 # record codeblock name for last stimulus or
@@ -137,14 +143,24 @@ class Heroku:
                                     # extract ID of codeblock
                                     num_found = re.findall(r'\d+',
                                                            stim_no_path)
-                                    # recored ID of codeblock
-                                    dict_row[train_name + '-cb'] = num_found[0]
+                                    # Check if codeblocks were recorded previously  # noqa: E501
+                                    if train_name + '-cb' not in dict_row.keys():  # noqa: E501
+                                        # first value
+                                        dict_row[train_name + '-cb'] = [num_found[0]]  # noqa: E501
+                                    else:
+                                        # previous values found
+                                        dict_row[train_name + '-cb'].append(num_found[0])  # noqa: E501
                                 elif stim_name != '':
                                     # extract ID of codeblock
                                     num_found = re.findall(r'\d+',
                                                            stim_no_path)
-                                    # recored ID of codeblock
-                                    dict_row[stim_name + '-cb'] = num_found[0]
+                                    # Check if codeblocks were recorded previously  # noqa: E501
+                                    if stim_name + '-cb' not in dict_row.keys():  # noqa: E501
+                                        # first value
+                                        dict_row[stim_name + '-cb'] = [num_found[0]]  # noqa: E501
+                                    else:
+                                        # previous values found
+                                        dict_row[stim_name + '-cb'].append(num_found[0])  # noqa: E501
                             # sentinel image is found
                             elif self.prefixes['sentinel'] in stim_no_path:
                                 # Record that stimulus was detected for the
@@ -160,30 +176,60 @@ class Heroku:
                         if train_name != '':
                             # turn input to upper case
                             str_in = responses['input-codeblock'].upper()
-                            # save inputted value
-                            dict_row[train_name + '-in'] = str_in
-                            # record time spent on stimulus
-                            dict_row[train_name + '-rt'] = data_cell['rt']
+                            # Check if inputted values were recorded previously  # noqa: E501
+                            if train_name + '-in' not in dict_row.keys():  # noqa: E501
+                                # first value
+                                dict_row[train_name + '-in'] = [str_in]  # noqa: E501
+                            else:
+                                # previous values found
+                                dict_row[train_name + '-in'].append(str_in)  # noqa: E501
+                            # Check if time spent values were recorded previously  # noqa: E501
+                            if train_name + '-rt' not in dict_row.keys():  # noqa: E501
+                                # first value
+                                dict_row[train_name + '-rt'] = [data_cell['rt']]  # noqa: E501
+                            else:
+                                # previous values found
+                                dict_row[train_name + '-rt'].append(data_cell['rt'])  # noqa: E501
                             # reset flags for found stimulus
                             train_found = False
                             train_name = ''
                         if stim_name != '':
                             # turn input to upper case
                             str_in = responses['input-codeblock'].upper()
-                            # save inputted value
-                            dict_row[stim_name + '-in'] = str_in
-                            # record time spent on stimulus
-                            dict_row[stim_name + '-rt'] = data_cell['rt']
+                            # Check if inputted values were recorded previously  # noqa: E501
+                            if stim_name + '-in' not in dict_row.keys():  # noqa: E501
+                                # first value
+                                dict_row[stim_name + '-in'] = [str_in]  # noqa: E501
+                            else:
+                                # previous values found
+                                dict_row[stim_name + '-in'].append(str_in)  # noqa: E501
+                            # Check if time spent values were recorded previously  # noqa: E501
+                            if stim_name + '-rt' not in dict_row.keys():  # noqa: E501
+                                # first value
+                                dict_row[stim_name + '-rt'] = [data_cell['rt']]  # noqa: E501
+                            else:
+                                # previous values found
+                                dict_row[stim_name + '-rt'].append(data_cell['rt'])  # noqa: E501
                             # reset flags for found stimulus
                             stim_found = False
                             stim_name = ''
                         elif sent_name != '':
                             # turn input to upper case
                             str_in = responses['input-codeblock'].upper()
-                            # save inputted value
-                            dict_row[sent_name + '-in'] = str_in
-                            # record time spent on stimulus
-                            dict_row[sent_name + '-rt'] = data_cell['rt']
+                            # Check if inputted values were recorded previously  # noqa: E501
+                            if sent_name + '-in' not in dict_row.keys():  # noqa: E501
+                                # first value
+                                dict_row[sent_name + '-in'] = [str_in]  # noqa: E501
+                            else:
+                                # previous values found
+                                dict_row[sent_name + '-in'].append(str_in)  # noqa: E501
+                            # Check if time spent values were recorded previously  # noqa: E501
+                            if sent_name + '-rt' not in dict_row.keys():  # noqa: E501
+                                # first value
+                                dict_row[sent_name + '-rt'] = [data_cell['rt']]  # noqa: E501
+                            else:
+                                # previous values found
+                                dict_row[sent_name + '-rt'].append(data_cell['rt'])  # noqa: E501
                             # reset flags for found sentinel image
                             sent_found = False
                             sent_name = ''
@@ -231,23 +277,45 @@ class Heroku:
             image_cb = 'image_' + str(stim_id) + '-cb'
             image_in = 'image_' + str(stim_id) + '-in'
             # trim df
-            stimulus_from_df = self.heroku_data[[image_cb, image_in]]
+            stim_from_df = self.heroku_data[['worker_code',
+                                             'group_choice',
+                                             image_cb,
+                                             image_in]]
+            # replace nans with empty lists
+            empty = pd.Series([[] for _ in range(len(stim_from_df.index))],
+                              index=stim_from_df.index)
+            stim_from_df[image_cb] = stim_from_df[image_cb].fillna(empty)
+            stim_from_df[image_in] = stim_from_df[image_in].fillna(empty)
             # iterate of data from participants for the given stimulus
-            for pp in range(len(stimulus_from_df)):
+            for pp in range(len(stim_from_df)):
                 # input given by participant
-                given_in = stimulus_from_df.iloc[pp][image_in]
+                given_in = stim_from_df.iloc[pp][image_in]
+                # iterate over all values given by the participand
                 # check if data from participant is present for the given
                 # stimulus
-                if (not stimulus_from_df.iloc[pp][image_cb] or
-                    pd.isna(stimulus_from_df.iloc[pp][image_cb])):
-                    # if no data present, move to the next participant
-                    continue
-                # check if input is in mapping
-                mapping_cb = '../public/img/codeboard/cb_' + \
-                             stimulus_from_df.iloc[pp][image_cb] + \
-                             '.jpg'
-                if (given_in in mapping[mapping_cb][1].keys()):
-                    coords = mapping[mapping_cb][1][given_in]
-                points[stim_id].append([coords[0], coords[1]])
+                # if no data present, move to the next value
+                # if (not stim_from_df.iloc[pp][image_cb] or
+                #    pd.isna(stim_from_df.iloc[pp][image_cb])):
+                #     continue
+                logger.debug('For {} from group {} found values {} input '
+                             + 'for stimulus {}.',
+                             stim_from_df.iloc[pp]['worker_code'],
+                             stim_from_df.iloc[pp]['group_choice'],
+                             given_in,
+                             stim_id)
+                for val in range(len(given_in)):
+                    # check if data from participant is present for the given
+                    # stimulus
+                    if (not stim_from_df.iloc[pp][image_cb][val] or
+                       pd.isna(stim_from_df.iloc[pp][image_cb][val])):
+                        # if no data present, move to the next participant
+                        continue
+                    # check if input is in mapping
+                    mapping_cb = '../public/img/codeboard/cb_' + \
+                                 stim_from_df.iloc[pp][image_cb][val] + \
+                                 '.jpg'
+                    if (given_in[val] in mapping[mapping_cb][1].keys()):
+                        coords = mapping[mapping_cb][1][given_in[val]]
+                    points[stim_id].append([coords[0], coords[1]])
         # return points
         return points
