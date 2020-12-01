@@ -36,14 +36,14 @@ The following royalty-free base images were used to create the sentinel images:
 ### Training
 Participants need to go through a training session before starting the experiment. They are allowed to fail the training a limited number of times. If they do not manage to finish the training session, they are not allowed to start the experiment. It is implemented by means of a cookie file.
 
-### Filtering of data
-Data from heroku implementation is filtered based on the following criteria:
+### Filtering of heroku data
+Data from heroku is filtered based on the following criteria:
 1. People who entered incorrect codes for sentinel images more than 5 times.
 
 ## Crowdsourcing job on appen
 We use http://appen.com to run a crowdsourcing job. You need to create a client account to be able to create a launch crowdsourcing job. Preview of the appen job used in this experiment is at https://view.appen.io/channels/cf_internal/jobs/1670895/editor_preview?token=ne2tN-bKLMxl-YCvOGV-YA.
 
-### Filtering of data
+### Filtering of appen data
 Data from appen is filtered based on the following criteria:
 1. People who did not read instructions;
 2. People that are under 18 years of age;
