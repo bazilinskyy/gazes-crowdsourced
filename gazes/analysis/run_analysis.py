@@ -39,7 +39,6 @@ if __name__ == '__main__':
     # loop over stimuli from 1 to num_stimuli
     # tqdm adds progress bar
     for stim_id in tqdm(range(1, num_stimuli + 1)):
-    # for stim_id in [1]:
         # create path for stimulus
         stim_path = gz.common.get_configs('path_stimuli') + \
                     '/image_' + \
@@ -49,9 +48,14 @@ if __name__ == '__main__':
         analysis.create_gazes(stim_path,
                               points[stim_id],
                               save_file=True)
-        # create heatmap for stimulus
+        # create heatmaps for stimulus
         analysis.create_heatmap(stim_path,
                                 points[stim_id],
+                                type_heatmap='contourf',
+                                save_file=True)
+        analysis.create_heatmap(stim_path,
+                                points[stim_id],
+                                type_heatmap='pcolormesh',
                                 save_file=True)
     # show images
     plt.show()

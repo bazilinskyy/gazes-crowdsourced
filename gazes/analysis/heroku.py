@@ -290,19 +290,13 @@ class Heroku:
             for pp in range(len(stim_from_df)):
                 # input given by participant
                 given_in = stim_from_df.iloc[pp][image_in]
-                # iterate over all values given by the participand
-                # check if data from participant is present for the given
-                # stimulus
-                # if no data present, move to the next value
-                # if (not stim_from_df.iloc[pp][image_cb] or
-                #    pd.isna(stim_from_df.iloc[pp][image_cb])):
-                #     continue
                 logger.debug('For {} from group {} found values {} input '
                              + 'for stimulus {}.',
                              stim_from_df.iloc[pp]['worker_code'],
                              stim_from_df.iloc[pp]['group_choice'],
                              given_in,
                              stim_id)
+                # iterate over all values given by the participand
                 for val in range(len(given_in)):
                     # check if data from participant is present for the given
                     # stimulus
