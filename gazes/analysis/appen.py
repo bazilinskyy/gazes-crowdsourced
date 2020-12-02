@@ -18,6 +18,7 @@ class Appen:
     save_csv = False  # save data as csv file
     file_p = 'appen_data.p'  # pickle file for saving data
     file_csv = 'appen_data.csv'  # csv file for saving data
+    file_cheaters_csv = 'cheaters.csv'  # csv file for saving list of cheaters
     # mapping between appen column names and readable names
     columns_mapping = {'_started_at': 'start',
                        '_created_at': 'end',
@@ -97,10 +98,9 @@ class Appen:
         # save to pickle
         if self.save_p:
             gz.common.save_to_p(self.file_p,  df, 'appen data')
-        # save to
+        # save to csv
         if self.save_csv:
-            df.to_csv(gz.settings.output_dir + '/' +
-                      self.file_csv)
+            df.to_csv(gz.settings.output_dir + '/' + self.file_csv)
             logger.info('Saved appen data to csv file {}.', self.file_csv)
         # assign to attribute
         self.appen_data = df
@@ -125,7 +125,8 @@ class Appen:
         # people that are underages
         df_2 = df.loc[df['age'] < 18]
         logger.info('People that are under 18 years of age: {}', df_2.shape[0])
-        # people that took less than 5 minues to complete the study
+        # People that took less than gz.common.get_configs('allowed_min_time')
+        # minutes to complete the study
         df_3 = df.loc[df['time'] < gz.common.get_configs('allowed_min_time')]
         logger.info('People who completed the study in under ' +
                     str(gz.common.get_configs('allowed_min_time')) +
@@ -138,6 +139,11 @@ class Appen:
         # people that entered the same worker_code more than once
         df_5 = df[df['worker_code'].duplicated(keep='first')]
         logger.info('People who used the same worker_code: {}', df_5.shape[0])
+        # save to csv
+        if self.save_csv:
+            df_5.to_csv(gz.settings.output_dir + '/' + self.file_cheaters_csv)
+            logger.info('Saved list of cheaters to csv file {}.',
+                        self.file_cheaters_csv)
         # concatanate dfs with filtered data
         old_size = df.shape[0]
         df_filtered = pd.concat([df_1, df_2, df_3, df_4, df_5])
@@ -221,6 +227,5 @@ class Appen:
         if mask_id:
             logger.info('Finished replacement of IDs in appen data.')
             logger.info('Unique IDs detected: {}', str(len(proc_ids)))
-        print(df.shape)
         # return dataframe with replaced values
         return df
