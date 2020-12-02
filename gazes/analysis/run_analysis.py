@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 import gazes as gz
 
-gz.logs(show_level='info', show_color=True)
+gz.logs(show_level='debug', show_color=True)
 logger = gz.CustomLogger(__name__)  # use custom logger
 
 

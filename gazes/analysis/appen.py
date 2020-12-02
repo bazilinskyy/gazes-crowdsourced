@@ -83,15 +83,17 @@ class Appen:
             # convert to time
             df['start'] = pd.to_datetime(df['start'])
             df['end'] = pd.to_datetime(df['end'])
-            df['time'] = (df['end'] - df['start']) / pd.Timedelta(minutes=1)
+            df['time'] = (df['end'] - df['start']) / pd.Timedelta(seconds=1)
             # filter data
             df = self.filter_data(df)
-            # info on duration
+            # mask IDs and IPs
+            df = self.mask_ips_ids(df)
+            # info on duration in minutes
             logger.info('Time of participation: mean={:,.2f} min, '
                         + 'median={:,.2f} min, std={:,.2f} min.',
-                        df['time'].mean(),
-                        df['time'].median(),
-                        df['time'].std())
+                        df['time'].mean()/60,
+                        df['time'].median()/60,
+                        df['time'].std()/60)
         # save to pickle
         if self.save_p:
             gz.common.save_to_p(self.file_p,  df, 'appen data')
@@ -115,6 +117,7 @@ class Appen:
                (the 1st data entry is retained).
             5. People who used the same `worker_code` multiple times.
         """
+        # todo: export csv file with cheaters
         logger.info('Filteirng appen data.')
         # people that did not read instructions
         df_1 = df.loc[df['instructions'] == 'no']
@@ -123,8 +126,10 @@ class Appen:
         df_2 = df.loc[df['age'] < 18]
         logger.info('People that are under 18 years of age: {}', df_2.shape[0])
         # people that took less than 5 minues to complete the study
-        df_3 = df.loc[df['time'] < 5]
-        logger.info('People who completed the study in under 5 min: {}',
+        df_3 = df.loc[df['time'] < gz.common.get_configs('allowed_min_time')]
+        logger.info('People who completed the study in under ' +
+                    str(gz.common.get_configs('allowed_min_time')) +
+                    ' sec: {}',
                     df_3.shape[0])
         # people that completed the study from the same IP address
         df_4 = df[df['_ip'].duplicated(keep='first')]
@@ -139,5 +144,83 @@ class Appen:
         # drop rows with filtered data
         unique_worker_codes = df_filtered['worker_code'].drop_duplicates()
         df = df[~df['worker_code'].isin(unique_worker_codes)]
+        # reset index in dataframe
+        df = df.reset_index()
         logger.info('Filtered in total: {}', old_size - df.shape[0])
+        return df
+
+    def mask_ips_ids(self, df, mask_ip=True, mask_id=True):
+        """
+        Anonymyse IPs and IDs. IDs are anonymised by subtracting the
+        given ID from gz.common.get_configs('mask_id').
+        """
+        # loop through rows of the file
+        if mask_ip:
+            proc_ips = []  # store masked IP's here
+            logger.info('Replacing IPs in appen data.')
+        if mask_id:
+            proc_ids = []  # store masked ID's here
+            logger.info('Replacing IDs in appen data.')
+        for i in range(len(df['_ip'])):  # loop through ips
+            # anonymise IPs
+            if mask_ip:
+                # IP address
+                # new IP
+                if not any(d['o'] == df['_ip'][i] for d in proc_ips):
+                    # mask in format 0.0.0.ID
+                    masked_ip = '0.0.0.' + str(len(proc_ips))
+                    # record IP as already replaced
+                    # o=original; m=masked
+                    proc_ips.append({'o': df['_ip'][i], 'm': masked_ip})
+                    df.at[i, '_ip'] = masked_ip
+                    logger.debug('Replaced IP {} with {} for {}',
+                                 proc_ips[-1]['o'],
+                                 proc_ips[-1]['m'],
+                                 df['worker_code'][i])
+                else:  # already replaced
+                    for item in proc_ips:
+                        if item['o'] == df['_ip'][i]:
+
+                            # fetch previously used mask for the IP
+                            df.at[i, '_ip'] = item['m']
+                            logger.debug('Replaced repeating IP {} with {} ' +
+                                         'code for {}',
+                                         item['o'],
+                                         item['m'],
+                                         df['worker_code'][i])
+            # anonymise worker IDs
+            if mask_id:
+                # new worker ID
+                if not any(d['o'] == df['_worker_id'][i] for d in proc_ids):
+                    # mask in format random_int - worker_id
+                    masked_id = (str(gz.common.get_configs('mask_id') -
+                                 df['_worker_id'][i]))
+                    # record IP as already replaced
+                    proc_ids.append({'o': df['_worker_id'][i],
+                                     'm': masked_id})
+                    df.at[i, '_worker_id'] = masked_id
+                    logger.debug('Replaced ID {} with {} for {}',
+                                 proc_ids[-1]['o'],
+                                 proc_ids[-1]['m'],
+                                 df['worker_code'][i])
+                # already replaced
+                else:
+                    for item in proc_ids:
+                        if item['o'] == df['_worker_id'][i]:
+                            # fetch previously used mask for the ID
+                            df.at[i, '_worker_id'] = item['m']
+                            logger.debug('Replaced repeating ID {} with {} ' +
+                                         'code for {}',
+                                         item['o'],
+                                         item['m'],
+                                         df['worker_code'][i])
+        # output for checking
+        if mask_ip:
+            logger.info('Finished replacement of IPs in appen data.')
+            logger.info('Unique IPs detected: {}', str(len(proc_ips)))
+        if mask_id:
+            logger.info('Finished replacement of IDs in appen data.')
+            logger.info('Unique IDs detected: {}', str(len(proc_ids)))
+        print(df.shape)
+        # return dataframe with replaced values
         return df
