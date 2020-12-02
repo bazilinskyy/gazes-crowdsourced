@@ -1,6 +1,6 @@
 Gaze detection with crowdsourcing
 =======
-This project defines a framework for the detection of gazes in a crowdsourced environment. It was inspired by http://turkeyes.mit.edu. In the description below, it is assumed that that the repo is stored in the folder `gazes-crowdsourced`. Commands lower assume macOS.
+This project defines a framework for the detection of gazes in a crowdsourced environment. It was inspired by the [TurkEyes project](http://turkeyes.mit.edu). The [jsPsych framework](https://www.jspsych.org/) is used to for the frontend. Data is stored in a mongodb database. In the description below, it is assumed that that the repo is stored in the folder `gazes-crowdsourced`. Commands lower assume macOS.
 
 ## Setup
 To setup environment run these two commands:
@@ -8,12 +8,12 @@ To setup environment run these two commands:
 - `pip install -r gazes-crowdsourced/requirements.txt` will install required packages.
 
 ## Implementation on heroku
-We use https://www.heroku.com/ to host the node.js implementation. It may be viewed at https://gazes-crowdsourced.herokuapp.com/?debug=1&save_data=0. Implementation supports stimuli as images and/or videos.
+We use [Heroku](https://www.heroku.com/) to host the node.js implementation. The demo of the implementation may be viewed [here](https://gazes-crowdsourced.herokuapp.com/?debug=1&save_data=0). Implementation supports images and/or videos as stimuli.
 
 ### Codecharts
 ![example of codechart](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/public/img/codeboard/cb_0.jpg?raw=true)
 
-Gaze information is gathered by showing a black screen with a set of random codes in the format 'LDD' (L=letter, D=digit, e.g., 'F32'). The participant is asked to remember the last code they were looking at. On the next page they need to input that code. Gazes are aggregated based on the mapping of codes to the coordinates within a stimulus. The mapping is present at https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/public/img/codeboard/data.json.
+Gaze information is gathered by showing a black screen with a set of random codes in the format 'LDD' (L=letter, D=digit, e.g., 'F32'). The participant is asked to remember the last code they were looking at. On the next page they need to input that code. Gazes are aggregated based on the mapping of codes to the coordinates within a stimulus. The mapping is available [here](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/public/img/codeboard/data.json).
 
 ### Sentinel images
 ![example of sentinel image](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/public/img/sentinel/sentinel_0.jpg?raw=true)
@@ -41,7 +41,7 @@ Data from heroku is filtered based on the following criteria:
 1. People who entered incorrect codes for sentinel images more than `config.allowed_mistakes_sent` times.
 
 ## Crowdsourcing job on appen
-We use http://appen.com to run a crowdsourcing job. You need to create a client account to be able to create a launch crowdsourcing job. Preview of the appen job used in this experiment is at https://view.appen.io/channels/cf_internal/jobs/1670895/editor_preview?token=ne2tN-bKLMxl-YCvOGV-YA.
+We use [appen](http://appen.com) to run a crowdsourcing job. You need to create a client account to be able to create a launch crowdsourcing job. Preview of the appen job used in this experiment is available [here](https://view.appen.io/channels/cf_internal/jobs/1670895/editor_preview?token=ne2tN-bKLMxl-YCvOGV-YA).
 
 ### Filtering of appen data
 Data from appen is filtered based on the following criteria:
