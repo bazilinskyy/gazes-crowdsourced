@@ -81,6 +81,5 @@ if __name__ == '__main__':
                for manager in
                matplotlib._pylab_helpers.Gcf.get_all_fig_managers()]
     # show figures, if any
-    print(figures)
     if figures:
         plt.show()
