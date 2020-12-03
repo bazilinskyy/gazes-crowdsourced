@@ -47,3 +47,4 @@ from . import settings  # noqa E402
 from .analysis import Analysis  # noqa E402
 from .analysis import Appen  # noqa E402
 from .analysis import Heroku  # noqa E402
+from .qa import QA  # noqa E402

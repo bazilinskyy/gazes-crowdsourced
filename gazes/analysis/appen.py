@@ -141,6 +141,7 @@ class Appen:
         logger.info('People who used the same worker_code: {}', df_5.shape[0])
         # save to csv
         if self.save_csv:
+            df_5 = df_5.reset_index()
             df_5.to_csv(gz.settings.output_dir + '/' + self.file_cheaters_csv)
             logger.info('Saved list of cheaters to csv file {}.',
                         self.file_cheaters_csv)

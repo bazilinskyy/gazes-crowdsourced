@@ -1,10 +1,11 @@
 # by Pavlo Bazilinskyy <pavlo.bazilinskyy@gmail.com>
 from tqdm import tqdm
 import matplotlib.pyplot as plt
+import matplotlib._pylab_helpers
 
 import gazes as gz
 
-gz.logs(show_level='debug', show_color=True)
+gz.logs(show_level='info', show_color=True)
 logger = gz.CustomLogger(__name__)  # use custom logger
 
 
@@ -12,7 +13,7 @@ if __name__ == '__main__':
     # create object for working with heroku data
     files_heroku = gz.common.get_configs('files_heroku')
     heroku = gz.analysis.Heroku(files_data=files_heroku,
-                                save_p=False,
+                                save_p=True,
                                 load_p=False,
                                 save_csv=True)
     # read heroku data
@@ -20,15 +21,19 @@ if __name__ == '__main__':
     # create object for working with appen data
     file_appen = gz.common.get_configs('file_appen')
     appen = gz.analysis.Appen(file_data=file_appen,
-                              save_p=False,
+                              save_p=True,
                               load_p=False,
                               save_csv=True)
-    # read heroku data
+    # read appen data
     appen_data = appen.read_data()
     # get keys in data files
     heroku_data_keys = heroku_data.keys()
     appen_data_keys = appen_data.keys()
-
+    # flag and reject cheaters
+    qa = gz.qa.QA(file_cheaters=gz.common.get_configs('file_cheaters'),
+                  job_id=gz.common.get_configs('appen_job'))
+    qa.flag_users()
+    qa.reject_users()
     # merge heroku and appen dataframes into one
     all_data = heroku_data.merge(appen_data,
                                  left_on='worker_code',
@@ -71,5 +76,11 @@ if __name__ == '__main__':
                                 points[stim_id],
                                 type_heatmap='pcolormesh',
                                 save_file=True)
-    # show images
-    plt.show()
+    # check if any figures are to be rendered
+    figures = [manager.canvas.figure
+               for manager in
+               matplotlib._pylab_helpers.Gcf.get_all_fig_managers()]
+    # show figures, if any
+    print(figures)
+    if figures:
+        plt.show()

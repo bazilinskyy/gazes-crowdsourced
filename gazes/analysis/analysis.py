@@ -10,6 +10,7 @@ from scipy.stats.kde import gaussian_kde
 import gazes as gz
 
 matplotlib.use('TkAgg')
+logger = gz.CustomLogger(__name__)  # use custom logger
 
 
 class Analysis:
@@ -20,6 +21,11 @@ class Analysis:
         """
         Output gazes for image based on the list of lists of points.
         """
+        # check if data is present
+        if not points:
+            logger.error('Not enough data. Gazes visualisation not ceated for '
+                         + '{}.', image)
+            return
         # read original image
         im = plt.imread(image)
         # get dimensions
@@ -66,6 +72,10 @@ class Analysis:
         """
         # todo: check https://stackoverflow.com/questions/36957149/density-map-heatmaps-in-matplotlib
         # todo: implement smoothing https://stackoverflow.com/questions/2369492/generate-a-heatmap-in-matplotlib-using-a-scatter-data-set
+        # check if data is present
+        if not points:
+            logger.error('Not enough data. Heatmap not ceated for {}.', image)
+            return
         # get dimensions of base image
         width = gz.common.get_configs('stimulus_width')
         height = gz.common.get_configs('stimulus_height')
@@ -73,10 +83,15 @@ class Analysis:
         xy = np.array(points)
         x = xy[:, 0]
         y = xy[:, 1]
-        k = gaussian_kde(np.vstack([x, y]))
-        xi, yi = np.mgrid[x.min():x.max():x.size**0.5*1j,
-                          y.min():y.max():y.size**0.5*1j]
-        zi = k(np.vstack([xi.flatten(), yi.flatten()]))
+        try:
+            k = gaussian_kde(np.vstack([x, y]))
+            xi, yi = np.mgrid[x.min():x.max():x.size**0.5*1j,
+                              y.min():y.max():y.size**0.5*1j]
+            zi = k(np.vstack([xi.flatten(), yi.flatten()]))
+        except (np.linalg.LinAlgError, np.linalg.LinAlgError, ValueError) as e:
+            logger.error('Not enough data. Heatmap not ceated for {}.', image)
+            return
+
 
         # create figure object with given dpi and dimensions
         dpi = 150
@@ -85,10 +100,22 @@ class Analysis:
         # alpha=0.5 makes the plot semitransparent
         suffix_file = ''  # suffix to add to saved image
         if type_heatmap == 'contourf':
-            plt.contourf(xi, yi, zi.reshape(xi.shape), alpha=0.5)
+            try:
+                plt.contourf(xi, yi, zi.reshape(xi.shape), alpha=0.5)
+            except TypeError as e:
+                logger.error('Not enough data. Heatmap not ceated for {}.',
+                             image)
+                fig.clf()  # clear figure from memory
+                return
             suffix_file = '_contourf.jpg'
         elif type_heatmap == 'pcolormesh':
-            plt.pcolormesh(xi, yi, zi.reshape(xi.shape), alpha=0.5)
+            try:
+                plt.pcolormesh(xi, yi, zi.reshape(xi.shape), alpha=0.5)
+            except TypeError as e:
+                logger.error('Not enough data. Heatmap not ceated for {}.',
+                             image)
+                fig.clf()  # clear figure from memory
+                return
             suffix_file = '_pcolormesh.jpg'
         else:
             logger.error('Wrong type_heatmap {} given.', type_heatmap)
