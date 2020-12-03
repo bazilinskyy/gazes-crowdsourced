@@ -40,8 +40,6 @@ class Analysis:
         dpi = 150
         fig = plt.figure(figsize=(width/dpi, height/dpi), dpi=dpi)
         plt.imshow(im)
-                   # extent=[x.min(), x.max(), y.min(), y.max()],
-                   #aspect='auto')  # original image
         for point in points:
             plt.plot(point[0],
                      point[1],
@@ -74,8 +72,6 @@ class Analysis:
         add_corners: add points to the corners to have the heatmap ovelay the
                      whole image
         """
-        # todo: check https://stackoverflow.com/questions/36957149/density-map-heatmaps-in-matplotlib
-        # todo: implement smoothing https://stackoverflow.com/questions/2369492/generate-a-heatmap-in-matplotlib-using-a-scatter-data-set
         # check if data is present
         if not points:
             logger.error('Not enough data. Heatmap was not created for {}.',
@@ -100,7 +96,7 @@ class Analysis:
             k = gaussian_kde(np.vstack([x, y]))
             xi, yi = np.mgrid[x.min():x.max():x.size**0.5*1j,
                               y.min():y.max():y.size**0.5*1j]
-            zi = k(np.vstack([xi.flatten(), yi.flatten()]))            
+            zi = k(np.vstack([xi.flatten(), yi.flatten()]))
         except (np.linalg.LinAlgError, np.linalg.LinAlgError, ValueError) as e:
             logger.error('Not enough data. Heatmap was not created for {}.',
                          image)

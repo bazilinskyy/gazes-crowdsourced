@@ -68,7 +68,7 @@ class Appen:
         # load data
         if self.load_p:
             df = gz.common.load_from_p(self.file_p,
-                                                    'appen data')
+                                       'appen data')
         # process data
         else:
             # load from csv
