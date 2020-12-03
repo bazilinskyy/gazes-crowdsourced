@@ -63,8 +63,8 @@ class Heroku:
         # todo: filter data based on mistakes with salient images
         # load data
         if self.load_p:
-            self.heroku_data = gz.common.load_from_p(self.file_p,
-                                                     'heroku data')
+            df = gz.common.load_from_p(self.file_p,
+                                       'heroku data')
         # process data
         else:
             # read files with heroku data one by one

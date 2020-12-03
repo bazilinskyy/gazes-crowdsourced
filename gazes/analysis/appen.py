@@ -1,5 +1,4 @@
 # by Pavlo Bazilinskyy <pavlo.bazilinskyy@gmail.com>
-
 import json
 import os
 import pandas as pd
@@ -68,7 +67,7 @@ class Appen:
     def read_data(self):
         # load data
         if self.load_p:
-            self.appen_data = gz.common.load_from_p(self.file_p,
+            df = gz.common.load_from_p(self.file_p,
                                                     'appen data')
         # process data
         else:
