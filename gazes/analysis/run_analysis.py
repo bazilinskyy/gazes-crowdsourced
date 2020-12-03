@@ -62,6 +62,7 @@ if __name__ == '__main__':
                     '/image_' + \
                     str(stim_id) + \
                     '.jpg'
+
         # create image with overlay of gazes for stimulus
         analysis.create_gazes(stim_path,
                               points[stim_id],
@@ -75,6 +76,11 @@ if __name__ == '__main__':
         analysis.create_heatmap(stim_path,
                                 points[stim_id],
                                 type_heatmap='pcolormesh',
+                                add_corners=True,
+                                save_file=True)
+        analysis.create_heatmap(stim_path,
+                                points[stim_id],
+                                type_heatmap='kdeplot',
                                 add_corners=True,
                                 save_file=True)
         # create histogram for stimulus

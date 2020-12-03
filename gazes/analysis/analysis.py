@@ -5,6 +5,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
 import numpy as np
+import seaborn as sns
 from scipy.stats.kde import gaussian_kde
 
 import gazes as gz
@@ -111,24 +112,55 @@ class Analysis:
         suffix_file = ''  # suffix to add to saved image
         if type_heatmap == 'contourf':
             try:
-                plt.contourf(xi, yi, zi.reshape(xi.shape), alpha=0.5)
+                plt.contourf(xi, yi, zi.reshape(xi.shape),
+                             alpha=0.5)
+                # remove white spaces around figure
+                plt.subplots_adjust(top=1,
+                                    bottom=0,
+                                    right=1,
+                                    left=0,
+                                    hspace=0,
+                                    wspace=0)
+                plt.margins(0, 0)
+                plt.gca().xaxis.set_major_locator(plt.NullLocator())
+                plt.gca().yaxis.set_major_locator(plt.NullLocator())
             except TypeError as e:
                 logger.error('Not enough data. Heatmap was not created for '
                              + '{}.',
                              image)
-                fig.clf()  # clear figure from memory
+                plt.close(fig)  # clear figure from memory
                 return
             suffix_file = '_contourf.jpg'
         elif type_heatmap == 'pcolormesh':
             try:
                 plt.pcolormesh(xi, yi, zi.reshape(xi.shape), alpha=0.5)
+                # remove white spaces around figure
+                plt.subplots_adjust(top=1,
+                                    bottom=0,
+                                    right=1,
+                                    left=0,
+                                    hspace=0,
+                                    wspace=0)
+                plt.margins(0, 0)
+                plt.gca().xaxis.set_major_locator(plt.NullLocator())
+                plt.gca().yaxis.set_major_locator(plt.NullLocator())
+            except TypeError as e:
+                logger.error('Not enough data. Heatmap was not created for '
+                             + '{}.',
+                             image)
+                plt.close(fig)  # clear figure from memory
+                return
+            suffix_file = '_pcolormesh.jpg'
+        elif type_heatmap == 'kdeplot':
+            try:
+                sns.kdeplot(x, y, alpha=0.5, shade=True, cmap="RdBu_r")
             except TypeError as e:
                 logger.error('Not enough data. Heatmap was not created for '
                              + '{}.',
                              image)
                 fig.clf()  # clear figure from memory
                 return
-            suffix_file = '_pcolormesh.jpg'
+            suffix_file = '_kdeplot.jpg'
         else:
             logger.error('Wrong type_heatmap {} given.', type_heatmap)
             plt.close(fig)  # clear from memory
@@ -136,17 +168,8 @@ class Analysis:
         # read original image
         im = plt.imread(image)
         plt.imshow(im)
-        # remove white spaces around figure
+        # remove axis
         plt.gca().set_axis_off()
-        plt.subplots_adjust(top=1,
-                            bottom=0,
-                            right=1,
-                            left=0,
-                            hspace=0,
-                            wspace=0)
-        plt.margins(0, 0)
-        plt.gca().xaxis.set_major_locator(plt.NullLocator())
-        plt.gca().yaxis.set_major_locator(plt.NullLocator())
         # save image
         if save_file:
             self.save_fig(image, fig, '/figures/', suffix_file)
