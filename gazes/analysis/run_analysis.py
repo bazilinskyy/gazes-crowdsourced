@@ -10,6 +10,7 @@ logger = gz.CustomLogger(__name__)  # use custom logger
 
 
 if __name__ == '__main__':
+    # todo: add descriptions to methods
     # create object for working with heroku data
     files_heroku = gz.common.get_configs('files_heroku')
     heroku = gz.analysis.Heroku(files_data=files_heroku,
@@ -32,8 +33,8 @@ if __name__ == '__main__':
     # flag and reject cheaters
     qa = gz.qa.QA(file_cheaters=gz.common.get_configs('file_cheaters'),
                   job_id=gz.common.get_configs('appen_job'))
-    qa.flag_users()
-    qa.reject_users()
+    # qa.flag_users()
+    # qa.reject_users()
     # merge heroku and appen dataframes into one
     all_data = heroku_data.merge(appen_data,
                                  left_on='worker_code',
@@ -45,10 +46,8 @@ if __name__ == '__main__':
     appen_data = all_data[all_data.columns.intersection(appen_data_keys)]
     appen_data = appen_data.set_index('worker_code')
     appen.set_data(appen_data)  # update object with filtered data
-
     # create arrays with coordinates for stimuli
     points = heroku.cb_to_coords()
-
     # create heatmaps
     analysis = gz.analysis.Analysis()
     # number of stimuli to process
@@ -71,10 +70,12 @@ if __name__ == '__main__':
         analysis.create_heatmap(stim_path,
                                 points[stim_id],
                                 type_heatmap='contourf',
+                                add_corners=True,
                                 save_file=True)
         analysis.create_heatmap(stim_path,
                                 points[stim_id],
                                 type_heatmap='pcolormesh',
+                                add_corners=True,
                                 save_file=True)
     # check if any figures are to be rendered
     figures = [manager.canvas.figure

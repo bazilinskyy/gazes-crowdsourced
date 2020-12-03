@@ -347,7 +347,7 @@ class Heroku:
         logger.info('Filteirng heroku data.')
         # loop over rows in data
         # tqdm adds progress bar
-        for index, row in tqdm(df.iterrows()):
+        for index, row in tqdm(df.iterrows(), total=df.shape[0]):
             # fill nans with empty lists
             empty = pd.Series([[] for _ in range(len(row.index))],
                               index=row.index)

@@ -49,7 +49,7 @@ Data from appen is filtered based on the following criteria:
 2. People that are under 18 years of age.
 3. People who completed the study in under `config.allowed_min_time` min.
 4. People who completed the study from the same IP more than once (the 1st data entry is retained).
-5. People who used the same `worker_code` multiple times. One of the disadvantages of crowdsourcing is having to deal with workers that accept and do crowdsourcing jobs just for money (i.e., `cheaters`). The framework offers filtering mechanisms to remove data from such people from the dataset used for the analysis. Cheaters can be reported by running `python gazes-crowdsourced/gazes/qa/flag_cheaters.py`. Running this script also rejects rows of data from cheaters in appen data and triggers appen to acquire more data to replace the filtered rows.
+5. People who used the same `worker_code` multiple times. One of the disadvantages of crowdsourcing is having to deal with workers that accept and do crowdsourcing jobs just for money (i.e., `cheaters`). The framework offers filtering mechanisms to remove data from such people from the dataset used for the analysis. Cheaters can be reported from the `gazes.qa.QA` class. It also rejects rows of data from cheaters in appen data and triggers appen to acquire more data to replace the filtered rows.
 
 ### Anonymisation of data
 Data from appen is anonymised in the following way:

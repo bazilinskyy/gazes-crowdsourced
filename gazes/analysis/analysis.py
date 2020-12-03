@@ -66,9 +66,11 @@ class Analysis:
                        image,
                        points,
                        type_heatmap='contourf',  # contourf or pcolormesh
+                       add_corners=True,
                        save_file=False):
         """
         Create heatmap for image based on the list of lists of points.
+        add_corners: add points to the corners to have the heatmap ovelay the whole image
         """
         # todo: check https://stackoverflow.com/questions/36957149/density-map-heatmaps-in-matplotlib
         # todo: implement smoothing https://stackoverflow.com/questions/2369492/generate-a-heatmap-in-matplotlib-using-a-scatter-data-set
@@ -79,10 +81,18 @@ class Analysis:
         # get dimensions of base image
         width = gz.common.get_configs('stimulus_width')
         height = gz.common.get_configs('stimulus_height')
+        # add datapoints to corners for maximised heatmaps
+        if add_corners:
+            if [0, 0] not in points:
+                points.append([0, 0])
+            if [width, height] not in points:
+                points.append([width - 1, height - 1])
         # convert points into np array
         xy = np.array(points)
+        # split coordinates list for readability
         x = xy[:, 0]
         y = xy[:, 1]
+        # compute data for the heatmap
         try:
             k = gaussian_kde(np.vstack([x, y]))
             xi, yi = np.mgrid[x.min():x.max():x.size**0.5*1j,
@@ -91,12 +101,9 @@ class Analysis:
         except (np.linalg.LinAlgError, np.linalg.LinAlgError, ValueError) as e:
             logger.error('Not enough data. Heatmap not ceated for {}.', image)
             return
-
-
         # create figure object with given dpi and dimensions
         dpi = 150
         fig = plt.figure(figsize=(width/dpi, height/dpi), dpi=dpi)
-
         # alpha=0.5 makes the plot semitransparent
         suffix_file = ''  # suffix to add to saved image
         if type_heatmap == 'contourf':
