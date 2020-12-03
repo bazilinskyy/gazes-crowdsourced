@@ -86,6 +86,7 @@ if __name__ == '__main__':
         # create histogram for stimulus
         analysis.create_histogram(stim_path,
                                   points[stim_id],
+                                  density_coef=20,
                                   save_file=True)
     # check if any figures are to be rendered
     figures = [manager.canvas.figure
