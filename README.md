@@ -54,21 +54,19 @@ todo: add example image with heatmap
 
 ### Configuration of analysis
 Configuration of analysis needs to be defined in `gazes-crowdsourced/gazes/analysis/config`. Please use the `default.config` file for the required structure of the file. If no custom config file is provided, `default.config` is used. The config file has the following parameters:
-```
-appen_job: ID of the appen job
-num_stimuli: number of stimuli in the study
-stimulus_width: width of the stimulus
-stimulus_height: height of the stimulus
-allowed_min_time: the cut-off for minimal time of participation for filtering
-training_sent: number of sentinel images during training
-allowed_mistakes_sent: number of allowed mistakes with code input for sentinel images (excluding sentinel images in the training session)
-allowed_cb_middle: allowed ratio of coordinates of gazes within a square in the centre of the stimulus
-cb_middle_area: width/2 and height/2 of the square in the middle of the stimulus for filtering based on coordinates
-mask_id: number for masking of worker ID for anonymisation of data
-files_heroku: files with data from heroku
-file_appen: file with data from appen
-file_cheaters: csv file with cheaters for flagging/rejecting
-mapping_cb: json file with mapping of coordinates and codes in codeblocks for stimuli
-mapping_sentinel_cb: json file with mapping of coordinates and codes in codeblocks for sentinel images
-path_stimuli: path with stimuli
-```
+* `appen_job`: ID of the appen job.
+* `num_stimuli`: number of stimuli in the study.
+* `stimulus_width`: width of the stimulus.
+* `stimulus_height`: height of the stimulus.
+* `allowed_min_time`: the cut-off for minimal time of participation for filtering.
+* `training_sent`: number of sentinel images during training.
+* `allowed_mistakes_sent`: number of allowed mistakes with code input for sentinel images (excluding sentinel images in the training session).
+* `allowed_cb_middle`: allowed ratio of coordinates of gazes within a square in the centre of the stimulus.
+* `cb_middle_area`: width/2 and height/2 of the square in the middle of the stimulus for filtering based on coordinates.
+* `mask_id`: number for masking of worker ID for anonymisation of data.
+* `files_heroku`: files with data from heroku.
+* `file_appen`: file with data from appen.
+* `file_cheaters`: csv file with cheaters for flagging/.
+* `mapping_cb`: json file with mapping of coordinates and codes in codeblocks for stimuli.
+* `mapping_sentinel_cb`: json file with mapping of coordinates and codes in codeblocks for sentinel images.
+* `path_stimuli`: path with stimuli.
