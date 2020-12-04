@@ -364,7 +364,8 @@ class Heroku:
         # more than allowed number of mistake with codes for sentinel images
         # load mapping of codes and coordinates
         logger.info('Filtering heroku data.')
-        logger.info('Filter-h1. People who made mistakes with sentinel images.')
+        logger.info('Filter-h1. People who made mistakes with sentinel '
+                    + 'images.')
         with open(gz.common.get_configs('mapping_sentinel_cb')) as f:
             mapping = json.load(f)
         allowed_mistakes = gz.common.get_configs('allowed_mistakes_sent')
