@@ -54,8 +54,7 @@ if __name__ == '__main__':
     analysis = gz.analysis.Analysis()
     # number of stimuli to process
     num_stimuli = gz.common.get_configs('num_stimuli')
-    logger.info('Creating images with gazes and heatmaps for {} stimuli.',
-                num_stimuli)
+    logger.info('Creating figures for {} stimuli.', num_stimuli)
     # loop over stimuli from 1 to num_stimuli
     # tqdm adds progress bar
     for stim_id in tqdm(range(1, num_stimuli + 1)):
