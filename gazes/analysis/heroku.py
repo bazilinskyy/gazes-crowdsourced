@@ -102,8 +102,7 @@ class Heroku:
                             # piece of meta data found, update dictionary
                             dict_row[key] = data_cell[key]
                             if key == 'worker_code':
-                                logger.debug('Working with row for ' +
-                                             'worker_code {}.',
+                                logger.debug('{}: working with row with data.',
                                              data_cell['worker_code'])
                     # check if stimulus data is present
                     if 'stimulus' in data_cell.keys():
@@ -295,7 +294,7 @@ class Heroku:
             for pp in range(len(stim_from_df)):
                 # input given by participant
                 given_in = stim_from_df.iloc[pp][image_in]
-                logger.debug('For {} from group {} found values {} input '
+                logger.debug('{}: from group {} found values {} input '
                              + 'for stimulus {}.',
                              stim_from_df.index[pp],
                              stim_from_df.iloc[pp]['group_choice'],
@@ -388,10 +387,10 @@ class Heroku:
                             mistakes_counter = mistakes_counter + 1
                             # check if limit was reached
                             if mistakes_counter > allowed_mistakes:
-                                logger.debug('Found {} mistakes for sentinel '
-                                             + 'images for worker_code {}.',
-                                             mistakes_counter,
-                                             row['worker_code'])
+                                logger.debug('{}: found {} mistakes for '
+                                             + 'sentinel images.',
+                                             row['worker_code'],
+                                             mistakes_counter)
                                 # add to df with data to filter out
                                 df_1 = df_1.append(row)
                                 break
@@ -405,5 +404,6 @@ class Heroku:
         # drop rows with filtered data
         unique_worker_codes = df_filtered['worker_code'].drop_duplicates()
         df = df[~df['worker_code'].isin(unique_worker_codes)]
-        logger.info('Filtered in total: {}', old_size - df.shape[0])
+        logger.info('Filtered in total in heroku data: {}',
+                    old_size - df.shape[0])
         return df

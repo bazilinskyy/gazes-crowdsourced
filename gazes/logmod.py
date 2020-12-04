@@ -90,7 +90,8 @@ def _logging_level_threshold():
     """
     Set the level threshold for a couple of internal and external modules.
     """
-    for mod_name in ['requests', 'matplotlib']:
+    for mod_name in ['requests', 'matplotlib', 'numexpr.utils',
+                     'urllib3.connectionpool', 'PIL.TiffImagePlugin']:
         logging.getLogger(mod_name).setLevel(logging.WARNING)
 
 

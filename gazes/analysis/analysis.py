@@ -122,7 +122,9 @@ class Analysis:
             suffix_file = '_contourf.jpg'
         elif type_heatmap == 'pcolormesh':
             try:
-                plt.pcolormesh(xi, yi, zi.reshape(xi.shape), alpha=0.5)
+                plt.pcolormesh(xi, yi, zi.reshape(xi.shape),
+                               shading='auto',
+                               alpha=0.5)
                 plt.margins(0, 0)
                 plt.gca().xaxis.set_major_locator(plt.NullLocator())
                 plt.gca().yaxis.set_major_locator(plt.NullLocator())
@@ -135,7 +137,11 @@ class Analysis:
             suffix_file = '_pcolormesh.jpg'
         elif type_heatmap == 'kdeplot':
             try:
-                sns.kdeplot(x, y, alpha=0.5, shade=True, cmap="RdBu_r")
+                sns.kdeplot(x=x,
+                            y=y,
+                            alpha=0.5,
+                            shade=True,
+                            cmap="RdBu_r")
             except TypeError as e:
                 logger.error('Not enough data. Heatmap was not created for '
                              + '{}.',

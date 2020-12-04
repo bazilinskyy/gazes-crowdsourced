@@ -33,12 +33,14 @@ if __name__ == '__main__':
     # flag and reject cheaters
     qa = gz.qa.QA(file_cheaters=gz.common.get_configs('file_cheaters'),
                   job_id=gz.common.get_configs('appen_job'))
-    # qa.flag_users()
-    # qa.reject_users()
+    qa.flag_users()
+    qa.reject_users()
     # merge heroku and appen dataframes into one
     all_data = heroku_data.merge(appen_data,
                                  left_on='worker_code',
                                  right_on='worker_code')
+    logger.info('Data from {} participants included in analysis.',
+                all_data.shape[0])
     # update original data files
     heroku_data = all_data[all_data.columns.intersection(heroku_data_keys)]
     heroku_data = heroku_data.set_index('worker_code')

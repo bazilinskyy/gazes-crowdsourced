@@ -152,7 +152,8 @@ class Appen:
         df = df[~df['worker_code'].isin(unique_worker_codes)]
         # reset index in dataframe
         df = df.reset_index()
-        logger.info('Filtered in total: {}', old_size - df.shape[0])
+        logger.info('Filtered in total in appen data: {}',
+                    old_size - df.shape[0])
         return df
 
     def mask_ips_ids(self, df, mask_ip=True, mask_id=True):
@@ -179,21 +180,21 @@ class Appen:
                     # o=original; m=masked
                     proc_ips.append({'o': df['_ip'][i], 'm': masked_ip})
                     df.at[i, '_ip'] = masked_ip
-                    logger.debug('Replaced IP {} with {} for {}',
+                    logger.debug('{}: replaced IP {} with {}.',
+                                 df['worker_code'][i],
                                  proc_ips[-1]['o'],
-                                 proc_ips[-1]['m'],
-                                 df['worker_code'][i])
+                                 proc_ips[-1]['m'])
                 else:  # already replaced
                     for item in proc_ips:
                         if item['o'] == df['_ip'][i]:
 
                             # fetch previously used mask for the IP
                             df.at[i, '_ip'] = item['m']
-                            logger.debug('Replaced repeating IP {} with {} ' +
-                                         'code for {}',
+                            logger.debug('{}: replaced repeating IP {} with ' +
+                                         '{}.',
+                                         df['worker_code'][i],
                                          item['o'],
-                                         item['m'],
-                                         df['worker_code'][i])
+                                         item['m'])
             # anonymise worker IDs
             if mask_id:
                 # new worker ID
@@ -205,21 +206,21 @@ class Appen:
                     proc_ids.append({'o': df['_worker_id'][i],
                                      'm': masked_id})
                     df.at[i, '_worker_id'] = masked_id
-                    logger.debug('Replaced ID {} with {} for {}',
+                    logger.debug('{}: replaced ID {} with {}.',
+                                 df['worker_code'][i],
                                  proc_ids[-1]['o'],
-                                 proc_ids[-1]['m'],
-                                 df['worker_code'][i])
+                                 proc_ids[-1]['m'])
                 # already replaced
                 else:
                     for item in proc_ids:
                         if item['o'] == df['_worker_id'][i]:
                             # fetch previously used mask for the ID
                             df.at[i, '_worker_id'] = item['m']
-                            logger.debug('Replaced repeating ID {} with {} ' +
-                                         'code for {}',
+                            logger.debug('{}: replaced repeating ID {} '
+                                         + 'with {}.',
+                                         df['worker_code'][i],
                                          item['o'],
-                                         item['m'],
-                                         df['worker_code'][i])
+                                         item['m'])
         # output for checking
         if mask_ip:
             logger.info('Finished replacement of IPs in appen data.')
