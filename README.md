@@ -1,9 +1,9 @@
 Gaze detection with crowdsourcing
 =======
-This project defines a framework for the detection of gazes in a crowdsourced environment. It was inspired by the [TurkEyes project](http://turkeyes.mit.edu). The [jsPsych framework](https://www.jspsych.org/) is used to for the frontend. Data is stored in a mongodb database. In the description below, it is assumed that that the repo is stored in the folder `gazes-crowdsourced`. Commands lower assume macOS.
+This project defines a framework for the detection of gazes in a crowdsourced environment. It was inspired by the [TurkEyes project](http://turkeyes.mit.edu). The [jsPsych framework](https://www.jspsych.org/) is used to for the frontend. Data is stored in a mongodb database. In the description below, it is assumed that that the repo is stored in the folder `gazes-crowdsourced`. Terminal commands lower assume macOS.
 
 ## Setup
-To setup environment run these two commands:
+Tested with Python 3.8.5. To setup the environment run these two commands:
 - `pip install -e gazes-crowdsourced` will setup the project as a package accessible in the environment.
 - `pip install -r gazes-crowdsourced/requirements.txt` will install required packages.
 
@@ -18,23 +18,12 @@ Gaze information is gathered by showing a black screen with a set of random code
 ### Sentinel images
 ![example of sentinel image](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/public/img/sentinel/sentinel_0.jpg?raw=true)
 
-Sentinel images are oval images of faces. Participants are asked to look at them and input the code that is within the area of the face. Such images are used during training and during the study to see if people still pay attention to the task.
-
-The following royalty-free base images were used to create the sentinel images:
-
-0. https://www.pexels.com/photo/women-s-white-and-black-button-up-collared-shirt-774909/
-1. https://www.pexels.com/photo/woman-near-house-2804282/
-2. https://www.pexels.com/photo/woman-standing-near-yellow-petaled-flower-2050994/
-3. https://www.pexels.com/photo/person-holding-hammer-while-smiling-3267784/
-4. https://www.pexels.com/photo/photography-of-laughing-guy-1408196/
-5. https://www.pxfuel.com/en/free-photo-jmdxk
-6. https://www.pexels.com/photo/man-in-blue-top-2830332/
-7. https://www.pexels.com/photo/photo-of-man-wearing-denim-jacket-1599980/
-8. https://www.pxfuel.com/en/free-photo-eibzf
-9. https://www.pxfuel.com/en/free-photo-jrjqb
+Sentinel images are oval images of faces. Participants are asked to look at them and input the code that is within the area of the face. Such images are used during training and during the study to see if people still pay attention to the task. We used the following royalty-free base images to create the sentinel images: [image 0](https://www.pexels.com/photo/women-s-white-and-black-button-up-collared-shirt-774909), [image 1](https://www.pexels.com/photo/woman-near-house-2804282), [image 2](https://www.pexels.com/photo/woman-standing-near-yellow-petaled-flower-2050994), [image 3](https://www.pexels.com/photo/person-holding-hammer-while-smiling-3267784), [image 4](https://www.pexels.com/photo/photography-of-laughing-guy-1408196), [image 5](https://www.pxfuel.com/en/free-photo-jmdxk), [image 6](https://www.pexels.com/photo/man-in-blue-top-2830332), [image 7](https://www.pexels.com/photo/photo-of-man-wearing-denim-jacket-1599980), [image 8](https://www.pxfuel.com/en/free-photo-eibzf), [image 9](https://www.pxfuel.com/en/free-photo-jrjqb).
 
 ### Training
 Participants need to go through a training session before starting the experiment. They are allowed to fail the training a limited number of times. If they do not manage to finish the training session, they are not allowed to start the experiment. It is implemented by means of a cookie file.
+
+The training session consists of 5 images of traffic scenes and 5 sentinel image. We used the following royalty-free images: [image 0](https://www.pxfuel.com/en/free-photo-xpoyf), [image 1](https://www.pxfuel.com/en/free-photo-xpoev), [image 2](https://www.pxfuel.com/en/free-photo-xnbzi), [image 3](https://www.pxfuel.com/en/free-photo-emhtx), [image 4](https://www.pxfuel.com/en/free-photo-ebgzh).
 
 ### Filtering of heroku data
 Data from heroku is filtered based on the following criteria:
