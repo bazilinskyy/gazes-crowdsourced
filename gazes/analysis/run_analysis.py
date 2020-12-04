@@ -14,17 +14,17 @@ if __name__ == '__main__':
     # create object for working with heroku data
     files_heroku = gz.common.get_configs('files_heroku')
     heroku = gz.analysis.Heroku(files_data=files_heroku,
-                                save_p=True,
-                                load_p=False,
-                                save_csv=True)
+                                save_p=False,
+                                load_p=True,
+                                save_csv=False)
     # read heroku data
     heroku_data = heroku.read_data()
     # create object for working with appen data
     file_appen = gz.common.get_configs('file_appen')
     appen = gz.analysis.Appen(file_data=file_appen,
-                              save_p=True,
-                              load_p=False,
-                              save_csv=True)
+                              save_p=False,
+                              load_p=True,
+                              save_csv=False)
     # read appen data
     appen_data = appen.read_data()
     # get keys in data files
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     appen_data = appen_data.set_index('worker_code')
     appen.set_data(appen_data)  # update object with filtered data
     # create arrays with coordinates for stimuli
-    points = heroku.cb_to_coords()
+    points, _ = heroku.cb_to_coords(heroku_data)
     # create heatmaps
     analysis = gz.analysis.Analysis()
     # number of stimuli to process

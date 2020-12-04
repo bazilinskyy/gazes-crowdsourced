@@ -5,6 +5,8 @@ import pandas as pd
 import numpy as np
 from tqdm import tqdm
 import re
+from shapely.geometry import Point
+from shapely.geometry.polygon import Polygon
 
 import gazes as gz
 
@@ -23,6 +25,7 @@ class Heroku:
     file_p = 'heroku_data.p'  # pickle file for saving data
     file_data_csv = 'heroku_data.csv'  # csv file for saving data
     file_points_csv = 'points.csv'  # csv file for saving data
+    file_points_worker_csv = 'points_worker.csv'  # csv file for saving data
     # keys with meta information
     meta_keys = ['worker_code',
                  'browser_user_agent',
@@ -254,42 +257,45 @@ class Heroku:
         # save to csv
         if self.save_csv:
             df.to_csv(gz.settings.output_dir + '/' + self.file_data_csv)
-            logger.info('Saved heroku data to csv file {}.',
+            logger.info('Saved heroku data to csv file {}',
                         self.file_data_csv)
-        # assign to attribute
+        # update attribute
         self.heroku_data = df
         # return df with data
         return df
 
-    def cb_to_coords(self):
+    def cb_to_coords(self, df, save_csv=True):
         """
         Create arrays with coordinates for images.
+        save_points: save dictionary with points.
+        if save_points:: save dictionary with points for each worker.
         """
         # load mapping of codes and coordinates
         with open(gz.common.get_configs('mapping_cb')) as f:
             mapping = json.load(f)
-        # dictionary to store points
+        # dictionaries to store points
         points = {}
+        points_worker = {}
         # number of stimuli to process
         num_stimuli = gz.common.get_configs('num_stimuli')
         logger.info('Extracting coordinates for {} stimuli.', num_stimuli)
         # loop over stimuli from 1 to num_stimuli
         # tqdm adds progress bar
         for stim_id in tqdm(range(1, num_stimuli + 1)):
-            # create empty list to store points for the stimulus
-            points[stim_id] = []
             # build names of columns in df
             image_cb = 'image_' + str(stim_id) + '-cb'
             image_in = 'image_' + str(stim_id) + '-in'
             # trim df
-            stim_from_df = self.heroku_data[['group_choice',
-                                             image_cb,
-                                             image_in]]
+            stim_from_df = df[['group_choice',
+                              image_cb,
+                              image_in]]
             # replace nans with empty lists
             empty = pd.Series([[] for _ in range(len(stim_from_df.index))],
                               index=stim_from_df.index)
             stim_from_df[image_cb] = stim_from_df[image_cb].fillna(empty)
             stim_from_df[image_in] = stim_from_df[image_in].fillna(empty)
+            # create empty list to store points for the stimulus
+            points[stim_id] = []
             # iterate of data from participants for the given stimulus
             for pp in range(len(stim_from_df)):
                 # input given by participant
@@ -314,19 +320,40 @@ class Heroku:
                                  '.jpg'
                     if (given_in[val] in mapping[mapping_cb][1].keys()):
                         coords = mapping[mapping_cb][1][given_in[val]]
-                    points[stim_id].append([coords[0], coords[1]])
+                        # add coordinates
+                        if stim_id not in points:
+                            points[stim_id] = [[int(coords[0]),
+                                               int(coords[1])]]
+                        else:
+                            points[stim_id].append([int(coords[0]),
+                                                    int(coords[1])])
+                        if stim_from_df.index[pp] not in points_worker:
+                            points_worker[stim_from_df.index[pp]] = [[int(coords[0]),  # noqa: E501
+                                                                     int(coords[1])]]  # noqa: E501
+                        else:
+                            points_worker[stim_from_df.index[pp]].append([int(coords[0]),  # noqa: E501
+                                                                          int(coords[1])])  # noqa: E501
+                        # add coordinates
         # save to csv
-        if self.save_csv:
+        if save_csv:
             # create a dataframe to save to csv
-            df = pd.DataFrame(dict([(k, pd.Series(v)) for k, v in points.items()]))  # noqa: E501
-            df = df.transpose()
+            df_csv = pd.DataFrame(dict([(k, pd.Series(v)) for k, v in points.items()]))  # noqa: E501
+            df_csv = df_csv.transpose()
             # save to csv
-            df.to_csv(gz.settings.output_dir + '/' +
-                      self.file_points_csv)
-            logger.info('Saved points ditctionary to csv file {}.',
+            df_csv.to_csv(gz.settings.output_dir + '/' +
+                          self.file_points_csv)
+            logger.info('Saved points ditctionary to csv file {}',
                         self.file_points_csv)
+            # create a dataframe to save to csv
+            df_csv = pd.DataFrame(dict([(k, pd.Series(v)) for k, v in points_worker.items()]))  # noqa: E501
+            df_csv = df_csv.transpose()
+            # save to csv
+            df_csv.to_csv(gz.settings.output_dir + '/' +
+                          self.file_points_worker_csv)
+            logger.info('Saved points_worker ditctionary to csv file {}',
+                        self.file_points_worker_csv)
         # return points
-        return points
+        return points, points_worker
 
     def filter_data(self, df):
         """
@@ -336,14 +363,15 @@ class Heroku:
         """
         # more than allowed number of mistake with codes for sentinel images
         # load mapping of codes and coordinates
+        logger.info('Filtering heroku data.')
+        logger.info('Filter-h1. People who made mistakes with sentinel images.')
         with open(gz.common.get_configs('mapping_sentinel_cb')) as f:
             mapping = json.load(f)
         allowed_mistakes = gz.common.get_configs('allowed_mistakes_sent')
         # number of sentinel images in trainig
-        training_total = 5
+        training_total = gz.common.get_configs('training_sent')
         # df to store data to filter out
         df_1 = pd.DataFrame()
-        logger.info('Filteirng heroku data.')
         # loop over rows in data
         # tqdm adds progress bar
         for index, row in tqdm(df.iterrows(), total=df.shape[0]):
@@ -394,13 +422,64 @@ class Heroku:
                                 # add to df with data to filter out
                                 df_1 = df_1.append(row)
                                 break
-        logger.info('People who made more than {} mistakes with sentinel '
-                    + 'image: {}',
+        logger.info('Filter-h1. People who made more than {} mistakes with '
+                    + 'sentinel image: {}',
                     allowed_mistakes,
                     df_1.shape[0])
+        # people that chose the coordiantes in the centre too often
+        logger.info('Filter-h2. People who chose codeblocks in the middle too '
+                    + 'often.')
+        # df to store data to filter out
+        df_2 = pd.DataFrame()
+        # create arrays with coordinates for stimuli
+        _, points_worker = self.cb_to_coords(df, False)
+        # allowed percentage of codeblocks in the middle
+        allowed_percentage = gz.common.get_configs('allowed_cb_middle')
+        # get dimensions of stimulus
+        width = gz.common.get_configs('stimulus_width')
+        height = gz.common.get_configs('stimulus_height')
+        area = gz.common.get_configs('cb_middle_area')
+        # calculate the middle of the stimulus
+        width_middle = round(width/2)
+        height_middle = round(height/2)
+        # ploygon for the centre
+        polygon = Polygon([(width_middle - area, height_middle + area),
+                           (width_middle + area, height_middle + area),
+                           (width_middle - area, height_middle - area),
+                           (width_middle + area, height_middle - area)])
+        # detected percentage of codeblocks in the middle
+        for worker_code, points in points_worker.items():
+            # skip if no points for worker
+            if len(points) == 0:
+                continue
+            detected = 0
+            for point in points:
+                # convert to point object
+                point = Point(point[0], point[1])
+                # check if point is within a polygon in the middle
+                if polygon.contains(point):
+                    # point in the middle detected
+                    detected += 1
+                    logger.debug('{}: point {} was in the middle polygon {}',
+                                 worker_code,
+                                 point,
+                                 polygon)
+            # Check if for th worker there were more than allowed limit of
+            # points in the middle
+            if detected / len(points) > allowed_percentage:
+                logger.debug('{}: had {} share of points in the '
+                             + 'middle polygon {}.',
+                             worker_code,
+                             detected,
+                             polygon)
+                df_2 = df_2.append(df[df['worker_code'] == worker_code])
+        logger.info('Filter-h2. People who had more that {} share of '
+                    + 'codeblocks in the middle: {}',
+                    allowed_percentage,
+                    df_2.shape[0])
         # concatanate dfs with filtered data
         old_size = df.shape[0]
-        df_filtered = pd.concat([df_1])
+        df_filtered = pd.concat([df_1, df_2])
         # drop rows with filtered data
         unique_worker_codes = df_filtered['worker_code'].drop_duplicates()
         df = df[~df['worker_code'].isin(unique_worker_codes)]

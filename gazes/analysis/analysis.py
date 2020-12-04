@@ -184,7 +184,7 @@ class Analysis:
             logger.error('Not enough data. Histogram was not created for {}.',
                          image)
             return
-        # get dimensions of base image
+        # get dimensions of stimulus
         width = gz.common.get_configs('stimulus_width')
         height = gz.common.get_configs('stimulus_height')
         # convert points into np array

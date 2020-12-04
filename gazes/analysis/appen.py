@@ -100,7 +100,7 @@ class Appen:
         # save to csv
         if self.save_csv:
             df.to_csv(gz.settings.output_dir + '/' + self.file_csv)
-            logger.info('Saved appen data to csv file {}.', self.file_csv)
+            logger.info('Saved appen data to csv file {}', self.file_csv)
         # assign to attribute
         self.appen_data = df
         # return df with data
@@ -120,29 +120,29 @@ class Appen:
         logger.info('Filteirng appen data.')
         # people that did not read instructions
         df_1 = df.loc[df['instructions'] == 'no']
-        logger.info('People who did not read instructions: {}', df_1.shape[0])
+        logger.info('Filter-a1. People who did not read instructions: {}', df_1.shape[0])
         # people that are underages
         df_2 = df.loc[df['age'] < 18]
-        logger.info('People that are under 18 years of age: {}', df_2.shape[0])
+        logger.info('Filter-a2. People that are under 18 years of age: {}', df_2.shape[0])
         # People that took less than gz.common.get_configs('allowed_min_time')
         # minutes to complete the study
         df_3 = df.loc[df['time'] < gz.common.get_configs('allowed_min_time')]
-        logger.info('People who completed the study in under ' +
+        logger.info('Filter-a3. People who completed the study in under ' +
                     str(gz.common.get_configs('allowed_min_time')) +
                     ' sec: {}',
                     df_3.shape[0])
         # people that completed the study from the same IP address
         df_4 = df[df['_ip'].duplicated(keep='first')]
-        logger.info('People who completed the study from the same IP: {}',
+        logger.info('Filter-a4. People who completed the study from the same IP: {}',
                     df_4.shape[0])
         # people that entered the same worker_code more than once
         df_5 = df[df['worker_code'].duplicated(keep='first')]
-        logger.info('People who used the same worker_code: {}', df_5.shape[0])
+        logger.info('Filter-a5. People who used the same worker_code: {}', df_5.shape[0])
         # save to csv
         if self.save_csv:
             df_5 = df_5.reset_index()
             df_5.to_csv(gz.settings.output_dir + '/' + self.file_cheaters_csv)
-            logger.info('Saved list of cheaters to csv file {}.',
+            logger.info('Filter-a5. Saved list of cheaters to csv file {}',
                         self.file_cheaters_csv)
         # concatanate dfs with filtered data
         old_size = df.shape[0]
