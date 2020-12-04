@@ -31,8 +31,8 @@ if __name__ == '__main__':
     heroku_data_keys = heroku_data.keys()
     appen_data_keys = appen_data.keys()
     # flag and reject cheaters
-    qa = gz.qa.QA(file_cheaters=gz.common.get_configs('file_cheaters'),
-                  job_id=gz.common.get_configs('appen_job'))
+    qa = gz.analysis.QA(file_cheaters=gz.common.get_configs('file_cheaters'),
+                        job_id=gz.common.get_configs('appen_job'))
     qa.flag_users()
     qa.reject_users()
     # merge heroku and appen dataframes into one
