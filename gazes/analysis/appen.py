@@ -78,6 +78,8 @@ class Appen:
             # drop _gold columns
             df = df.drop((x for x in df.columns.tolist() if '_gold' in x),
                          axis=1)
+            # replace linebreaks
+            df = df.replace('\n', '', regex=True)
             # rename columns to readable names
             df.rename(columns=self.columns_mapping, inplace=True)
             # convert to time
@@ -120,10 +122,12 @@ class Appen:
         logger.info('Filteirng appen data.')
         # people that did not read instructions
         df_1 = df.loc[df['instructions'] == 'no']
-        logger.info('Filter-a1. People who did not read instructions: {}', df_1.shape[0])
+        logger.info('Filter-a1. People who did not read instructions: {}',
+                    df_1.shape[0])
         # people that are underages
         df_2 = df.loc[df['age'] < 18]
-        logger.info('Filter-a2. People that are under 18 years of age: {}', df_2.shape[0])
+        logger.info('Filter-a2. People that are under 18 years of age: {}',
+                    df_2.shape[0])
         # People that took less than gz.common.get_configs('allowed_min_time')
         # minutes to complete the study
         df_3 = df.loc[df['time'] < gz.common.get_configs('allowed_min_time')]
