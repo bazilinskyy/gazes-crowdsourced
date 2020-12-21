@@ -58,11 +58,11 @@ Example of visalisation of gazes
 ![example of heatmap](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_60_kdeplot.jpg?raw=true)
 Example of heatmap
 
+![example of histogram](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_60_histogram.jpg?raw=true)
+Example of histogram (same source image as heatmap above)
+
 ![example of animated heatmap](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_21_animation.gif?raw=true)
 Example of animated heatmap
-
-![example of histogram](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_60_histogram.jpg?raw=true)
-Example of histogram (same image as not animated heatmap above)
 
 ### Configuration of analysis
 Configuration of analysis needs to be defined in `gazes-crowdsourced/gazes/analysis/config`. Please use the `default.config` file for the required structure of the file. If no custom config file is provided, `default.config` is used. The config file has the following parameters:
