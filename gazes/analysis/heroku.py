@@ -178,7 +178,7 @@ class Heroku:
                                     num_found = re.findall(r'\d+',
                                                            stim_no_path)
                                     # Check if codeblocks were recorded previously  # noqa: E501
-                                    if stim_name + '-cb' not in dict_row.keys():  # noqa: E501
+                                    if stim_name + '-' + str(stim_dur) + '-cb' not in dict_row.keys():  # noqa: E501
                                         # first value
                                         dict_row[stim_name + '-' + str(stim_dur) + '-cb'] = [num_found[0]]  # noqa: E501
                                     else:
@@ -220,14 +220,14 @@ class Heroku:
                             # turn input to upper case
                             str_in = responses['input-codeblock'].upper()
                             # Check if inputted values were recorded previously  # noqa: E501
-                            if stim_name + '-in' not in dict_row.keys():
+                            if stim_name + '-' + str(stim_dur) + '-in' not in dict_row.keys():  # noqa: E501
                                 # first value
                                 dict_row[stim_name + '-' + str(stim_dur) + '-in'] = [str_in]  # noqa: E501
                             else:
                                 # previous values found
                                 dict_row[stim_name + '-' + str(stim_dur) + '-in'].append(str_in)  # noqa: E501
                             # Check if time spent values were recorded previously  # noqa: E501
-                            if stim_name + '-rt' not in dict_row.keys():
+                            if stim_name + '-' + str(stim_dur) + '-rt' not in dict_row.keys():  # noqa: E501
                                 # first value
                                 dict_row[stim_name + '-' + str(stim_dur) + '-rt'] = [data_cell['rt']]  # noqa: E501
                             else:
@@ -257,9 +257,13 @@ class Heroku:
                             sent_found = False
                             sent_name = ''
                 try:
+                    # todo: check if it supports multiple values in group 2
+                    print('update before', dict_row['worker_code'], data_dict[dict_row['worker_code']])
                     data_dict[dict_row['worker_code']].update(dict_row)
+                    print('update after', dict_row['worker_code'], data_dict[dict_row['worker_code']])
                 except Exception as e:
                     data_dict[dict_row['worker_code']] = dict_row
+                    print('assign after', dict_row['worker_code'], data_dict[dict_row['worker_code']])
             # turn into panda's dataframe
             df = pd.DataFrame(data_dict)
             df = df.transpose()

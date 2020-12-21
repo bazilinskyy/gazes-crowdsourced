@@ -9,7 +9,10 @@ gz.logs(show_level='info', show_color=True)
 logger = gz.CustomLogger(__name__)  # use custom logger
 
 # Const
-calculate_coords = False  # recalculate coordinates (saves time)
+SAVE_P = True  # save pickle files with data
+LOAD_P = False  # load pickle files with data
+SAVE_CSV = True  # load csv files with data
+CALC_COORDS = True  # calculate coordinates (saves time)
 file_p = 'coords.p'  # file to save lists with coordinates
 
 if __name__ == '__main__':
@@ -17,17 +20,17 @@ if __name__ == '__main__':
     # create object for working with heroku data
     files_heroku = gz.common.get_configs('files_heroku')
     heroku = gz.analysis.Heroku(files_data=files_heroku,
-                                save_p=False,
-                                load_p=True,
-                                save_csv=False)
+                                save_p=SAVE_P,
+                                load_p=LOAD_P,
+                                save_csv=SAVE_CSV)
     # read heroku data
     heroku_data = heroku.read_data()
     # create object for working with appen data
     file_appen = gz.common.get_configs('file_appen')
     appen = gz.analysis.Appen(file_data=file_appen,
-                              save_p=False,
-                              load_p=True,
-                              save_csv=False)
+                              save_p=SAVE_P,
+                              load_p=LOAD_P,
+                              save_csv=SAVE_CSV)
     # read appen data
     appen_data = appen.read_data()
     # get keys in data files
@@ -52,7 +55,7 @@ if __name__ == '__main__':
     appen_data = appen_data.set_index('worker_code')
     appen.set_data(appen_data)  # update object with filtered data
     # create arrays with coordinates for stimuli
-    if calculate_coords:
+    if CALC_COORDS:
         points, _, points_duration = heroku.cb_to_coords(heroku_data)
         gz.common.save_to_p(file_p,
                             [points, points_duration],
