@@ -8,23 +8,26 @@ import gazes as gz
 gz.logs(show_level='info', show_color=True)
 logger = gz.CustomLogger(__name__)  # use custom logger
 
+# Const
+calculate_coords = False  # recalculate coordinates (saves time)
+file_p = 'coords.p'  # file to save lists with coordinates
 
 if __name__ == '__main__':
     # todo: add descriptions to methods
     # create object for working with heroku data
     files_heroku = gz.common.get_configs('files_heroku')
     heroku = gz.analysis.Heroku(files_data=files_heroku,
-                                save_p=True,
-                                load_p=False,
-                                save_csv=True)
+                                save_p=False,
+                                load_p=True,
+                                save_csv=False)
     # read heroku data
     heroku_data = heroku.read_data()
     # create object for working with appen data
     file_appen = gz.common.get_configs('file_appen')
     appen = gz.analysis.Appen(file_data=file_appen,
-                              save_p=True,
-                              load_p=False,
-                              save_csv=True)
+                              save_p=False,
+                              load_p=True,
+                              save_csv=False)
     # read appen data
     appen_data = appen.read_data()
     # get keys in data files
@@ -33,8 +36,8 @@ if __name__ == '__main__':
     # flag and reject cheaters
     qa = gz.analysis.QA(file_cheaters=gz.common.get_configs('file_cheaters'),
                         job_id=gz.common.get_configs('appen_job'))
-    qa.flag_users()
-    qa.reject_users()
+    # qa.flag_users()
+    # qa.reject_users()
     # merge heroku and appen dataframes into one
     all_data = heroku_data.merge(appen_data,
                                  left_on='worker_code',
@@ -49,8 +52,15 @@ if __name__ == '__main__':
     appen_data = appen_data.set_index('worker_code')
     appen.set_data(appen_data)  # update object with filtered data
     # create arrays with coordinates for stimuli
-    points, _ = heroku.cb_to_coords(heroku_data)
-    # create heatmaps
+    if calculate_coords:
+        points, _, points_duration = heroku.cb_to_coords(heroku_data)
+        gz.common.save_to_p(file_p,
+                            [points, points_duration],
+                            'points data')
+    else:
+        points, points_duration = gz.common.load_from_p(file_p,
+                                                        'points data')
+    # Output
     analysis = gz.analysis.Analysis()
     # number of stimuli to process
     num_stimuli = gz.common.get_configs('num_stimuli')
@@ -63,7 +73,9 @@ if __name__ == '__main__':
                     '/image_' + \
                     str(stim_id) + \
                     '.jpg'
-
+        # check if data for the stimulus is present
+        if stim_id not in points.keys():
+            continue
         # create image with overlay of gazes for stimulus
         analysis.create_gazes(stim_path,
                               points[stim_id],
@@ -88,6 +100,13 @@ if __name__ == '__main__':
         analysis.create_histogram(stim_path,
                                   points[stim_id],
                                   density_coef=20,
+                                  save_file=True)
+        # create animation for stimulus
+        points_process = {}
+        for points_dur in range(len(points_duration)):
+            points_process[points_dur] = points_duration[points_dur][stim_id]
+        analysis.create_animation(stim_path,
+                                  points_process,
                                   save_file=True)
     # check if any figures are to be rendered
     figures = [manager.canvas.figure

@@ -4,6 +4,7 @@ import os
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
+import matplotlib.animation as animation
 import numpy as np
 import seaborn as sns
 from scipy.stats.kde import gaussian_kde
@@ -15,6 +16,12 @@ logger = gz.CustomLogger(__name__)  # use custom logger
 
 
 class Analysis:
+    # used by animation
+    fig = None
+    g = None
+    image = None
+    points = None
+
     def __init__(self):
         pass
 
@@ -72,6 +79,7 @@ class Analysis:
         add_corners: add points to the corners to have the heatmap ovelay the
                      whole image
         """
+        # todo: remove datapoints in corners in heatmaps
         # check if data is present
         if not points:
             logger.error('Not enough data. Heatmap was not created for {}.',
@@ -108,8 +116,8 @@ class Analysis:
         suffix_file = ''  # suffix to add to saved image
         if type_heatmap == 'contourf':
             try:
-                plt.contourf(xi, yi, zi.reshape(xi.shape),
-                             alpha=0.5)
+                g = plt.contourf(xi, yi, zi.reshape(xi.shape),
+                                 alpha=0.5)
                 plt.margins(0, 0)
                 plt.gca().xaxis.set_major_locator(plt.NullLocator())
                 plt.gca().yaxis.set_major_locator(plt.NullLocator())
@@ -122,9 +130,9 @@ class Analysis:
             suffix_file = '_contourf.jpg'
         elif type_heatmap == 'pcolormesh':
             try:
-                plt.pcolormesh(xi, yi, zi.reshape(xi.shape),
-                               shading='auto',
-                               alpha=0.5)
+                g = plt.pcolormesh(xi, yi, zi.reshape(xi.shape),
+                                   shading='auto',
+                                   alpha=0.5)
                 plt.margins(0, 0)
                 plt.gca().xaxis.set_major_locator(plt.NullLocator())
                 plt.gca().yaxis.set_major_locator(plt.NullLocator())
@@ -137,11 +145,11 @@ class Analysis:
             suffix_file = '_pcolormesh.jpg'
         elif type_heatmap == 'kdeplot':
             try:
-                sns.kdeplot(x=x,
-                            y=y,
-                            alpha=0.5,
-                            shade=True,
-                            cmap="RdBu_r")
+                g = sns.kdeplot(x=x,
+                                y=y,
+                                alpha=0.5,
+                                shade=True,
+                                cmap="RdBu_r")
             except TypeError as e:
                 logger.error('Not enough data. Heatmap was not created for '
                              + '{}.',
@@ -168,6 +176,8 @@ class Analysis:
         # save image
         if save_file:
             self.save_fig(image, fig, '/figures/', suffix_file)
+        # return graph objects
+        return fig, g
 
     def create_histogram(self,
                          image,
@@ -208,7 +218,70 @@ class Analysis:
         if save_file:
             self.save_fig(image, fig, '/figures/', '_histogram.jpg')
 
+    def create_animation(self,
+                         image,
+                         points,
+                         save_file=False):
+        """
+        Create animation for image based on the list of lists of points of
+        varying duration.
+        """
+        self.image = image
+        self.points = points
+        self.fig, self.g = self.create_heatmap(image,
+                                               points[0],
+                                               type_heatmap='kdeplot',  # noqa: E501
+                                               add_corners=True,  # noqa: E501
+                                               save_file=False)
+        anim = animation.FuncAnimation(self.fig,
+                                       self.animate,
+                                       frames=len(points),
+                                       interval=1000,
+                                       repeat=False)
+        # plt.show()
+        # save image
+        if save_file:
+            self.save_anim(image, anim, '/figures/', '_animation.mp4')
+
+    def animate(self, i):
+        """
+        Helper function to create animation.
+        """
+        self.g.clear()
+        self.g = sns.kdeplot(x=[item[0] for item in self.points[i]],
+                             y=[item[1] for item in self.points[i]],
+                             alpha=0.5,
+                             shade=True,
+                             cmap="RdBu_r")
+        # read original image
+        im = plt.imread(self.image)
+        plt.imshow(im)
+        # remove axis
+        plt.gca().set_axis_off()
+        # remove white spaces around figure
+        plt.subplots_adjust(top=1,
+                            bottom=0,
+                            right=1,
+                            left=0,
+                            hspace=0,
+                            wspace=0)
+        # textbox with duration
+        durations = gz.common.get_configs('stimulus_durations')
+        props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+        plt.text(0.82,
+                 0.98,
+                 "duration = " + str(durations[i]),
+                 transform=plt.gca().transAxes,
+                 fontsize=12,
+                 verticalalignment='top',
+                 bbox=props)
+
+        return self.g
+
     def save_fig(self, image, fig, output_subdir, suffix):
+        """
+        Helper function to save figure as file.
+        """
         # extract name of stimulus after last slash
         file_no_path = image.rsplit('/', 1)[-1]
         # remove extension
@@ -224,3 +297,20 @@ class Analysis:
                     pad_inches=0)
         # clear figure from memory
         plt.close(fig)
+
+    def save_anim(self, image, anim, output_subdir, suffix):
+        """
+        Helper function to save figure as file.
+        """
+        # extract name of stimulus after last slash
+        file_no_path = image.rsplit('/', 1)[-1]
+        # remove extension
+        file_no_path = os.path.splitext(file_no_path)[0]
+        # create path
+        path = gz.settings.output_dir + output_subdir
+        if not os.path.exists(path):
+            os.makedirs(path)
+        # save file
+        anim.save(path + file_no_path + suffix, writer='ffmpeg')
+        # clear animation from memory
+        plt.close(self.fig)

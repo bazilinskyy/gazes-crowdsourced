@@ -22,10 +22,16 @@ class Heroku:
     save_p = False  # save data as pickle file
     load_p = False  # load data as pickle file
     save_csv = False  # save data as csv file
-    file_p = 'heroku_data.p'  # pickle file for saving data
-    file_data_csv = 'heroku_data.csv'  # csv file for saving data
-    file_points_csv = 'points.csv'  # csv file for saving data
-    file_points_worker_csv = 'points_worker.csv'  # csv file for saving data
+    # pickle file for saving data
+    file_p = 'heroku_data.p'
+    # csv file for saving data
+    file_data_csv = 'heroku_data'
+    # csv file for saving data for images
+    file_points_csv = 'points'
+    # csv file for saving data for workers
+    file_points_worker_csv = 'points_worker'
+    # csv file for saving data for images for each duration
+    file_points_duration_csv = 'points_duration'
     # keys with meta information
     meta_keys = ['worker_code',
                  'browser_user_agent',
@@ -41,6 +47,8 @@ class Heroku:
                 'codeblock': 'cb_',
                 'sentinel': 'sentinel_',
                 'sentinel_cb': 'sentinel_cb_'}
+    # stimulus duration
+    durations = []
 
     def __init__(self,
                  files_data: list,
@@ -51,6 +59,8 @@ class Heroku:
         self.save_p = save_p
         self.load_p = load_p
         self.save_csv = save_csv
+        # read in durarions of stimuli from a config file
+        self.durations = gz.common.get_configs('stimulus_durations')
 
     def set_data(self, heroku_data):
         """
@@ -63,7 +73,6 @@ class Heroku:
                     self.heroku_data.shape)
 
     def read_data(self):
-        # todo: filter data based on mistakes with salient images
         # load data
         if self.load_p:
             df = gz.common.load_from_p(self.file_p,
@@ -93,6 +102,8 @@ class Heroku:
                 stim_found = False
                 # last found stimulus
                 stim_name = ''
+                # duratoin of last found stimulus
+                stim_dur = ''
                 # flag that sentinel image was detected
                 sent_found = False
                 # last found sentinel image
@@ -117,19 +128,22 @@ class Heroku:
                         # instructions block
                         if (gz.common.search_dict(self.prefixes, stim_no_path)
                            is not None):
-                            # stimulus is found
+                            # training is found
                             logger.debug('Found stimulus {}.', stim_no_path)
                             if self.prefixes['training'] in stim_no_path:
                                 # Record that stimulus was detected for the
                                 # cells to follow
                                 train_found = True
                                 train_name = stim_no_path
-                            # training image is found
+                            # stimulus image is found
                             elif self.prefixes['stimulus'] in stim_no_path:
                                 # Record that stimulus was detected for the
                                 # cells to follow
                                 stim_found = True
                                 stim_name = stim_no_path
+                                # stimulus duration
+                                if 'stimulus_duration' in data_cell.keys():
+                                    stim_dur = data_cell['stimulus_duration']
                             # codeblock for sentinel image is found
                             elif self.prefixes['sentinel_cb'] in stim_no_path:
                                 # record codeblock name for last stimulus
@@ -166,10 +180,10 @@ class Heroku:
                                     # Check if codeblocks were recorded previously  # noqa: E501
                                     if stim_name + '-cb' not in dict_row.keys():  # noqa: E501
                                         # first value
-                                        dict_row[stim_name + '-cb'] = [num_found[0]]  # noqa: E501
+                                        dict_row[stim_name + '-' + str(stim_dur) + '-cb'] = [num_found[0]]  # noqa: E501
                                     else:
                                         # previous values found
-                                        dict_row[stim_name + '-cb'].append(num_found[0])  # noqa: E501
+                                        dict_row[stim_name + '-' + str(stim_dur) + '-cb'].append(num_found[0])  # noqa: E501
                             # sentinel image is found
                             elif self.prefixes['sentinel'] in stim_no_path:
                                 # Record that stimulus was detected for the
@@ -208,17 +222,17 @@ class Heroku:
                             # Check if inputted values were recorded previously  # noqa: E501
                             if stim_name + '-in' not in dict_row.keys():
                                 # first value
-                                dict_row[stim_name + '-in'] = [str_in]
+                                dict_row[stim_name + '-' + str(stim_dur) + '-in'] = [str_in]  # noqa: E501
                             else:
                                 # previous values found
-                                dict_row[stim_name + '-in'].append(str_in)
+                                dict_row[stim_name + '-' + str(stim_dur) + '-in'].append(str_in)  # noqa: E501
                             # Check if time spent values were recorded previously  # noqa: E501
                             if stim_name + '-rt' not in dict_row.keys():
                                 # first value
-                                dict_row[stim_name + '-rt'] = [data_cell['rt']]
+                                dict_row[stim_name + '-' + str(stim_dur) + '-rt'] = [data_cell['rt']]  # noqa: E501
                             else:
                                 # previous values found
-                                dict_row[stim_name + '-rt'].append(data_cell['rt'])  # noqa: E501
+                                dict_row[stim_name + '-' + str(stim_dur) + '-rt'].append(data_cell['rt'])  # noqa: E501
                             # reset flags for found stimulus
                             stim_found = False
                             stim_name = ''
@@ -256,9 +270,10 @@ class Heroku:
             gz.common.save_to_p(self.file_p,  df, 'heroku data')
         # save to csv
         if self.save_csv:
-            df.to_csv(gz.settings.output_dir + '/' + self.file_data_csv)
+            df.to_csv(gz.settings.output_dir + '/' + self.file_data_csv +
+                      '.csv')
             logger.info('Saved heroku data to csv file {}',
-                        self.file_data_csv)
+                        self.file_data_csv + '.csv')
         # update attribute
         self.heroku_data = df
         # return df with data
@@ -273,87 +288,129 @@ class Heroku:
         # load mapping of codes and coordinates
         with open(gz.common.get_configs('mapping_cb')) as f:
             mapping = json.load(f)
-        # dictionaries to store points
-        points = {}
-        points_worker = {}
         # number of stimuli to process
         num_stimuli = gz.common.get_configs('num_stimuli')
         logger.info('Extracting coordinates for {} stimuli.', num_stimuli)
+        # dictionaries to store points
+        points = {}
+        points_worker = {}
+        points_duration = [{} for x in range(len(self.durations))]
         # loop over stimuli from 1 to num_stimuli
         # tqdm adds progress bar
         for stim_id in tqdm(range(1, num_stimuli + 1)):
-            # build names of columns in df
-            image_cb = 'image_' + str(stim_id) + '-cb'
-            image_in = 'image_' + str(stim_id) + '-in'
-            # trim df
-            stim_from_df = df[['group_choice',
-                              image_cb,
-                              image_in]]
-            # replace nans with empty lists
-            empty = pd.Series([[] for _ in range(len(stim_from_df.index))],
-                              index=stim_from_df.index)
-            stim_from_df[image_cb] = stim_from_df[image_cb].fillna(empty)
-            stim_from_df[image_in] = stim_from_df[image_in].fillna(empty)
             # create empty list to store points for the stimulus
             points[stim_id] = []
-            # iterate of data from participants for the given stimulus
-            for pp in range(len(stim_from_df)):
-                # input given by participant
-                given_in = stim_from_df.iloc[pp][image_in]
-                logger.debug('{}: from group {} found values {} input '
-                             + 'for stimulus {}.',
-                             stim_from_df.index[pp],
-                             stim_from_df.iloc[pp]['group_choice'],
-                             given_in,
-                             stim_id)
-                # iterate over all values given by the participand
-                for val in range(len(given_in)):
-                    # check if data from participant is present for the given
-                    # stimulus
-                    if (not stim_from_df.iloc[pp][image_cb][val] or
-                       pd.isna(stim_from_df.iloc[pp][image_cb][val])):
-                        # if no data present, move to the next participant
-                        continue
-                    # check if input is in mapping
-                    mapping_cb = '../public/img/codeboard/cb_' + \
-                                 stim_from_df.iloc[pp][image_cb][val] + \
-                                 '.jpg'
-                    if (given_in[val] in mapping[mapping_cb][1].keys()):
-                        coords = mapping[mapping_cb][1][given_in[val]]
-                        # add coordinates
-                        if stim_id not in points:
-                            points[stim_id] = [[int(coords[0]),
-                                               int(coords[1])]]
-                        else:
-                            points[stim_id].append([int(coords[0]),
-                                                    int(coords[1])])
-                        if stim_from_df.index[pp] not in points_worker:
-                            points_worker[stim_from_df.index[pp]] = [[int(coords[0]),  # noqa: E501
-                                                                     int(coords[1])]]  # noqa: E501
-                        else:
-                            points_worker[stim_from_df.index[pp]].append([int(coords[0]),  # noqa: E501
-                                                                          int(coords[1])])  # noqa: E501
-                        # add coordinates
+            # loop over durations of stimulus
+            for duration in range(len(self.durations)):
+                # create empty list to store points for the stimulus of given
+                # duration
+                points_duration[duration][stim_id] = []
+                # create empty list to store points of given duration for the
+                # stimulus
+                # build names of columns in df
+                image_cb = 'image_' + str(stim_id) + \
+                           '-' + str(self.durations[duration]) + \
+                           '-cb'
+                image_in = 'image_' + str(stim_id) + \
+                           '-' + str(self.durations[duration]) + \
+                           '-in'
+                if image_cb not in df.keys() or image_in not in df.keys():
+                    logger.debug('Indices not found: {} or {}.',
+                                 image_cb,
+                                 image_in)
+                    continue
+                # trim df
+                stim_from_df = df[['group_choice',
+                                  image_cb,
+                                  image_in]]
+                # replace nans with empty lists
+                empty = pd.Series([[] for _ in range(len(stim_from_df.index))],
+                                  index=stim_from_df.index)
+                stim_from_df[image_cb] = stim_from_df[image_cb].fillna(empty)
+                stim_from_df[image_in] = stim_from_df[image_in].fillna(empty)
+                # iterate of data from participants for the given stimulus
+                for pp in range(len(stim_from_df)):
+                    # input given by participant
+                    given_in = stim_from_df.iloc[pp][image_in]
+                    logger.debug('{}: from group {} found values {} input '
+                                 + 'for stimulus {}.',
+                                 stim_from_df.index[pp],
+                                 stim_from_df.iloc[pp]['group_choice'],
+                                 given_in,
+                                 stim_id)
+                    # iterate over all values given by the participand
+                    for val in range(len(given_in)):
+                        # check if data from participant is present for the
+                        # given stimulus
+                        if (not stim_from_df.iloc[pp][image_cb][val] or
+                           pd.isna(stim_from_df.iloc[pp][image_cb][val])):
+                            # if no data present, move to the next participant
+                            continue
+                        # check if input is in mapping
+                        mapping_cb = '../public/img/codeboard/cb_' + \
+                                     stim_from_df.iloc[pp][image_cb][val] + \
+                                     '.jpg'
+                        if (given_in[val] in mapping[mapping_cb][1].keys()):
+                            coords = mapping[mapping_cb][1][given_in[val]]
+                            # add coordinates
+                            if stim_id not in points:
+                                points[stim_id] = [[int(coords[0]),
+                                                   int(coords[1])]]
+                            else:
+                                points[stim_id].append([int(coords[0]),
+                                                        int(coords[1])])
+                            if stim_from_df.index[pp] not in points_worker:
+                                points_worker[stim_from_df.index[pp]] = [[int(coords[0]),  # noqa: E501
+                                                                         int(coords[1])]]  # noqa: E501
+                            else:
+                                points_worker[stim_from_df.index[pp]].append([int(coords[0]),  # noqa: E501
+                                                                              int(coords[1])])  # noqa: E501
+                            if stim_id not in points_duration[duration]:
+                                points_duration[duration][stim_id] = [[int(coords[0]),  # noqa: E501
+                                                                       int(coords[1])]]  # noqa: E501
+                            else:
+                                points_duration[duration][stim_id].append([int(coords[0]),  # noqa: E501
+                                                                           int(coords[1])])  # noqa: E501
         # save to csv
         if save_csv:
+            # all points for each image
             # create a dataframe to save to csv
             df_csv = pd.DataFrame(dict([(k, pd.Series(v)) for k, v in points.items()]))  # noqa: E501
             df_csv = df_csv.transpose()
             # save to csv
             df_csv.to_csv(gz.settings.output_dir + '/' +
-                          self.file_points_csv)
-            logger.info('Saved points ditctionary to csv file {}',
+                          self.file_points_csv + '.csv')
+            logger.info('Saved dictionary of points to csv file {}.csv',
                         self.file_points_csv)
+            # all points for each worker
             # create a dataframe to save to csv
             df_csv = pd.DataFrame(dict([(k, pd.Series(v)) for k, v in points_worker.items()]))  # noqa: E501
             df_csv = df_csv.transpose()
             # save to csv
             df_csv.to_csv(gz.settings.output_dir + '/' +
-                          self.file_points_worker_csv)
-            logger.info('Saved points_worker ditctionary to csv file {}',
+                          self.file_points_worker_csv + '.csv')
+            logger.info('Saved dictionary of points for each worker to csv ' +
+                        'file {}.csv',
                         self.file_points_worker_csv)
+            # points for each image for each stimulus duration
+            # create a dataframe to save to csv
+            for duration in range(len(self.durations)):
+                df_csv = pd.DataFrame(dict([(k, pd.Series(v)) for k, v in points_duration[duration].items()]))  # noqa: E501
+                df_csv = df_csv.transpose()
+                # save to csv
+                df_csv.to_csv(gz.settings.output_dir +
+                              '/' +
+                              self.file_points_duration_csv +
+                              '_' +
+                              str(self.durations[duration]) +
+                              '.csv')
+                logger.info('Saved dictionary of points for duration {} ' +
+                            'to csv file {}_{}.csv',
+                            str(self.durations[duration]),
+                            self.file_points_duration_csv,
+                            str(self.durations[duration]))
         # return points
-        return points, points_worker
+        return points, points_worker, points_duration
 
     def filter_data(self, df):
         """
@@ -433,7 +490,7 @@ class Heroku:
         # df to store data to filter out
         df_2 = pd.DataFrame()
         # create arrays with coordinates for stimuli
-        _, points_worker = self.cb_to_coords(df, False)
+        _, points_worker, _ = self.cb_to_coords(df, False)
         # allowed percentage of codeblocks in the middle
         allowed_percentage = gz.common.get_configs('allowed_cb_middle')
         # get dimensions of stimulus
