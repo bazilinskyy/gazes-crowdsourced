@@ -17,6 +17,7 @@ Gaze information is gathered by showing a black screen with a set of random code
 
 ### Sentinel images
 ![example of sentinel image](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/public/img/sentinel/sentinel_0.jpg?raw=true)
+Example of sentinel image
 
 Sentinel images are oval images of faces. Participants are asked to look at them and input the code that is within the area of the face. Such images are used during training and during the study to see if people still pay attention to the task. We used the following royalty-free base images to create the sentinel images: [image 0](https://www.pexels.com/photo/women-s-white-and-black-button-up-collared-shirt-774909), [image 1](https://www.pexels.com/photo/woman-near-house-2804282), [image 2](https://www.pexels.com/photo/woman-standing-near-yellow-petaled-flower-2050994), [image 3](https://www.pexels.com/photo/person-holding-hammer-while-smiling-3267784), [image 4](https://www.pexels.com/photo/photography-of-laughing-guy-1408196), [image 5](https://www.pxfuel.com/en/free-photo-jmdxk), [image 6](https://www.pexels.com/photo/man-in-blue-top-2830332), [image 7](https://www.pexels.com/photo/photo-of-man-wearing-denim-jacket-1599980), [image 8](https://www.pxfuel.com/en/free-photo-eibzf), [image 9](https://www.pxfuel.com/en/free-photo-jrjqb).
 
@@ -49,8 +50,16 @@ Data from appen is anonymised in the following way:
 Analysis can be started by running `python gazes-crowdsourced/gazes/analysis/run_analysis.py`. A number of csv files are saved in `gazes-crowdsourced/_output`.
 
 ### Visualisation
-Heatmaps and visualisations of gazes are saved in `gazes-crowdsourced/_output`. 
-todo: add example image with heatmap
+Heatmaps and visualisations of gazes are saved in `gazes-crowdsourced/_output`.
+
+![example of histogram](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_86_gazes.jpg?raw=true)
+Example of visalisation of gazes
+
+![example of heatmap](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_60_kdeplot.jpg?raw=true)
+Example of heatmap
+
+![example of animated heatmap](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_21_animation.gif?raw=true)
+Example of animated heatmap
 
 ### Configuration of analysis
 Configuration of analysis needs to be defined in `gazes-crowdsourced/gazes/analysis/config`. Please use the `default.config` file for the required structure of the file. If no custom config file is provided, `default.config` is used. The config file has the following parameters:
