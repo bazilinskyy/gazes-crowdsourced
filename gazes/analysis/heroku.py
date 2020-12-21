@@ -48,7 +48,7 @@ class Heroku:
                 'sentinel': 'sentinel_',
                 'sentinel_cb': 'sentinel_cb_'}
     # stimulus duration
-    durations = []
+    default_dur = 0
 
     def __init__(self,
                  files_data: list,
@@ -103,11 +103,13 @@ class Heroku:
                 # last found stimulus
                 stim_name = ''
                 # duratoin of last found stimulus
-                stim_dur = ''
+                stim_dur = -1
                 # flag that sentinel image was detected
                 sent_found = False
                 # last found sentinel image
                 sent_name = ''
+                # last time_elapsed
+                time_elapsed_last = -1
                 # go over cells in the row with data
                 for data_cell in list_row['data']:
                     # extract meta info form the call
@@ -142,8 +144,15 @@ class Heroku:
                                 stim_found = True
                                 stim_name = stim_no_path
                                 # stimulus duration
-                                if 'stimulus_duration' in data_cell.keys():
-                                    stim_dur = data_cell['stimulus_duration']
+                                if 'data' in data_cell.keys():
+                                    stim_dur = data_cell['data']['stimulus_duration']  # noqa: E501
+                                elif time_elapsed_last > -1:
+                                    stim_dur = data_cell['time_elapsed'] - time_elapsed_last  # noqa: E501
+                                    # find closest value in the list of durations
+                                    stim_dur = min(self.durations,
+                                                   key=lambda x: abs(x - stim_dur))  # noqa: E501
+                                else:  # assign default duration
+                                    stim_dur = self.default_dur
                             # codeblock for sentinel image is found
                             elif self.prefixes['sentinel_cb'] in stim_no_path:
                                 # record codeblock name for last stimulus
@@ -256,14 +265,24 @@ class Heroku:
                             # reset flags for found sentinel image
                             sent_found = False
                             sent_name = ''
-                try:
-                    # todo: check if it supports multiple values in group 2
-                    print('update before', dict_row['worker_code'], data_dict[dict_row['worker_code']])
-                    data_dict[dict_row['worker_code']].update(dict_row)
-                    print('update after', dict_row['worker_code'], data_dict[dict_row['worker_code']])
-                except Exception as e:
+                    # record time_elapsed
+                    if 'time_elapsed' in data_cell.keys():
+                        time_elapsed_last = data_cell['time_elapsed']
+                # worker_code was ecnountered before
+                if dict_row['worker_code'] in data_dict.keys():
+                    # iterate over items in the data dictionary
+                    for key, value in dict_row.items():
+                        # new value
+                        if key not in data_dict[dict_row['worker_code']].keys():  # noqa: E501
+                            data_dict[dict_row['worker_code']][key] = value
+                        # update old value
+                        else:
+                            # udpate only if it is a list
+                            if isinstance(data_dict[dict_row['worker_code']][key], list):  # noqa: E501
+                                data_dict[dict_row['worker_code']][key].extend(value)  # noqa: E501
+                # worker_code is ecnountered for the first time
+                else:
                     data_dict[dict_row['worker_code']] = dict_row
-                    print('assign after', dict_row['worker_code'], data_dict[dict_row['worker_code']])
             # turn into panda's dataframe
             df = pd.DataFrame(data_dict)
             df = df.transpose()
@@ -485,7 +504,7 @@ class Heroku:
                                 df_1 = df_1.append(row)
                                 break
         logger.info('Filter-h1. People who made more than {} mistakes with '
-                    + 'sentinel image: {}',
+                    + 'sentinel images: {}',
                     allowed_mistakes,
                     df_1.shape[0])
         # people that chose the coordiantes in the centre too often
