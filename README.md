@@ -56,6 +56,7 @@ todo: add example image with heatmap
 Configuration of analysis needs to be defined in `gazes-crowdsourced/gazes/analysis/config`. Please use the `default.config` file for the required structure of the file. If no custom config file is provided, `default.config` is used. The config file has the following parameters:
 * `appen_job`: ID of the appen job.
 * `num_stimuli`: number of stimuli in the study.
+* `stimulus_durations`: durations of showing each stimulus.
 * `stimulus_width`: width of the stimulus.
 * `stimulus_height`: height of the stimulus.
 * `allowed_min_time`: the cut-off for minimal time of participation for filtering.
