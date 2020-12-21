@@ -9,10 +9,10 @@ gz.logs(show_level='info', show_color=True)
 logger = gz.CustomLogger(__name__)  # use custom logger
 
 # Const
-SAVE_P = True  # save pickle files with data
-LOAD_P = False  # load pickle files with data
-SAVE_CSV = True  # load csv files with data
-CALC_COORDS = True  # calculate coordinates (saves time)
+SAVE_P = False  # save pickle files with data
+LOAD_P = True  # load pickle files with data
+SAVE_CSV = False  # load csv files with data
+CALC_COORDS = False  # calculate coordinates (False saves time)
 file_p = 'coords.p'  # file to save lists with coordinates
 
 if __name__ == '__main__':
@@ -39,8 +39,8 @@ if __name__ == '__main__':
     # flag and reject cheaters
     qa = gz.analysis.QA(file_cheaters=gz.common.get_configs('file_cheaters'),
                         job_id=gz.common.get_configs('appen_job'))
-    # qa.flag_users()
-    # qa.reject_users()
+    qa.flag_users()
+    qa.reject_users()
     # merge heroku and appen dataframes into one
     all_data = heroku_data.merge(appen_data,
                                  left_on='worker_code',

@@ -119,7 +119,7 @@ class Appen:
             5. People who used the same `worker_code` multiple times.
         """
         # todo: export csv file with cheaters
-        logger.info('Filteirng appen data.')
+        logger.info('Filtering appen data.')
         # people that did not read instructions
         df_1 = df.loc[df['instructions'] == 'no']
         logger.info('Filter-a1. People who did not read instructions: {}',
