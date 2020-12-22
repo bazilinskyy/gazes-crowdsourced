@@ -144,11 +144,13 @@ class Heroku:
                                 stim_found = True
                                 stim_name = stim_no_path
                                 # stimulus duration
-                                if 'data' in data_cell.keys():
-                                    stim_dur = data_cell['data']['stimulus_duration']  # noqa: E501
-                                elif time_elapsed_last > -1:
+                                # todo: uncomment for next study with correct data recording
+                                # if 'stimulus_duration' in data_cell.keys():
+                                #     stim_dur = data_cell['stimulus_duration']  # noqa: E501
+                                if time_elapsed_last > -1:
                                     stim_dur = data_cell['time_elapsed'] - time_elapsed_last  # noqa: E501
-                                    # find closest value in the list of durations
+                                    # find closest value in the list of
+                                    # durations
                                     stim_dur = min(self.durations,
                                                    key=lambda x: abs(x - stim_dur))  # noqa: E501
                                 else:  # assign default duration
