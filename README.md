@@ -53,16 +53,16 @@ Analysis can be started by running `python gazes-crowdsourced/gazes/analysis/run
 Visualisations of gazes, heatmaps and histograms and  are saved in `gazes-crowdsourced/_output`.
 
 ![example of histogram](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_86_gazes.jpg?raw=true)
-Example of visalisation of gazes
+Example of a visualisation of gazes.
 
 ![example of heatmap](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_60_kdeplot.jpg?raw=true)
-Example of heatmap
+Example of a heatmap.
 
 ![example of histogram](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_60_histogram.jpg?raw=true)
-Example of histogram (same source image as heatmap above)
+Example of a histogram (same source image as heatmap above).
 
 ![example of animated heatmap](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_9_animation.gif?raw=true)
-Example of animated heatmap
+Example of an animated heatmap based on the durations of the stimulus in logspace `[100, 151, 227, 342, 515, 776, 1170, 1762, 2655, 4000]`. Here, the focus on the distant car is apparent after the period of concentration on the centre of the image. :shipit:
 
 ### Configuration of analysis
 Configuration of analysis needs to be defined in `gazes-crowdsourced/gazes/analysis/config`. Please use the `default.config` file for the required structure of the file. If no custom config file is provided, `default.config` is used. The config file has the following parameters:
