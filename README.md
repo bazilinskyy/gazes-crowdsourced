@@ -61,7 +61,7 @@ Example of heatmap
 ![example of histogram](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_60_histogram.jpg?raw=true)
 Example of histogram (same source image as heatmap above)
 
-![example of animated heatmap](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_21_animation.gif?raw=true)
+![example of animated heatmap](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_9_animation.gif?raw=true)
 Example of animated heatmap
 
 ### Configuration of analysis
