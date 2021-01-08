@@ -2,6 +2,7 @@
 import json
 import os
 import pandas as pd
+from collections import Counter
 from tqdm import tqdm
 
 import gazes as gz
@@ -90,12 +91,6 @@ class Appen:
             df = self.filter_data(df)
             # mask IDs and IPs
             df = self.mask_ips_ids(df)
-            # info on duration in minutes
-            logger.info('Time of participation: mean={:,.2f} min, '
-                        + 'median={:,.2f} min, std={:,.2f} min.',
-                        df['time'].mean()/60,
-                        df['time'].median()/60,
-                        df['time'].std()/60)
         # save to pickle
         if self.save_p:
             gz.common.save_to_p(self.file_p,  df, 'appen data')
@@ -234,3 +229,23 @@ class Appen:
             logger.info('Unique IDs detected: {}', str(len(proc_ids)))
         # return dataframe with replaced values
         return df
+
+    def show_info(self):
+        """
+        Output info for data in object.
+        """
+        # info on gender
+        count = Counter(self.appen_data['gender'])
+        logger.info('Gender: {}', count.most_common())
+        # info on most represted countries in minutes
+        count = Counter(self.appen_data['_country'])
+        logger.info('Countires: {}', count.most_common())
+        # info on duration in minutes
+        logger.info('Time of participation: mean={:,.2f} min, '
+                    + 'median={:,.2f} min, std={:,.2f} min.',
+                    self.appen_data['time'].mean()/60,
+                    self.appen_data['time'].median()/60,
+                    self.appen_data['time'].std()/60)
+        logger.info('Oldest timestamp={}, newest timestamp={}.',
+                    self.appen_data['start'].min(),
+                    self.appen_data['start'].max())

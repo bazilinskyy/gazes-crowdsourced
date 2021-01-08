@@ -9,11 +9,11 @@ gz.logs(show_level='info', show_color=True)
 logger = gz.CustomLogger(__name__)  # use custom logger
 
 # Const
-SAVE_P = False  # save pickle files with data
-LOAD_P = True  # load pickle files with data
-SAVE_CSV = False  # load csv files with data
+SAVE_P = True  # save pickle files with data
+LOAD_P = False  # load pickle files with data
+SAVE_CSV = True  # load csv files with data
 REJECT_CHEATERS = False  # reject cheaters on Appen
-CALC_COORDS = False  # calculate coordinates (False saves time)
+CALC_COORDS = True  # calculate coordinates (False saves time)
 file_p = 'coords.p'  # file to save lists with coordinates
 
 if __name__ == '__main__':
@@ -56,6 +56,7 @@ if __name__ == '__main__':
     appen_data = all_data[all_data.columns.intersection(appen_data_keys)]
     appen_data = appen_data.set_index('worker_code')
     appen.set_data(appen_data)  # update object with filtered data
+    appen.show_info()  # show info for filtered data
     # create arrays with coordinates for stimuli
     if CALC_COORDS:
         points, _, points_duration = heroku.cb_to_coords(heroku_data)
