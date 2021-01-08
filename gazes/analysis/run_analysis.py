@@ -12,6 +12,7 @@ logger = gz.CustomLogger(__name__)  # use custom logger
 SAVE_P = False  # save pickle files with data
 LOAD_P = True  # load pickle files with data
 SAVE_CSV = False  # load csv files with data
+REJECT_CHEATERS = False  # reject cheaters on Appen
 CALC_COORDS = False  # calculate coordinates (False saves time)
 file_p = 'coords.p'  # file to save lists with coordinates
 
@@ -37,10 +38,11 @@ if __name__ == '__main__':
     heroku_data_keys = heroku_data.keys()
     appen_data_keys = appen_data.keys()
     # flag and reject cheaters
-    qa = gz.analysis.QA(file_cheaters=gz.common.get_configs('file_cheaters'),
-                        job_id=gz.common.get_configs('appen_job'))
-    qa.flag_users()
-    qa.reject_users()
+    if REJECT_CHEATERS:
+        qa = gz.analysis.QA(file_cheaters=gz.common.get_configs('file_cheaters'),  # noqa: E501
+                            job_id=gz.common.get_configs('appen_job'))
+        qa.flag_users()
+        qa.reject_users()
     # merge heroku and appen dataframes into one
     all_data = heroku_data.merge(appen_data,
                                  left_on='worker_code',
@@ -110,7 +112,8 @@ if __name__ == '__main__':
             points_process[points_dur] = points_duration[points_dur][stim_id]
         analysis.create_animation(stim_path,
                                   points_process,
-                                  save_file=True)
+                                  save_anim=True,
+                                  save_frames=True)
     # check if any figures are to be rendered
     figures = [manager.canvas.figure
                for manager in

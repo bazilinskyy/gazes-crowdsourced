@@ -1,6 +1,8 @@
 # by Pavlo Bazilinskyy <pavlo.bazilinskyy@gmail.com>
 import json
 import os
+import io
+import pickle
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
@@ -21,6 +23,8 @@ class Analysis:
     g = None
     image = None
     points = None
+    save_frames = False
+    folder = '/figures/'
 
     def __init__(self):
         pass
@@ -66,7 +70,7 @@ class Analysis:
         plt.gca().yaxis.set_major_locator(plt.NullLocator())
         # save image
         if save_file:
-            self.save_fig(image, fig, '/figures/', '_gazes.jpg')
+            self.save_fig(image, fig, self.folder, '_gazes.jpg')
 
     def create_heatmap(self,
                        image,
@@ -216,18 +220,20 @@ class Analysis:
         plt.gca().set_axis_off()
         # save image
         if save_file:
-            self.save_fig(image, fig, '/figures/', '_histogram.jpg')
+            self.save_fig(image, fig, self.folder, '_histogram.jpg')
 
     def create_animation(self,
                          image,
                          points,
-                         save_file=False):
+                         save_anim=False,
+                         save_frames=False):
         """
         Create animation for image based on the list of lists of points of
         varying duration.
         """
         self.image = image
         self.points = points
+        self.save_frames = save_frames
         self.fig, self.g = self.create_heatmap(image,
                                                points[0],
                                                type_heatmap='kdeplot',  # noqa: E501
@@ -238,10 +244,11 @@ class Analysis:
                                        frames=len(points),
                                        interval=1000,
                                        repeat=False)
-        # plt.show()
         # save image
-        if save_file:
-            self.save_anim(image, anim, '/figures/', '_animation.mp4')
+        if save_anim:
+            self.save_anim(image, anim, self.folder, '_animation.mp4')
+        else:
+            plt.show()
 
     def animate(self, i):
         """
@@ -275,7 +282,17 @@ class Analysis:
                  fontsize=12,
                  verticalalignment='top',
                  bbox=props)
-
+        # save each frame as file
+        if self.save_frames:
+            # build suffix for filename
+            suffix = '_kdeplot_' + str(durations[i]) + '.jpg'
+            # copy figure in buffer to prevent distruction of object
+            buf = io.BytesIO()
+            pickle.dump(self.fig, buf)
+            buf.seek(0)
+            temp_fig = pickle.load(buf)
+            # save figure
+            self.save_fig(self.image, temp_fig, self.folder, suffix)
         return self.g
 
     def save_fig(self, image, fig, output_subdir, suffix):
@@ -291,7 +308,6 @@ class Analysis:
         if not os.path.exists(path):
             os.makedirs(path)
         # save file
-        fig.tight_layout()
         plt.savefig(path + file_no_path + suffix,
                     bbox_inches='tight',
                     pad_inches=0)
