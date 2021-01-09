@@ -64,7 +64,7 @@ Example of a histogram (same source image as heatmap above).
 ![example of animated heatmap](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_9_animation.gif?raw=true)
 Example of an animated heatmap based on the durations of the stimulus in logspace `[100, 151, 227, 342, 515, 776, 1170, 1762, 2655, 4000]`. Here, the focus on the distant car is apparent after a period of concentration on the centre of the image. :shipit:
 
-![example of barplot of counts of gazes](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/count_gazes_vehicle.jpg?raw=true)
+![example of barplot of counts of gazes](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/all_gazes_vehicle.jpg?raw=true)
 Example of a barplot of aggregated counts of gazes on object vehicles for different stimulus durations.
 
 ![example of correlation matrix](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/all_corr_matrix.jpg?raw=true)
