@@ -316,11 +316,11 @@ class Heroku:
         """
         # read mapping from a csv file
         mapping = pd.read_csv(gz.common.get_configs('mapping_stimuli'))
-        # add empty columns for stimuli durations
-        mapping = mapping.reindex(mapping.columns.tolist() + self.durations,
-                                  axis=1)
         # add empty column for surface area of vehicle polygon
         mapping = mapping.reindex(mapping.columns.tolist() + ['vehicle_area'],
+                                  axis=1)
+        # add empty columns for counts of gazes for stimuli durations
+        mapping = mapping.reindex(mapping.columns.tolist() + self.durations,
                                   axis=1)
         # set index as stimulus_id
         mapping.set_index('image_id', inplace=True)
