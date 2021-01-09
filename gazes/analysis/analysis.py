@@ -75,13 +75,14 @@ class Analysis:
     def create_heatmap(self,
                        image,
                        points,
-                       type_heatmap='contourf',  # contourf or pcolormesh
+                       type_heatmap='contourf',
                        add_corners=True,
                        save_file=False):
         """
         Create heatmap for image based on the list of lists of points.
         add_corners: add points to the corners to have the heatmap ovelay the
                      whole image
+        type_heatmap: contourf, pcolormesh, kdeplot
         """
         # todo: remove datapoints in corners in heatmaps
         # check if data is present
@@ -297,8 +298,9 @@ class Analysis:
 
     def detection_vehicle(self, mapping):
         """
-        Detections of vehicles for stimuli
+        Detections of vehicles for stimuli for all images.
         """
+        # stimulus durations
         durations = gz.common.get_configs('stimulus_durations')
         # create subplot
         fig, ax = plt.subplots(2,  # rows
@@ -310,10 +312,10 @@ class Analysis:
         xticks_angle = 45
         # 1. all data
         # get sums of gazes
-        df = mapping[durations].sum(numeric_only=True)
-        df.plot(kind='bar', ax=ax[0, 0], width=bar_width)
+        df_plot = mapping[durations].sum(numeric_only=True)
+        df_plot.plot(kind='bar', ax=ax[0, 0], width=bar_width)
         # axis labels
-        ax[0, 0].set_ylabel('Count of gazes on vehicle')
+        ax[0, 0].set_ylabel('Aggregated count of gazes on vehicle')
         # ticks
         ax[0, 0].tick_params(axis='x', labelrotation=xticks_angle)
         # assign labels
@@ -327,11 +329,11 @@ class Analysis:
         ax[0, 0].set_ylim(ylim)
         # 2. distance
         # get data
-        df = mapping.groupby(['distance']).sum(numeric_only=True)
+        df_plot = mapping.groupby(['distance']).sum(numeric_only=True)
         # build
-        df[durations].transpose().plot.bar(stacked=True,
-                                           ax=ax[0, 1],
-                                           width=bar_width)
+        df_plot[durations].transpose().plot.bar(stacked=True,
+                                                ax=ax[0, 1],
+                                                width=bar_width)
         # axis labels
         # ticks
         ax[0, 1].tick_params(axis='x', labelrotation=xticks_angle)
@@ -349,14 +351,14 @@ class Analysis:
         ax[0, 1].set_ylim(ylim)
         # 3. traffic
         # get data
-        df = mapping.groupby(['traffic']).sum(numeric_only=True)
+        df_plot = mapping.groupby(['traffic']).sum(numeric_only=True)
         # build
-        df[durations].transpose().plot.bar(stacked=True,
-                                           ax=ax[1, 0],
-                                           width=bar_width)
+        df_plot[durations].transpose().plot.bar(stacked=True,
+                                                ax=ax[1, 0],
+                                                width=bar_width)
         # axis labels
         ax[1, 0].set_xlabel('Stimulus duration')
-        ax[1, 0].set_ylabel('Count of gazes on vehicle')
+        ax[1, 0].set_ylabel('Aggregated count of gazes on vehicle')
         # ticks
         ax[1, 0].tick_params(axis='x', labelrotation=xticks_angle)
         # assign labels
@@ -372,11 +374,11 @@ class Analysis:
         ax[1, 0].set_ylim(ylim)
         # 4. clutter
         # get data
-        df = mapping.groupby(['clutter']).sum(numeric_only=True)
+        df_plot = mapping.groupby(['clutter']).sum(numeric_only=True)
         # build
-        df[durations].transpose().plot.bar(stacked=True,
-                                           ax=ax[1, 1],
-                                           width=bar_width)
+        df_plot[durations].transpose().plot.bar(stacked=True,
+                                                ax=ax[1, 1],
+                                                width=bar_width)
         # axis labels
         ax[1, 1].set_xlabel('Stimulus duration')
         # ticks
@@ -402,7 +404,45 @@ class Analysis:
                             hspace=0.286,
                             wspace=0.1)
         # save figure
-        self.save_fig('all_count_gazes_vehicle', fig, self.folder, '.jpg')
+        self.save_fig('all', fig, self.folder, '_gazes_vehicle.jpg')
+
+    def detection_vehicle_image(self, mapping, image, stim_id):
+        """
+        Detections of vehicles for stimuli for individual image.
+        """
+        # stimulus durations
+        durations = gz.common.get_configs('stimulus_durations')
+        # limit to given image
+        mapping = mapping[mapping.index == stim_id]
+        # create subplot
+        fig = plt.figure()
+        # settings for subplots
+        bar_width = 0.75
+        xticks_angle = 45
+        # get sums of gazes
+        df_plot = mapping[durations].sum(numeric_only=True)
+        ax = df_plot.plot(kind='bar', width=bar_width)
+        # axis labels
+        ax.set_xlabel('Stimulus duration')
+        ax.set_ylabel('Aggregated count of gazes on vehicle')
+        # ticks
+        ax.tick_params(axis='x', labelrotation=xticks_angle)
+        # assign labels
+        self.autolabel(ax, on_top=True, decimal=False)
+        # grid lines
+        ax.grid(True, axis='y')
+        ax.set_axisbelow(True)
+        # tight layout
+        fig.tight_layout()
+        # remove white spaces around figure
+        fig.subplots_adjust(top=0.97,
+                            bottom=0.086,
+                            right=0.98,
+                            left=0.048,
+                            hspace=0.286,
+                            wspace=0.1)
+        # save figure
+        self.save_fig(image, fig, self.folder, '_gazes_vehicle.jpg')
 
     def save_fig(self, image, fig, output_subdir, suffix):
         """

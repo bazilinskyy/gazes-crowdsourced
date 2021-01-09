@@ -84,7 +84,7 @@ if __name__ == '__main__':
                                                'mapping of stimuli')
     # Output
     analysis = gz.analysis.Analysis()
-    # plot for detections of vehicles
+    # plot gaze detections of vehicles for all stimuli
     analysis.detection_vehicle(stimuli_mapped)
     # number of stimuli to process
     num_stimuli = gz.common.get_configs('num_stimuli')
@@ -133,6 +133,8 @@ if __name__ == '__main__':
                                   points_process,
                                   save_anim=True,
                                   save_frames=True)
+        # plot gaze detections of vehicles
+        analysis.detection_vehicle_image(stimuli_mapped, stim_path, stim_id)
     # check if any figures are to be rendered
     figures = [manager.canvas.figure
                for manager in
