@@ -300,20 +300,109 @@ class Analysis:
         Detections of vehicles for stimuli
         """
         durations = gz.common.get_configs('stimulus_durations')
+        # create subplot
+        fig, ax = plt.subplots(2,  # rows
+                               2,  # columns
+                               figsize=(15, 8))
+        # settings for subplots
+        ylim = [0, 3000]
+        bar_width = 0.75
+        xticks_angle = 45
+        # 1. all data
         # get sums of gazes
         df = mapping[durations].sum(numeric_only=True)
-        # plot barplot
-        fig = plt.figure()
-        ax = df.plot.bar()
+        df.plot(kind='bar', ax=ax[0, 0], width=bar_width)
         # axis labels
-        ax.set_xlabel('Stimulus duration')
-        ax.set_ylabel('Count of gazes on vehicle')
-        # get list of bars
-        rects = ax.patches
+        ax[0, 0].set_ylabel('Count of gazes on vehicle')
+        # ticks
+        ax[0, 0].tick_params(axis='x', labelrotation=xticks_angle)
         # assign labels
-        self.autolabel(ax, rects)
+        self.autolabel(ax[0, 0], on_top=True, decimal=False)
+        # title
+        ax[0, 0].title.set_text('All data')
+        # grid lines
+        ax[0, 0].grid(True, axis='y')
+        ax[0, 0].set_axisbelow(True)
+        # limits
+        ax[0, 0].set_ylim(ylim)
+        # 2. distance
+        # get data
+        df = mapping.groupby(['distance']).sum(numeric_only=True)
+        # build
+        df[durations].transpose().plot.bar(stacked=True,
+                                           ax=ax[0, 1],
+                                           width=bar_width)
+        # axis labels
+        # ticks
+        ax[0, 1].tick_params(axis='x', labelrotation=xticks_angle)
+        # assign labels
+        self.autolabel(ax[0, 1], on_top=False, decimal=False)
+        # legend
+        ax[0, 1].legend(['d<=35m', '35m<d<100m', 'd>=100m'],
+                        loc='upper left')
+        # title
+        ax[0, 1].title.set_text('Distance to vehicle')
+        # grid lines
+        ax[0, 1].grid(True, axis='y')
+        ax[0, 1].set_axisbelow(True)
+        # limits
+        ax[0, 1].set_ylim(ylim)
+        # 3. traffic
+        # get data
+        df = mapping.groupby(['traffic']).sum(numeric_only=True)
+        # build
+        df[durations].transpose().plot.bar(stacked=True,
+                                           ax=ax[1, 0],
+                                           width=bar_width)
+        # axis labels
+        ax[1, 0].set_xlabel('Stimulus duration')
+        ax[1, 0].set_ylabel('Count of gazes on vehicle')
+        # ticks
+        ax[1, 0].tick_params(axis='x', labelrotation=xticks_angle)
+        # assign labels
+        self.autolabel(ax[1, 0], on_top=False, decimal=False)
+        # legend
+        ax[1, 0].legend(['t=1car', 't>1car'], loc='upper left')
+        # title
+        ax[1, 0].title.set_text('Traffic density')
+        # grid lines
+        ax[1, 0].grid(True, axis='y')
+        ax[1, 0].set_axisbelow(True)
+        # limits
+        ax[1, 0].set_ylim(ylim)
+        # 4. clutter
+        # get data
+        df = mapping.groupby(['clutter']).sum(numeric_only=True)
+        # build
+        df[durations].transpose().plot.bar(stacked=True,
+                                           ax=ax[1, 1],
+                                           width=bar_width)
+        # axis labels
+        ax[1, 1].set_xlabel('Stimulus duration')
+        # ticks
+        ax[1, 1].tick_params(axis='x', labelrotation=xticks_angle)
+        # assign labels
+        self.autolabel(ax[1, 1], on_top=False, decimal=False)
+        # legend
+        ax[1, 1].legend(['c=1car', 'c=1car+other_obj'], loc='upper left')
+        # title
+        ax[1, 1].title.set_text('Visual clutter')
+        # grid lines
+        ax[1, 1].grid(True, axis='y')
+        ax[1, 1].set_axisbelow(True)
+        # limits
+        ax[1, 1].set_ylim(ylim)
+        # tight layout
+        fig.tight_layout()
+        # remove white spaces around figure
+        fig.subplots_adjust(top=0.97,
+                            bottom=0.086,
+                            right=0.98,
+                            left=0.048,
+                            hspace=0.286,
+                            wspace=0.1)
         # save figure
-        self.save_fig('count_gazes_vehicle', fig, self.folder, '.jpg')
+        self.save_fig('all_count_gazes_vehicle', fig, self.folder, '.jpg')
 
     def save_fig(self, image, fig, output_subdir, suffix):
         """
@@ -351,14 +440,49 @@ class Analysis:
         # clear animation from memory
         plt.close(self.fig)
 
-    def autolabel(self, ax, rects):
+    def autolabel(self, ax, on_top=False, decimal=True):
         """
         Attach a text label above each bar in *rects*, displaying its height.
         """
-        for rect in rects:
-            height = rect.get_height()
-            ax.annotate('{}'.format(height),
-                        xy=(rect.get_x() + rect.get_width() / 2, height),
-                        xytext=(0, 3),  # 3 points vertical offset
-                        textcoords="offset points",
-                        ha='center', va='bottom')
+        # todo: optimise to use the same method
+        # on top of bar
+        if on_top:
+            for rect in ax.patches:
+                height = rect.get_height()
+                # show demical points
+                if decimal:
+                    label_text = f'{height:.2f}'
+                else:
+                    label_text = f'{height:.0f}'
+                ax.annotate(label_text,
+                            xy=(rect.get_x() + rect.get_width() / 2, height),
+                            xytext=(0, 3),  # 3 points vertical offset
+                            textcoords="offset points",
+                            ha='center',
+                            va='bottom')
+        # in the middle of the bar
+        else:
+            # based on https://stackoverflow.com/a/60895640/46687
+            # .patches is everything inside of the chart
+            for rect in ax.patches:
+                # Find where everything is located
+                height = rect.get_height()
+                width = rect.get_width()
+                x = rect.get_x()
+                y = rect.get_y()
+                # The height of the bar is the data value and can be used as
+                # the label
+                # show demical points
+                if decimal:
+                    label_text = f'{height:.2f}'
+                else:
+                    label_text = f'{height:.0f}'
+                label_x = x + width / 2
+                label_y = y + height / 2
+                # plot only when height is greater than specified value
+                if height > 0:
+                    ax.text(label_x,
+                            label_y,
+                            label_text,
+                            ha='center',
+                            va='center')
