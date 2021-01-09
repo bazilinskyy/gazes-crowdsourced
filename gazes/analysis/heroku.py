@@ -319,6 +319,9 @@ class Heroku:
         # add empty columns for stimuli durations
         mapping = mapping.reindex(mapping.columns.tolist() + self.durations,
                                   axis=1)
+        # add empty column for surface area of vehicle polygon
+        mapping = mapping.reindex(mapping.columns.tolist() + ['vehicle_area'],
+                                  axis=1)
         # set index as stimulus_id
         mapping.set_index('image_id', inplace=True)
         # return mapping as a dataframe
@@ -486,6 +489,8 @@ class Heroku:
                         # not nan
                         else:
                             mapping.at[stim_id, self.durations[duration]] += 1
+            # add area of vehicle polygon
+            mapping.at[stim_id, 'vehicle_area'] = polygon.area
         # save to csv
         if self.save_csv:
             # save to csv

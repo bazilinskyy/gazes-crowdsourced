@@ -448,14 +448,16 @@ class Analysis:
         """
         Output correlation matrix.
         """
-        # todo: add surface area of polygon to mapping
+        # drop time and group_2 columns
+        mapping = mapping.drop(['time', 'group_2'], 1)
         # create correlation matrix
         corr = mapping.corr()
         # create figure
-        plt.figure()
+        fig = plt.figure(figsize=(15, 8))
         sns.heatmap(corr, annot=True)
         # save figure
-        self.save_fig('all', fig, self.folder, '_corr_matrix.jpg')
+        # self.save_fig('all', fig, self.folder, '_corr_matrix.jpg')
+        plt.show()
 
     def save_fig(self, image, fig, output_subdir, suffix):
         """
