@@ -49,6 +49,11 @@ Data from appen is anonymised in the following way:
 ## Analysis
 Analysis can be started by running `python gazes-crowdsourced/gazes/analysis/run_analysis.py`. A number of csv files are saved in `gazes-crowdsourced/_output`.
 
+The polygons of the closest vehicle(s) in the scene are made with [image-map.net](https://www.image-map.net). They are saved in `gazes-crowdsourced/public/img/stimuli/vehicles_polygons.csv`. Counts of eye gazes within polygons (or Areas of Interest, AOIs) are calculated and appended to the mapping of the stimuli `gazes-crowdsourced/public/img/stimuli/mapping.csv`.
+
+![polygon over vehicle](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_25_polygon.jpg?raw=true)
+Polygon of the closest vehicle in the scene.
+
 ### Visualisation
 Visualisations of gazes, heatmaps and histograms and  are saved in `gazes-crowdsourced/_output`.
 
