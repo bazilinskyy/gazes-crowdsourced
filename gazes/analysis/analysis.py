@@ -414,7 +414,7 @@ class Analysis:
         durations = gz.common.get_configs('stimulus_durations')
         # limit to given image
         mapping = mapping[mapping.index == stim_id]
-        # create subplot
+        # create figure
         fig = plt.figure()
         # settings for subplots
         bar_width = 0.75
@@ -443,6 +443,19 @@ class Analysis:
                             wspace=0.1)
         # save figure
         self.save_fig(image, fig, self.folder, '_gazes_vehicle.jpg')
+
+    def corr_matrix(self, mapping):
+        """
+        Output correlation matrix.
+        """
+        # todo: add surface area of polygon to mapping
+        # create correlation matrix
+        corr = mapping.corr()
+        # create figure
+        plt.figure()
+        sns.heatmap(corr, annot=True)
+        # save figure
+        self.save_fig('all', fig, self.folder, '_corr_matrix.jpg')
 
     def save_fig(self, image, fig, output_subdir, suffix):
         """

@@ -86,6 +86,8 @@ if __name__ == '__main__':
     analysis = gz.analysis.Analysis()
     # plot gaze detections of vehicles for all stimuli
     analysis.detection_vehicle(stimuli_mapped)
+    # create correlation matrix
+    analysis.corr_matrix(stimuli_mapped)
     # number of stimuli to process
     num_stimuli = gz.common.get_configs('num_stimuli')
     logger.info('Creating figures for {} stimuli.', num_stimuli)
