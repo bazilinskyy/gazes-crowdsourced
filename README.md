@@ -89,3 +89,5 @@ Configuration of analysis needs to be defined in `gazes-crowdsourced/gazes/analy
 * `mapping_cb`: json file with mapping of coordinates and codes in codeblocks for stimuli.
 * `mapping_sentinel_cb`: json file with mapping of coordinates and codes in codeblocks for sentinel images.
 * `path_stimuli`: path with stimuli.
+* `vehicles_polygons`: csv file with coordinates of polygons of object vehicles in stimuli.
+* `mapping_stimuli`: csv file with mapping of stimuli.
