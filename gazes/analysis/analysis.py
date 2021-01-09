@@ -295,6 +295,26 @@ class Analysis:
             self.save_fig(self.image, temp_fig, self.folder, suffix)
         return self.g
 
+    def detection_vehicle(self, mapping):
+        """
+        Detections of vehicles for stimuli
+        """
+        durations = gz.common.get_configs('stimulus_durations')
+        # get sums of gazes
+        df = mapping[durations].sum(numeric_only=True)
+        # plot barplot
+        fig = plt.figure()
+        ax = df.plot.bar()
+        # axis labels
+        ax.set_xlabel('Stimulus duration')
+        ax.set_ylabel('Count of gazes on vehicle')
+        # get list of bars
+        rects = ax.patches
+        # assign labels
+        self.autolabel(ax, rects)
+        # save figure
+        self.save_fig('count_gazes_vehicle', fig, self.folder, '.jpg')
+
     def save_fig(self, image, fig, output_subdir, suffix):
         """
         Helper function to save figure as file.
@@ -330,3 +350,15 @@ class Analysis:
         anim.save(path + file_no_path + suffix, writer='ffmpeg')
         # clear animation from memory
         plt.close(self.fig)
+
+    def autolabel(self, ax, rects):
+        """
+        Attach a text label above each bar in *rects*, displaying its height.
+        """
+        for rect in rects:
+            height = rect.get_height()
+            ax.annotate('{}'.format(height),
+                        xy=(rect.get_x() + rect.get_width() / 2, height),
+                        xytext=(0, 3),  # 3 points vertical offset
+                        textcoords="offset points",
+                        ha='center', va='bottom')

@@ -32,6 +32,8 @@ class Heroku:
     file_points_worker_csv = 'points_worker'
     # csv file for saving data for images for each duration
     file_points_duration_csv = 'points_duration'
+    # csv file for mapping of stimuli
+    file_mapping_csv = 'mapping'
     # keys with meta information
     meta_keys = ['worker_code',
                  'browser_user_agent',
@@ -61,10 +63,11 @@ class Heroku:
         self.save_csv = save_csv
         # read in durarions of stimuli from a config file
         self.durations = gz.common.get_configs('stimulus_durations')
+        self.num_stimuli = gz.common.get_configs('num_stimuli')
 
     def set_data(self, heroku_data):
         """
-        Setter for the data object
+        Setter for the data object.
         """
         old_shape = self.heroku_data.shape  # store old shape for logging
         self.heroku_data = heroku_data
@@ -73,6 +76,9 @@ class Heroku:
                     self.heroku_data.shape)
 
     def read_data(self):
+        """
+        Read data into an attribute.
+        """
         # load data
         if self.load_p:
             df = gz.common.load_from_p(self.file_p,
@@ -304,6 +310,20 @@ class Heroku:
         # return df with data
         return df
 
+    def read_mapping(self):
+        """
+        Read mapping.
+        """
+        # read mapping from a csv file
+        mapping = pd.read_csv(gz.common.get_configs('mapping_stimuli'))
+        # add empty columns for stimuli durations
+        mapping = mapping.reindex(mapping.columns.tolist() + self.durations,
+                                  axis=1)
+        # set index as stimulus_id
+        mapping.set_index('image_id', inplace=True)
+        # return mapping as a dataframe
+        return mapping
+
     def cb_to_coords(self, df, save_csv=True):
         """
         Create arrays with coordinates for images.
@@ -313,16 +333,14 @@ class Heroku:
         # load mapping of codes and coordinates
         with open(gz.common.get_configs('mapping_cb')) as f:
             mapping = json.load(f)
-        # number of stimuli to process
-        num_stimuli = gz.common.get_configs('num_stimuli')
-        logger.info('Extracting coordinates for {} stimuli.', num_stimuli)
+        logger.info('Extracting coordinates for {} stimuli.', self.num_stimuli)
         # dictionaries to store points
         points = {}
         points_worker = {}
         points_duration = [{} for x in range(len(self.durations))]
-        # loop over stimuli from 1 to num_stimuli
+        # loop over stimuli from 1 to self.num_stimuli
         # tqdm adds progress bar
-        for stim_id in tqdm(range(1, num_stimuli + 1)):
+        for stim_id in tqdm(range(1, self.num_stimuli + 1)):
             # create empty list to store points for the stimulus
             points[stim_id] = []
             # loop over durations of stimulus
@@ -437,6 +455,45 @@ class Heroku:
         # return points
         return points, points_worker, points_duration
 
+    def populate_coords_mapping(self, df, points_duration, mapping):
+        """
+        Populate dataframe with mapping of stomuli with counts of detected
+        coords for each stimulus duration.
+        """
+        logger.info('Populating coordinates in mapping of stimuli')
+        # read mapping of polygons from a csv file
+        polygons = pd.read_csv(gz.common.get_configs('vehicles_polygons'))
+        # set index as stimulus_id
+        polygons.set_index('image_id', inplace=True)
+        # loop over stimuli
+        for stim_id in tqdm(range(1, self.num_stimuli + 1)):
+            # polygon of vehicle
+            coords = np.array(polygons.at[stim_id, 'coords'].split(','),
+                              dtype=int).reshape(-1, 2)
+            polygon = Polygon(coords)
+            # loop over durations of stimulus
+            for duration in range(len(self.durations)):
+                # loop over coord in the list of coords
+                for point in points_duration[duration][stim_id]:
+                    # convert to point object
+                    point = Point(point[0], point[1])
+                    # check if point is within polygon of vehicle
+                    if polygon.contains(point):
+                        # check if nan is in the cell
+                        if pd.isna(mapping.at[stim_id,
+                                              self.durations[duration]]):
+                            mapping.at[stim_id, self.durations[duration]] = 1
+                        # not nan
+                        else:
+                            mapping.at[stim_id, self.durations[duration]] += 1
+        # save to csv
+        if self.save_csv:
+            # save to csv
+            mapping.to_csv(gz.settings.output_dir + '/' +
+                           self.file_mapping_csv + '.csv')
+        # return mapping
+        return mapping
+
     def filter_data(self, df):
         """
         Filter data based on the folllowing criteria:
@@ -525,7 +582,7 @@ class Heroku:
         # calculate the middle of the stimulus
         width_middle = round(width/2)
         height_middle = round(height/2)
-        # ploygon for the centre
+        # polygon for the centre
         polygon = Polygon([(width_middle - area, height_middle + area),
                            (width_middle + area, height_middle + area),
                            (width_middle - area, height_middle - area),

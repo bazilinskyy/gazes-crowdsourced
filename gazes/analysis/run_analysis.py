@@ -9,15 +9,17 @@ gz.logs(show_level='info', show_color=True)
 logger = gz.CustomLogger(__name__)  # use custom logger
 
 # Const
-SAVE_P = True  # save pickle files with data
-LOAD_P = False  # load pickle files with data
-SAVE_CSV = True  # load csv files with data
+SAVE_P = False  # save pickle files with data
+LOAD_P = True  # load pickle files with data
+SAVE_CSV = False  # load csv files with data
 REJECT_CHEATERS = False  # reject cheaters on Appen
-CALC_COORDS = True  # calculate coordinates (False saves time)
-file_p = 'coords.p'  # file to save lists with coordinates
+CALC_COORDS = False  # calculate coordinates (False saves time)
+UPDATE_MAPPING = False  # calculate coordinates (False saves time)
+file_coords = 'coords.p'  # file to save lists with coordinates
+file_mapping = 'mapping.p'  # file to save lists with coordinates
 
 if __name__ == '__main__':
-    # todo: add descriptions to methods
+    # todo: add descriptions for methods automatically with a sublime plugin
     # create object for working with heroku data
     files_heroku = gz.common.get_configs('files_heroku')
     heroku = gz.analysis.Heroku(files_data=files_heroku,
@@ -60,14 +62,30 @@ if __name__ == '__main__':
     # create arrays with coordinates for stimuli
     if CALC_COORDS:
         points, _, points_duration = heroku.cb_to_coords(heroku_data)
-        gz.common.save_to_p(file_p,
+        gz.common.save_to_p(file_coords,
                             [points, points_duration],
                             'points data')
     else:
-        points, points_duration = gz.common.load_from_p(file_p,
+        points, points_duration = gz.common.load_from_p(file_coords,
                                                         'points data')
+    # update mapping of stimuli
+    if UPDATE_MAPPING:
+        # read in mapping of stimuli
+        stimuli_mapped = heroku.read_mapping()
+        # populate coordinates in mapping of stimuli
+        stimuli_mapped = heroku.populate_coords_mapping(heroku_data,
+                                                        points_duration,
+                                                        stimuli_mapped)
+        gz.common.save_to_p(file_mapping,
+                            stimuli_mapped,
+                            'points data')
+    else:
+        stimuli_mapped = gz.common.load_from_p(file_mapping,
+                                               'mapping of stimuli')
     # Output
     analysis = gz.analysis.Analysis()
+    # plot for detections of vehicles
+    analysis.detection_vehicle(stimuli_mapped)
     # number of stimuli to process
     num_stimuli = gz.common.get_configs('num_stimuli')
     logger.info('Creating figures for {} stimuli.', num_stimuli)
