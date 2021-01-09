@@ -456,8 +456,7 @@ class Analysis:
         fig = plt.figure(figsize=(15, 8))
         sns.heatmap(corr, annot=True)
         # save figure
-        # self.save_fig('all', fig, self.folder, '_corr_matrix.jpg')
-        plt.show()
+        self.save_fig('all', fig, self.folder, '_corr_matrix.jpg')
 
     def save_fig(self, image, fig, output_subdir, suffix):
         """
