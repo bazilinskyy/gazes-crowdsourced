@@ -85,9 +85,9 @@ if __name__ == '__main__':
     # Output
     analysis = gz.analysis.Analysis()
     # plot gaze detections of vehicles for all stimuli
-    analysis.detection_vehicle(stimuli_mapped)
+    analysis.detection_vehicle(stimuli_mapped, save_file=True)
     # create correlation matrix
-    analysis.corr_matrix(stimuli_mapped)
+    analysis.corr_matrix(stimuli_mapped, save_file=True)
     # number of stimuli to process
     num_stimuli = gz.common.get_configs('num_stimuli')
     logger.info('Creating figures for {} stimuli.', num_stimuli)
@@ -136,7 +136,14 @@ if __name__ == '__main__':
                                   save_anim=True,
                                   save_frames=True)
         # plot gaze detections of vehicles
-        analysis.detection_vehicle_image(stimuli_mapped, stim_path, stim_id)
+        analysis.detection_vehicle_image(stimuli_mapped,
+                                         stim_path,
+                                         stim_id,
+                                         save_file=True)
+        # draw polygon on top on base image
+        analysis.draw_polygon(stim_path,
+                              stim_id,
+                              save_file=True)
     # check if any figures are to be rendered
     figures = [manager.canvas.figure
                for manager in

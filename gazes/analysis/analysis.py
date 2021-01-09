@@ -9,6 +9,7 @@ import matplotlib.image as mpimg
 import matplotlib.animation as animation
 import numpy as np
 import seaborn as sns
+import pandas as pd
 from scipy.stats.kde import gaussian_kde
 
 import gazes as gz
@@ -25,9 +26,13 @@ class Analysis:
     points = None
     save_frames = False
     folder = '/figures/'
+    polygons = None
 
     def __init__(self):
-        pass
+        # read mapping of polygons from a csv file
+        self.polygons = pd.read_csv(gz.common.get_configs('vehicles_polygons'))
+        # set index as stimulus_id
+        self.polygons.set_index('image_id', inplace=True)
 
     def create_gazes(self, image, points, save_file=False):
         """
@@ -296,7 +301,7 @@ class Analysis:
             self.save_fig(self.image, temp_fig, self.folder, suffix)
         return self.g
 
-    def detection_vehicle(self, mapping):
+    def detection_vehicle(self, mapping, save_file=False):
         """
         Detections of vehicles for stimuli for all images.
         """
@@ -403,10 +408,11 @@ class Analysis:
                             left=0.048,
                             hspace=0.286,
                             wspace=0.1)
-        # save figure
-        self.save_fig('all', fig, self.folder, '_gazes_vehicle.jpg')
+        # save image
+        if save_file:
+            self.save_fig('all', fig, self.folder, '_gazes_vehicle.jpg')
 
-    def detection_vehicle_image(self, mapping, image, stim_id):
+    def detection_vehicle_image(self, mapping, image, stim_id, save_file=False):
         """
         Detections of vehicles for stimuli for individual image.
         """
@@ -441,10 +447,11 @@ class Analysis:
                             left=0.048,
                             hspace=0.286,
                             wspace=0.1)
-        # save figure
-        self.save_fig(image, fig, self.folder, '_gazes_vehicle.jpg')
+        # save image
+        if save_file:
+            self.save_fig(image, fig, self.folder, '_gazes_vehicle.jpg')
 
-    def corr_matrix(self, mapping):
+    def corr_matrix(self, mapping, save_file=False):
         """
         Output correlation matrix.
         """
@@ -455,8 +462,42 @@ class Analysis:
         # create figure
         fig = plt.figure(figsize=(15, 8))
         sns.heatmap(corr, annot=True)
-        # save figure
-        self.save_fig('all', fig, self.folder, '_corr_matrix.jpg')
+        # save image
+        if save_file:
+            self.save_fig('all', fig, self.folder, '_corr_matrix.jpg')
+
+    def draw_polygon(self, image, stim_id, save_file=False):
+        # polygon of vehicle
+        coords = np.array(self.polygons.at[stim_id, 'coords'].split(','),
+                          dtype=int).reshape(-1, 2)
+        # repeat the first point to create a 'closed loop'
+        coords = np.append(coords, coords[0])
+        coords = coords.reshape(-1, 2)
+        # create lists of x and y values
+        xs, ys = zip(*coords)
+        # get dimensions of stimulus
+        width = gz.common.get_configs('stimulus_width')
+        height = gz.common.get_configs('stimulus_height')
+        # create figure object with given dpi and dimensions
+        dpi = 150
+        fig = plt.figure(figsize=(width/dpi, height/dpi), dpi=dpi)
+        # draw polygon
+        plt.plot(xs, ys, color='red')
+        # read original image
+        im = plt.imread(image)
+        plt.imshow(im)
+        # remove axis
+        plt.gca().set_axis_off()
+        # remove white spaces around figure
+        plt.subplots_adjust(top=1,
+                            bottom=0,
+                            right=1,
+                            left=0,
+                            hspace=0,
+                            wspace=0)
+        # save image
+        if save_file:
+            self.save_fig(image, fig, self.folder, '_polygon.jpg')
 
     def save_fig(self, image, fig, output_subdir, suffix):
         """
