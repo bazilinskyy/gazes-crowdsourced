@@ -348,7 +348,7 @@ class Analysis:
         ax[0, 0].set_ylim(ylim)
         # 2. distance
         # get data
-        df_plot = mapping.groupby(['distance']).sum(numeric_only=True)
+        df_plot = mapping.groupby(['dist']).sum(numeric_only=True)
         # build
         df_plot[durations].transpose().plot.bar(stacked=True,
                                                 ax=ax[0, 1],
@@ -499,9 +499,7 @@ class Analysis:
         plt.rc('axes', titlesize=m_font)    # fontsize of the subplot title
         # create figure
         fig = plt.figure(figsize=(15, 8))
-        ax = sns.heatmap(corr, annot=True, cmap='YlGnBu')
-        # ticks
-        ax.tick_params(axis='x', labelrotation=45)
+        g = sns.heatmap(corr, annot=True, cmap='YlGnBu')
         # save image
         if save_file:
             self.save_fig('all',

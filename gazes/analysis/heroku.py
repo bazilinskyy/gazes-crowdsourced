@@ -317,7 +317,7 @@ class Heroku:
         # read mapping from a csv file
         mapping = pd.read_csv(gz.common.get_configs('mapping_stimuli'))
         # add empty column for surface area of vehicle polygon
-        mapping = mapping.reindex(mapping.columns.tolist() + ['vehicle_area'],
+        mapping = mapping.reindex(mapping.columns.tolist() + ['v_area'],
                                   axis=1)
         # add empty columns for counts of gazes for stimuli durations
         mapping = mapping.reindex(mapping.columns.tolist() + self.durations,
@@ -490,7 +490,7 @@ class Heroku:
                         else:
                             mapping.at[stim_id, self.durations[duration]] += 1
             # add area of vehicle polygon
-            mapping.at[stim_id, 'vehicle_area'] = polygon.area
+            mapping.at[stim_id, 'v_area'] = polygon.area
         # save to csv
         if self.save_csv:
             # save to csv
