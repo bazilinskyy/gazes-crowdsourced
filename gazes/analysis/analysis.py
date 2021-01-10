@@ -33,6 +33,8 @@ class Analysis:
         self.polygons = pd.read_csv(gz.common.get_configs('vehicles_polygons'))
         # set index as stimulus_id
         self.polygons.set_index('image_id', inplace=True)
+        # set font to Times
+        plt.rc('font', family='serif')
 
     def create_gazes(self, image, points, save_file=False):
         """
@@ -307,26 +309,38 @@ class Analysis:
         """
         # stimulus durations
         durations = gz.common.get_configs('stimulus_durations')
+        # set larger font
+        s_font = 14  # small
+        m_font = 18  # medium
+        l_font = 20  # large
+        plt.rc('font', size=s_font)         # controls default text sizes
+        plt.rc('axes', titlesize=s_font)    # fontsize of the axes title
+        plt.rc('axes', labelsize=m_font)    # fontsize of the axes labels
+        plt.rc('xtick', labelsize=s_font)   # fontsize of the tick labels
+        plt.rc('ytick', labelsize=s_font)   # fontsize of the tick labels
+        plt.rc('legend', fontsize=s_font)   # fontsize of the legend
+        plt.rc('figure', titlesize=l_font)  # fontsize of the figure title
+        plt.rc('axes', titlesize=m_font)    # fontsize of the subplot title
         # create subplot
         fig, ax = plt.subplots(2,  # rows
                                2,  # columns
-                               figsize=(15, 8))
+                               figsize=(15, 10))  # width, height in inches
         # settings for subplots
         ylim = [0, 3000]
-        bar_width = 0.75
+        bar_width = 0.8
         xticks_angle = 45
         # 1. all data
         # get sums of gazes
         df_plot = mapping[durations].sum(numeric_only=True)
         df_plot.plot(kind='bar', ax=ax[0, 0], width=bar_width)
         # axis labels
-        ax[0, 0].set_ylabel('Aggregated count of gazes on vehicle')
+        ax[0, 0].set_ylabel('Count of gazes on object vehicle')
         # ticks
         ax[0, 0].tick_params(axis='x', labelrotation=xticks_angle)
         # assign labels
         self.autolabel(ax[0, 0], on_top=True, decimal=False)
         # title
-        ax[0, 0].title.set_text('All data')
+        ax[0, 0].title.set_text('(a) All data')
         # grid lines
         ax[0, 0].grid(True, axis='y')
         ax[0, 0].set_axisbelow(True)
@@ -345,10 +359,10 @@ class Analysis:
         # assign labels
         self.autolabel(ax[0, 1], on_top=False, decimal=False)
         # legend
-        ax[0, 1].legend(['d<=35m', '35m<d<100m', 'd>=100m'],
+        ax[0, 1].legend(['d<=35', '35<d<100', 'd>=100'],
                         loc='upper left')
         # title
-        ax[0, 1].title.set_text('Distance to vehicle')
+        ax[0, 1].title.set_text('(b) Distance to vehicle [m]')
         # grid lines
         ax[0, 1].grid(True, axis='y')
         ax[0, 1].set_axisbelow(True)
@@ -363,15 +377,15 @@ class Analysis:
                                                 width=bar_width)
         # axis labels
         ax[1, 0].set_xlabel('Stimulus duration')
-        ax[1, 0].set_ylabel('Aggregated count of gazes on vehicle')
+        ax[1, 0].set_ylabel('Count of gazes on object vehicle')
         # ticks
         ax[1, 0].tick_params(axis='x', labelrotation=xticks_angle)
         # assign labels
         self.autolabel(ax[1, 0], on_top=False, decimal=False)
         # legend
-        ax[1, 0].legend(['t=1car', 't>1car'], loc='upper left')
+        ax[1, 0].legend(['t=1', 't>1'], loc='upper left')
         # title
-        ax[1, 0].title.set_text('Traffic density')
+        ax[1, 0].title.set_text('(c) Traffic density [cars]')
         # grid lines
         ax[1, 0].grid(True, axis='y')
         ax[1, 0].set_axisbelow(True)
@@ -391,9 +405,9 @@ class Analysis:
         # assign labels
         self.autolabel(ax[1, 1], on_top=False, decimal=False)
         # legend
-        ax[1, 1].legend(['c=1car', 'c=1car+other_obj'], loc='upper left')
+        ax[1, 1].legend(['c=1', 'c>1'], loc='upper left')
         # title
-        ax[1, 1].title.set_text('Visual clutter')
+        ax[1, 1].title.set_text('(d) Visual clutter [objects]')
         # grid lines
         ax[1, 1].grid(True, axis='y')
         ax[1, 1].set_axisbelow(True)
@@ -407,12 +421,23 @@ class Analysis:
                             right=0.98,
                             left=0.048,
                             hspace=0.286,
-                            wspace=0.1)
+                            wspace=0.15)
         # save image
         if save_file:
-            self.save_fig('all', fig, self.folder, '_gazes_vehicle.jpg')
+            self.save_fig('all',
+                          fig,
+                          self.folder,
+                          '_gazes_vehicle.jpg',
+                          pad_inches=0.05)
+        # plt.show()
+        # revert font
+        self.reset_font()
 
-    def detection_vehicle_image(self, mapping, image, stim_id, save_file=False):
+    def detection_vehicle_image(self,
+                                mapping,
+                                image,
+                                stim_id,
+                                save_file=False):
         """
         Detections of vehicles for stimuli for individual image.
         """
@@ -422,17 +447,14 @@ class Analysis:
         mapping = mapping[mapping.index == stim_id]
         # create figure
         fig = plt.figure()
-        # settings for subplots
-        bar_width = 0.75
-        xticks_angle = 45
         # get sums of gazes
         df_plot = mapping[durations].sum(numeric_only=True)
-        ax = df_plot.plot(kind='bar', width=bar_width)
+        ax = df_plot.plot(kind='bar', width=0.8)
         # axis labels
         ax.set_xlabel('Stimulus duration')
-        ax.set_ylabel('Aggregated count of gazes on vehicle')
+        ax.set_ylabel('Count of gazes on vehicle')
         # ticks
-        ax.tick_params(axis='x', labelrotation=xticks_angle)
+        ax.tick_params(axis='x', labelrotation=45)
         # assign labels
         self.autolabel(ax, on_top=True, decimal=False)
         # grid lines
@@ -449,7 +471,11 @@ class Analysis:
                             wspace=0.1)
         # save image
         if save_file:
-            self.save_fig(image, fig, self.folder, '_gazes_vehicle.jpg')
+            self.save_fig(image,
+                          fig,
+                          self.folder,
+                          '_gazes_vehicle.jpg',
+                          pad_inches=0.05)
 
     def corr_matrix(self, mapping, save_file=False):
         """
@@ -459,12 +485,32 @@ class Analysis:
         mapping = mapping.drop(['time', 'group_2'], 1)
         # create correlation matrix
         corr = mapping.corr()
+        # set larger font
+        s_font = 12  # small
+        m_font = 16  # medium
+        l_font = 18  # large
+        plt.rc('font', size=s_font)         # controls default text sizes
+        plt.rc('axes', titlesize=s_font)    # fontsize of the axes title
+        plt.rc('axes', labelsize=m_font)    # fontsize of the axes labels
+        plt.rc('xtick', labelsize=s_font)   # fontsize of the tick labels
+        plt.rc('ytick', labelsize=s_font)   # fontsize of the tick labels
+        plt.rc('legend', fontsize=s_font)   # fontsize of the legend
+        plt.rc('figure', titlesize=l_font)  # fontsize of the figure title
+        plt.rc('axes', titlesize=m_font)    # fontsize of the subplot title
         # create figure
         fig = plt.figure(figsize=(15, 8))
-        sns.heatmap(corr, annot=True)
+        ax = sns.heatmap(corr, annot=True, cmap='YlGnBu')
+        # ticks
+        ax.tick_params(axis='x', labelrotation=45)
         # save image
         if save_file:
-            self.save_fig('all', fig, self.folder, '_corr_matrix.jpg')
+            self.save_fig('all',
+                          fig,
+                          self.folder,
+                          '_corr_matrix.jpg',
+                          pad_inches=0.05)
+        # revert font
+        self.reset_font()
 
     def draw_polygon(self, image, stim_id, save_file=False):
         # polygon of vehicle
@@ -499,7 +545,7 @@ class Analysis:
         if save_file:
             self.save_fig(image, fig, self.folder, '_polygon.jpg')
 
-    def save_fig(self, image, fig, output_subdir, suffix):
+    def save_fig(self, image, fig, output_subdir, suffix, pad_inches=0):
         """
         Helper function to save figure as file.
         """
@@ -514,7 +560,7 @@ class Analysis:
         # save file
         plt.savefig(path + file_no_path + suffix,
                     bbox_inches='tight',
-                    pad_inches=0)
+                    pad_inches=pad_inches)
         # clear figure from memory
         plt.close(fig)
 
@@ -581,3 +627,19 @@ class Analysis:
                             label_text,
                             ha='center',
                             va='center')
+
+    def reset_font(self):
+        """
+        Reset font to default size values. Info at
+        https://matplotlib.org/tutorials/introductory/customizing.html
+        """
+        s_font = 8
+        m_font = 10
+        l_font = 12
+        plt.rc('font', size=s_font)         # controls default text sizes
+        plt.rc('axes', titlesize=s_font)    # fontsize of the axes title
+        plt.rc('axes', labelsize=m_font)    # fontsize of the axes labels
+        plt.rc('xtick', labelsize=s_font)   # fontsize of the tick labels
+        plt.rc('ytick', labelsize=s_font)   # fontsize of the tick labels
+        plt.rc('legend', fontsize=s_font)   # legend fontsize
+        plt.rc('figure', titlesize=l_font)  # fontsize of the figure title
