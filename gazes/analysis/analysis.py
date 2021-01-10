@@ -362,7 +362,7 @@ class Analysis:
         ax[0, 1].legend(['d<=35', '35<d<100', 'd>=100'],
                         loc='upper left')
         # title
-        ax[0, 1].title.set_text('(b) Distance to vehicle [m]')
+        ax[0, 1].title.set_text('(b) Distance to vehicle')
         # grid lines
         ax[0, 1].grid(True, axis='y')
         ax[0, 1].set_axisbelow(True)
@@ -376,7 +376,7 @@ class Analysis:
                                                 ax=ax[1, 0],
                                                 width=bar_width)
         # axis labels
-        ax[1, 0].set_xlabel('Stimulus duration')
+        ax[1, 0].set_xlabel('Stimulus duration [ms]')
         ax[1, 0].set_ylabel('Count of gazes on object vehicle')
         # ticks
         ax[1, 0].tick_params(axis='x', labelrotation=xticks_angle)
@@ -385,7 +385,7 @@ class Analysis:
         # legend
         ax[1, 0].legend(['t=1', 't>1'], loc='upper left')
         # title
-        ax[1, 0].title.set_text('(c) Traffic density [cars]')
+        ax[1, 0].title.set_text('(c) Traffic density')
         # grid lines
         ax[1, 0].grid(True, axis='y')
         ax[1, 0].set_axisbelow(True)
@@ -399,7 +399,7 @@ class Analysis:
                                                 ax=ax[1, 1],
                                                 width=bar_width)
         # axis labels
-        ax[1, 1].set_xlabel('Stimulus duration')
+        ax[1, 1].set_xlabel('Stimulus duration [ms]')
         # ticks
         ax[1, 1].tick_params(axis='x', labelrotation=xticks_angle)
         # assign labels
@@ -407,7 +407,7 @@ class Analysis:
         # legend
         ax[1, 1].legend(['c=1', 'c>1'], loc='upper left')
         # title
-        ax[1, 1].title.set_text('(d) Visual clutter [objects]')
+        ax[1, 1].title.set_text('(d) Visual clutter')
         # grid lines
         ax[1, 1].grid(True, axis='y')
         ax[1, 1].set_axisbelow(True)
@@ -451,7 +451,7 @@ class Analysis:
         df_plot = mapping[durations].sum(numeric_only=True)
         ax = df_plot.plot(kind='bar', width=0.8)
         # axis labels
-        ax.set_xlabel('Stimulus duration')
+        ax.set_xlabel('Stimulus duration [ms]')
         ax.set_ylabel('Count of gazes on vehicle')
         # ticks
         ax.tick_params(axis='x', labelrotation=45)
