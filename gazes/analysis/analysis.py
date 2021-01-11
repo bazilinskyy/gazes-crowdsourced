@@ -324,7 +324,7 @@ class Analysis:
         # create subplot
         fig, ax = plt.subplots(2,  # rows
                                2,  # columns
-                               figsize=(15, 10))  # width, height in inches
+                               figsize=(15, 11))  # width, height in inches
         # settings for subplots
         ylim = [0, 3000]
         bar_width = 0.8
@@ -359,8 +359,11 @@ class Analysis:
         # assign labels
         self.autolabel(ax[0, 1], on_top=False, decimal=False)
         # legend
-        ax[0, 1].legend(['d<=35', '35<d<100', 'd>=100'],
-                        loc='upper left')
+        ax[0, 1].legend([r'$dist \leq 35$',
+                         r'$35 < dist < 100$',
+                         r'$dist \geq 100$'],
+                        loc='upper left',
+                        ncol=3)
         # title
         ax[0, 1].title.set_text('(b) Distance to vehicle')
         # grid lines
@@ -370,7 +373,7 @@ class Analysis:
         ax[0, 1].set_ylim(ylim)
         # 3. traffic
         # get data
-        df_plot = mapping.groupby(['traffic']).sum(numeric_only=True)
+        df_plot = mapping.groupby(['traf']).sum(numeric_only=True)
         # build
         df_plot[durations].transpose().plot.bar(stacked=True,
                                                 ax=ax[1, 0],
@@ -383,7 +386,9 @@ class Analysis:
         # assign labels
         self.autolabel(ax[1, 0], on_top=False, decimal=False)
         # legend
-        ax[1, 0].legend(['t=1', 't>1'], loc='upper left')
+        ax[1, 0].legend([r'$traf=1$', r'$traf>1$'],
+                        loc='upper left',
+                        ncol=2)
         # title
         ax[1, 0].title.set_text('(c) Traffic density')
         # grid lines
@@ -393,7 +398,7 @@ class Analysis:
         ax[1, 0].set_ylim(ylim)
         # 4. clutter
         # get data
-        df_plot = mapping.groupby(['clutter']).sum(numeric_only=True)
+        df_plot = mapping.groupby(['clut']).sum(numeric_only=True)
         # build
         df_plot[durations].transpose().plot.bar(stacked=True,
                                                 ax=ax[1, 1],
@@ -405,7 +410,9 @@ class Analysis:
         # assign labels
         self.autolabel(ax[1, 1], on_top=False, decimal=False)
         # legend
-        ax[1, 1].legend(['c=1', 'c>1'], loc='upper left')
+        ax[1, 1].legend([r'$clut=1$', r'$clut>1$'],
+                        loc='upper left',
+                        ncol=2)
         # title
         ax[1, 1].title.set_text('(d) Visual clutter')
         # grid lines
