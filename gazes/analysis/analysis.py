@@ -1,6 +1,7 @@
 # by Pavlo Bazilinskyy <pavlo.bazilinskyy@gmail.com>
 import json
 import os
+import subprocess
 import io
 import pickle
 import matplotlib
@@ -23,6 +24,7 @@ class Analysis:
     fig = None
     g = None
     image = None
+    stim_id = None
     points = None
     save_frames = False
     folder = '/figures/'
@@ -237,6 +239,7 @@ class Analysis:
 
     def create_animation(self,
                          image,
+                         stim_id,
                          points,
                          save_anim=False,
                          save_frames=False):
@@ -245,6 +248,7 @@ class Analysis:
         varying duration.
         """
         self.image = image
+        self.stim_id = stim_id
         self.points = points
         self.save_frames = save_frames
         self.fig, self.g = self.create_heatmap(image,
@@ -260,8 +264,43 @@ class Analysis:
         # save image
         if save_anim:
             self.save_anim(image, anim, self.folder, '_animation.mp4')
-        else:
-            plt.show()
+
+    def create_animation_all_stimuli(self, num_stimuli):
+        """
+        Create long video with all animations.
+        """
+        logger.info('Creating long video with all animations for {} stimuli.',
+                    num_stimuli)
+        # create path
+        path = gz.settings.output_dir + self.folder
+        if not os.path.exists(path):
+            os.makedirs(path)
+        # file with list of animations
+        list_anim = path + 'animations.txt'
+        file = open(list_anim, 'w+')
+        # loop of stimuli
+        for stim_id in range(1, num_stimuli + 1):
+            # add animation to the list
+            anim_path = path + 'image_' + str(stim_id) + '_animation.mp4'
+            # check if need to add a linebreak
+            if stim_id == num_stimuli:
+                file.write('file ' + anim_path)  # no need for linebreak
+            else:
+                file.write('file ' + anim_path + '\n')
+        # close file with animations
+        file.close()
+        # stitch videos together
+        os.chdir(path)
+        subprocess.call(['ffmpeg',
+                         '-y',
+                         '-loglevel', 'quiet',
+                         '-f', 'concat',
+                         '-safe', '0',
+                         '-i', list_anim,
+                         '-c', 'copy',
+                         'all_animations.mp4'])
+        # delete file with animations
+        os.remove(list_anim)
 
     def animate(self, i):
         """
@@ -272,7 +311,7 @@ class Analysis:
                              y=[item[1] for item in self.points[i]],
                              alpha=0.5,
                              shade=True,
-                             cmap="RdBu_r")
+                             cmap='RdBu_r')
         # read original image
         im = plt.imread(self.image)
         plt.imshow(im)
@@ -288,9 +327,9 @@ class Analysis:
         # textbox with duration
         durations = gz.common.get_configs('stimulus_durations')
         props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
-        plt.text(0.82,
+        plt.text(0.75,
                  0.98,
-                 "duration = " + str(durations[i]),
+                 'id=' + str(self.stim_id) + ' duration=' + str(durations[i]),
                  transform=plt.gca().transAxes,
                  fontsize=12,
                  verticalalignment='top',
@@ -441,7 +480,6 @@ class Analysis:
                           self.folder,
                           '_gazes_vehicle.jpg',
                           pad_inches=0.05)
-        # plt.show()
         # revert font
         self.reset_font()
 

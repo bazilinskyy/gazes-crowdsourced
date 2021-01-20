@@ -151,6 +151,7 @@ if __name__ == '__main__':
         for points_dur in range(len(points_duration)):
             points_process[points_dur] = points_duration[points_dur][stim_id]
         analysis.create_animation(stim_path,
+                                  stim_id,
                                   points_process,
                                   save_anim=True,
                                   save_frames=True)
@@ -163,6 +164,8 @@ if __name__ == '__main__':
         analysis.draw_polygon(stim_path,
                               stim_id,
                               save_file=True)
+    # stitch animations into 1 long videos
+    analysis.create_animation_all_stimuli(num_stimuli)
     # check if any figures are to be rendered
     figures = [manager.canvas.figure
                for manager in
