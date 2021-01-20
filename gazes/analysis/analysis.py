@@ -36,7 +36,11 @@ class Analysis:
         # set font to Times
         plt.rc('font', family='serif')
 
-    def create_gazes(self, image, points, save_file=False):
+    def create_gazes(self,
+                     image,
+                     points,
+                     suffix='_gazes.jpg',
+                     save_file=False):
         """
         Output gazes for image based on the list of lists of points.
         """
@@ -63,7 +67,7 @@ class Analysis:
                      point[1],
                      color='red',
                      marker='x',
-                     markersize=10)
+                     markersize=1)
         # remove white spaces around figure
         plt.gca().set_axis_off()
         plt.subplots_adjust(top=1,
@@ -77,7 +81,7 @@ class Analysis:
         plt.gca().yaxis.set_major_locator(plt.NullLocator())
         # save image
         if save_file:
-            self.save_fig(image, fig, self.folder, '_gazes.jpg')
+            self.save_fig(image, fig, self.folder, suffix)
 
     def create_heatmap(self,
                        image,
@@ -195,6 +199,7 @@ class Analysis:
                          image,
                          points,
                          density_coef=10,
+                         suffix='_histogram.jpg',
                          save_file=False):
         """
         Create histogram for image based on the list of lists of points.
@@ -228,7 +233,7 @@ class Analysis:
         plt.gca().set_axis_off()
         # save image
         if save_file:
-            self.save_fig(image, fig, self.folder, '_histogram.jpg')
+            self.save_fig(image, fig, self.folder, suffix)
 
     def create_animation(self,
                          image,

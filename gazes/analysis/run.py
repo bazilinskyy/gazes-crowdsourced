@@ -91,6 +91,8 @@ if __name__ == '__main__':
     # number of stimuli to process
     num_stimuli = gz.common.get_configs('num_stimuli')
     logger.info('Creating figures for {} stimuli.', num_stimuli)
+    # fetch stimulus durations
+    durations = gz.common.get_configs('stimulus_durations')
     # loop over stimuli from 1 to num_stimuli
     # tqdm adds progress bar
     for stim_id in tqdm(range(1, num_stimuli + 1)):
@@ -106,6 +108,14 @@ if __name__ == '__main__':
         analysis.create_gazes(stim_path,
                               points[stim_id],
                               save_file=True)
+        # create histogram for stimulus and durations
+        points_process = {}
+        for points_dur in range(len(points_duration)):
+            suffix = '_gazes_' + str(durations[points_dur]) + '.jpg'
+            analysis.create_gazes(stim_path,
+                                  points_duration[points_dur][stim_id],
+                                  suffix=suffix,
+                                  save_file=True)
         # create heatmaps for stimulus
         analysis.create_heatmap(stim_path,
                                 points[stim_id],
@@ -127,6 +137,15 @@ if __name__ == '__main__':
                                   points[stim_id],
                                   density_coef=20,
                                   save_file=True)
+        # create histogram for stimulus and durations
+        points_process = {}
+        for points_dur in range(len(points_duration)):
+            suffix = '_histogram_' + str(durations[points_dur]) + '.jpg'
+            analysis.create_histogram(stim_path,
+                                      points_duration[points_dur][stim_id],
+                                      density_coef=20,
+                                      suffix=suffix,
+                                      save_file=True)
         # create animation for stimulus
         points_process = {}
         for points_dur in range(len(points_duration)):
