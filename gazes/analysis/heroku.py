@@ -294,6 +294,10 @@ class Heroku:
             # turn into panda's dataframe
             df = pd.DataFrame(data_dict)
             df = df.transpose()
+            # report people that attempted study
+            unique_worker_codes = df['worker_code'].drop_duplicates()
+            logger.info('People who attempted to participate {}',
+                        unique_worker_codesdf.shape[0])
             # filter data
             df = self.filter_data(df)
         # save to pickle
@@ -322,6 +326,11 @@ class Heroku:
         # add empty columns for counts of gazes for stimuli durations
         mapping = mapping.reindex(mapping.columns.tolist() + self.durations,
                                   axis=1)
+        # add empty column for mean number of counts of gazes
+        mapping = mapping.reindex(mapping.columns.tolist() + ['mean'],
+                                  axis=1)
+        # set columns for counts of gazes for stimuli durations to 0
+        mapping[self.durations] = 0
         # set index as stimulus_id
         mapping.set_index('image_id', inplace=True)
         # return mapping as a dataframe
@@ -460,7 +469,7 @@ class Heroku:
 
     def populate_coords_mapping(self, df, points_duration, mapping):
         """
-        Populate dataframe with mapping of stomuli with counts of detected
+        Populate dataframe with mapping of stimuli with counts of detected
         coords for each stimulus duration.
         """
         logger.info('Populating coordinates in mapping of stimuli')
@@ -491,6 +500,8 @@ class Heroku:
                             mapping.at[stim_id, self.durations[duration]] += 1
             # add area of vehicle polygon
             mapping.at[stim_id, 'v_area'] = polygon.area
+        # add mean value of counts
+        mapping['mean'] = mapping[self.durations].mean(axis=1)
         # save to csv
         if self.save_csv:
             # save to csv

@@ -132,11 +132,13 @@ class Appen:
                     df_3.shape[0])
         # people that completed the study from the same IP address
         df_4 = df[df['_ip'].duplicated(keep='first')]
-        logger.info('Filter-a4. People who completed the study from the same IP: {}',
+        logger.info('Filter-a4. People who completed the study from the ' +
+                    'same IP: {}',
                     df_4.shape[0])
         # people that entered the same worker_code more than once
         df_5 = df[df['worker_code'].duplicated(keep='first')]
-        logger.info('Filter-a5. People who used the same worker_code: {}', df_5.shape[0])
+        logger.info('Filter-a5. People who used the same worker_code: {}',
+                    df_5.shape[0])
         # save to csv
         if self.save_csv:
             df_5 = df_5.reset_index()

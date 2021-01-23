@@ -11,10 +11,10 @@ logger = gz.CustomLogger(__name__)  # use custom logger
 # Const
 SAVE_P = False  # save pickle files with data
 LOAD_P = True  # load pickle files with data
-SAVE_CSV = False  # load csv files with data
+SAVE_CSV = True  # load csv files with data
 REJECT_CHEATERS = False  # reject cheaters on Appen
 CALC_COORDS = False  # calculate coordinates (False saves time)
-UPDATE_MAPPING = False  # calculate coordinates (False saves time)
+UPDATE_MAPPING = True  # update mapping with counts og gazes (False saves time)
 file_coords = 'coords.p'  # file to save lists with coordinates
 file_mapping = 'mapping.p'  # file to save lists with coordinates
 

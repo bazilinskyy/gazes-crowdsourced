@@ -533,6 +533,8 @@ class Analysis:
         """
         # drop time and group_2 columns
         mapping = mapping.drop(['time', 'group_2'], 1)
+        durations = gz.common.get_configs('stimulus_durations')
+        mapping.fillna(0, inplace=True)
         # create correlation matrix
         corr = mapping.corr()
         # set larger font
