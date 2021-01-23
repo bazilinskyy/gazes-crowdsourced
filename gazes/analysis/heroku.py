@@ -296,8 +296,8 @@ class Heroku:
             df = df.transpose()
             # report people that attempted study
             unique_worker_codes = df['worker_code'].drop_duplicates()
-            logger.info('People who attempted to participate {}',
-                        unique_worker_codesdf.shape[0])
+            logger.info('People who attempted to participate: {}',
+                        unique_worker_codes.shape[0])
             # filter data
             df = self.filter_data(df)
         # save to pickle
