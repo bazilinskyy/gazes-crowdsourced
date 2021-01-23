@@ -537,6 +537,9 @@ class Analysis:
         mapping.fillna(0, inplace=True)
         # create correlation matrix
         corr = mapping.corr()
+        # create mask
+        mask = np.zeros_like(corr)
+        mask[np.triu_indices_from(mask)] = True
         # set larger font
         s_font = 12  # small
         m_font = 16  # medium
@@ -551,7 +554,14 @@ class Analysis:
         plt.rc('axes', titlesize=m_font)    # fontsize of the subplot title
         # create figure
         fig = plt.figure(figsize=(15, 8))
-        g = sns.heatmap(corr, annot=True, cmap='YlGnBu')
+        g = sns.heatmap(corr,
+                        annot=True,
+                        mask=mask,
+                        cmap='coolwarm',
+                        fmt=".2f")
+        # rotate ticks
+        for item in g.get_xticklabels():
+            item.set_rotation(45)
         # save image
         if save_file:
             self.save_fig('all',
