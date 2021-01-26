@@ -430,9 +430,9 @@ class Analysis:
         # assign labels
         self.autolabel(ax[1, 0], on_top=False, decimal=False)
         # legend
-        ax[1, 0].legend([r'$traf=1$', r'$traf>1$'],
+        ax[1, 0].legend([r'$traf=0$', r'$traf=1$', r'$traf=2$'],
                         loc='upper left',
-                        ncol=2)
+                        ncol=3)
         # title
         ax[1, 0].title.set_text('(c) Traffic density')
         # grid lines
@@ -454,9 +454,9 @@ class Analysis:
         # assign labels
         self.autolabel(ax[1, 1], on_top=False, decimal=False)
         # legend
-        ax[1, 1].legend([r'$clut=1$', r'$clut>1$'],
+        ax[1, 1].legend([r'$clut=0$', r'$clut=1$', r'$clut=2$'],
                         loc='upper left',
-                        ncol=2)
+                        ncol=3)
         # title
         ax[1, 1].title.set_text('(d) Visual clutter')
         # grid lines
