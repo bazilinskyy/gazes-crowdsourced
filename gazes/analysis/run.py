@@ -14,7 +14,7 @@ LOAD_P = True  # load pickle files with data
 SAVE_CSV = True  # load csv files with data
 REJECT_CHEATERS = False  # reject cheaters on Appen
 CALC_COORDS = False  # calculate coordinates
-UPDATE_MAPPING = True  # update mapping with counts of gazes
+UPDATE_MAPPING = False  # update mapping with counts of gazes
 file_coords = 'coords.p'  # file to save lists with coordinates
 file_mapping = 'mapping.p'  # file to save lists with coordinates
 
@@ -84,13 +84,13 @@ if __name__ == '__main__':
                                                'mapping of stimuli')
     # Output
     analysis = gz.analysis.Analysis()
+    # number of stimuli to process
+    num_stimuli = gz.common.get_configs('num_stimuli')
+    logger.info('Creating figures for {} stimuli.', num_stimuli)
     # plot gaze detections of vehicles for all stimuli
     analysis.detection_vehicle(stimuli_mapped, save_file=True)
     # create correlation matrix
     analysis.corr_matrix(stimuli_mapped, save_file=True)
-    # number of stimuli to process
-    num_stimuli = gz.common.get_configs('num_stimuli')
-    logger.info('Creating figures for {} stimuli.', num_stimuli)
     # fetch stimulus durations
     durations = gz.common.get_configs('stimulus_durations')
     # loop over stimuli from 1 to num_stimuli

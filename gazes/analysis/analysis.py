@@ -373,76 +373,82 @@ class Analysis:
         ylim = [0, 3000]
         bar_width = 0.8
         xticks_angle = 45
-        # 1. all data
-        # get sums of gazes
-        df_plot = mapping[durations].sum(numeric_only=True)
-        df_plot.plot(kind='bar', ax=ax[0, 0], width=bar_width)
-        # axis labels
-        ax[0, 0].set_ylabel('Count of gazes on object vehicle')
-        # ticks
-        ax[0, 0].tick_params(axis='x', labelrotation=xticks_angle)
-        # assign labels
-        self.autolabel(ax[0, 0], on_top=True, decimal=False)
-        # title
-        ax[0, 0].title.set_text('(a) All data')
-        # grid lines
-        ax[0, 0].grid(True, axis='y')
-        ax[0, 0].set_axisbelow(True)
-        # limits
-        ax[0, 0].set_ylim(ylim)
-        # 2. distance
+        # 1. distance
         # get data
         df_plot = mapping.groupby(['dist']).sum(numeric_only=True)
         # build
         df_plot[durations].transpose().plot.bar(stacked=True,
-                                                ax=ax[0, 1],
+                                                ax=ax[0, 0],
                                                 width=bar_width)
         # axis labels
+        ax[0, 0].set_ylabel('Count of gazes on object vehicles')
         # ticks
-        ax[0, 1].tick_params(axis='x', labelrotation=xticks_angle)
+        ax[0, 0].tick_params(axis='x', labelrotation=xticks_angle)
         # assign labels
-        self.autolabel(ax[0, 1], on_top=False, decimal=False)
+        self.autolabel(ax[0, 0], on_top=False, decimal=False)
         # legend
-        ax[0, 1].legend([r'$dist \leq 35$',
+        ax[0, 0].legend([r'$dist \leq 35$',
                          r'$35 < dist < 100$',
                          r'$dist \geq 100$'],
                         loc='upper left',
                         ncol=3)
         # title
-        ax[0, 1].title.set_text('(b) Distance to vehicle')
+        ax[0, 0].title.set_text('(a) Distance to vehicle')
+        # grid lines
+        ax[0, 0].grid(True, axis='y')
+        ax[0, 0].set_axisbelow(True)
+        # limits
+        ax[0, 0].set_ylim(ylim)
+        # 2. traffic
+        # get data
+        df_plot = mapping.groupby(['traf']).sum(numeric_only=True)
+        # build
+        df_plot[durations].transpose().plot.bar(stacked=True,
+                                                ax=ax[0, 1],
+                                                width=bar_width)
+        # ticks
+        ax[0, 1].tick_params(axis='x', labelrotation=xticks_angle)
+        # assign labels
+        self.autolabel(ax[0, 1], on_top=False, decimal=False)
+        # legend
+        ax[0, 1].legend([r'$traf=0$', r'$traf=1$', r'$traf=2$'],
+                        loc='upper left',
+                        ncol=3)
+        # title
+        ax[0, 1].title.set_text('(b) Traffic density')
         # grid lines
         ax[0, 1].grid(True, axis='y')
         ax[0, 1].set_axisbelow(True)
         # limits
         ax[0, 1].set_ylim(ylim)
-        # 3. traffic
+        # 3. clutter
         # get data
-        df_plot = mapping.groupby(['traf']).sum(numeric_only=True)
+        df_plot = mapping.groupby(['clut']).sum(numeric_only=True)
         # build
         df_plot[durations].transpose().plot.bar(stacked=True,
                                                 ax=ax[1, 0],
                                                 width=bar_width)
         # axis labels
         ax[1, 0].set_xlabel('Stimulus duration [ms]')
-        ax[1, 0].set_ylabel('Count of gazes on object vehicle')
+        ax[1, 0].set_ylabel('Count of gazes on object vehicles')
         # ticks
         ax[1, 0].tick_params(axis='x', labelrotation=xticks_angle)
         # assign labels
         self.autolabel(ax[1, 0], on_top=False, decimal=False)
         # legend
-        ax[1, 0].legend([r'$traf=0$', r'$traf=1$', r'$traf=2$'],
+        ax[1, 0].legend([r'$clut=0$', r'$clut=1$', r'$clut=2$'],
                         loc='upper left',
                         ncol=3)
         # title
-        ax[1, 0].title.set_text('(c) Traffic density')
+        ax[1, 0].title.set_text('(c) Visual clutter')
         # grid lines
         ax[1, 0].grid(True, axis='y')
         ax[1, 0].set_axisbelow(True)
         # limits
         ax[1, 0].set_ylim(ylim)
-        # 4. clutter
+        # 4. vehicle type
         # get data
-        df_plot = mapping.groupby(['clut']).sum(numeric_only=True)
+        df_plot = mapping.groupby(['veh']).sum(numeric_only=True)
         # build
         df_plot[durations].transpose().plot.bar(stacked=True,
                                                 ax=ax[1, 1],
@@ -454,11 +460,12 @@ class Analysis:
         # assign labels
         self.autolabel(ax[1, 1], on_top=False, decimal=False)
         # legend
-        ax[1, 1].legend([r'$clut=0$', r'$clut=1$', r'$clut=2$'],
+        ax[1, 1].legend([r'$veh = 0$',
+                         r'$veh = 1$'],
                         loc='upper left',
-                        ncol=3)
+                        ncol=2)
         # title
-        ax[1, 1].title.set_text('(d) Visual clutter')
+        ax[1, 1].title.set_text('(d) Vehicle type')
         # grid lines
         ax[1, 1].grid(True, axis='y')
         ax[1, 1].set_axisbelow(True)

@@ -1,4 +1,4 @@
-image_id,source,time,dist,traf,clut,av,group_2
+image_id,source,time,dist,traf,clut,veh,group_2
 1,https://www.youtube.com/watch?v=B8R148hFxPw,12,2,1,1,1,0
 2,https://www.youtube.com/watch?v=B8R148hFxPw,20,1,1,1,1,0
 3,https://www.youtube.com/watch?v=uHbMt6WDhQ8,40,1,0,0,1,0
