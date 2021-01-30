@@ -387,9 +387,9 @@ class Analysis:
         # assign labels
         self.autolabel(ax[0, 0], on_top=False, decimal=False)
         # legend
-        ax[0, 0].legend([r'$dist \leq 35$',
-                         r'$35 < dist < 100$',
-                         r'$dist \geq 100$'],
+        ax[0, 0].legend([r'$dist = 0$',
+                         r'$dist = 1$',
+                         r'$dist = 2$'],
                         loc='upper left',
                         ncol=3)
         # title
