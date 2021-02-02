@@ -236,6 +236,10 @@ class Appen:
         """
         Output info for data in object.
         """
+        # info on age
+        logger.info('Age: mean={:,.2f}, std={:,.2f}',
+                    self.appen_data['age'].mean(),
+                    self.appen_data['age'].std())
         # info on gender
         count = Counter(self.appen_data['gender'])
         logger.info('Gender: {}', count.most_common())

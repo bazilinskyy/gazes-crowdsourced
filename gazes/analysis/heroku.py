@@ -7,6 +7,7 @@ from tqdm import tqdm
 import re
 from shapely.geometry import Point
 from shapely.geometry.polygon import Polygon
+from collections import Counter
 
 import gazes as gz
 
@@ -642,3 +643,12 @@ class Heroku:
         logger.info('Filtered in total in heroku data: {}',
                     old_size - df.shape[0])
         return df
+
+    def show_info(self):
+        """
+        Output info for data in object.
+        """
+        # info on age
+        # info on gender
+        count = Counter(self.heroku_data['group_choice'])
+        logger.info('Groups: {}', count.most_common())

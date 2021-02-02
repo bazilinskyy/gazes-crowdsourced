@@ -370,7 +370,8 @@ class Analysis:
                                2,  # columns
                                figsize=(15, 11))  # width, height in inches
         # settings for subplots
-        ylim = [0, 3000]
+        # todo: automatic upper limit
+        ylim = [0, 3600]
         bar_width = 0.8
         xticks_angle = 45
         # 1. distance
@@ -381,7 +382,7 @@ class Analysis:
                                                 ax=ax[0, 0],
                                                 width=bar_width)
         # axis labels
-        ax[0, 0].set_ylabel('Count of gazes on object vehicles')
+        ax[0, 0].set_ylabel('Number of gazes on target vehicle')
         # ticks
         ax[0, 0].tick_params(axis='x', labelrotation=xticks_angle)
         # assign labels
@@ -429,8 +430,8 @@ class Analysis:
                                                 ax=ax[1, 0],
                                                 width=bar_width)
         # axis labels
-        ax[1, 0].set_xlabel('Stimulus duration [ms]')
-        ax[1, 0].set_ylabel('Count of gazes on object vehicles')
+        ax[1, 0].set_xlabel('Stimulus duration (ms)')
+        ax[1, 0].set_ylabel('Number of gazes on target vehicle')
         # ticks
         ax[1, 0].tick_params(axis='x', labelrotation=xticks_angle)
         # assign labels
@@ -454,7 +455,7 @@ class Analysis:
                                                 ax=ax[1, 1],
                                                 width=bar_width)
         # axis labels
-        ax[1, 1].set_xlabel('Stimulus duration [ms]')
+        ax[1, 1].set_xlabel('Stimulus duration (ms)')
         # ticks
         ax[1, 1].tick_params(axis='x', labelrotation=xticks_angle)
         # assign labels
@@ -508,8 +509,8 @@ class Analysis:
         df_plot = mapping[durations].sum(numeric_only=True)
         ax = df_plot.plot(kind='bar', width=0.8)
         # axis labels
-        ax.set_xlabel('Stimulus duration [ms]')
-        ax.set_ylabel('Count of gazes on vehicle')
+        ax.set_xlabel('Stimulus duration (ms)')
+        ax.set_ylabel('Number of gazes on target vehicle')
         # ticks
         ax.tick_params(axis='x', labelrotation=45)
         # assign labels
