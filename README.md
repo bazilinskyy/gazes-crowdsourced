@@ -2,6 +2,11 @@ Gaze detection with crowdsourcing
 =======
 This project defines a framework for the detection of gazes in a crowdsourced environment. It was inspired by the [TurkEyes project](http://turkeyes.mit.edu). The [jsPsych framework](https://www.jspsych.org/) is used to for the frontend. Data is stored in a mongodb database. In the description below, it is assumed that that the repo is stored in the folder `gazes-crowdsourced`. Terminal commands lower assume macOS.
 
+## Citation
+If you use the framework for academic work please cite the following paper.
+
+> Bazilinskyy, P., Dodou, D., & De Winter, J. C. F. (2021). Visual attention of pedestrians in traffic Scenes. Proceedings of AHFE 2021. Available at https://www.researchgate.net/publication/348960793_Visual_attention_of_pedestrians_in_traffic_scenes_A_crowdsourcing_experiment
+
 ## Setup
 Tested with Python 3.8.5. To setup the environment run these two commands:
 - `pip install -e gazes-crowdsourced` will setup the project as a package accessible in the environment.
@@ -67,7 +72,7 @@ Example of a heatmap.
 Example of a histogram (same source image as heatmap above).
 
 ![example of animated heatmap](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_9_animation.gif?raw=true)
-Example of an animated heatmap based on the durations of the stimulus in logspace `[100, 151, 227, 342, 515, 776, 1170, 1762, 2655, 4000]`. Here, the focus on the distant car is apparent after a period of concentration on the centre of the image. :shipit:
+Example of an animated heatmap based on the durations of the stimulus in logspace `[100, 151, 227, 342, 515, 776, 1170, 1762, 2655, 4000]`. Here, the focus on the distant car is apparent after a period of concentration on the centre of the image. :shipit: Also see a video of such animated heatmaps for all stimuli at https://youtu.be/ZroKe9dKQvs.
 
 ![example of barplot of counts of gazes](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/all_gazes_vehicle.jpg?raw=true)
 Example of a barplot of aggregated counts of gazes on object vehicles for different stimulus durations.
