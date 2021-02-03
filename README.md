@@ -78,7 +78,7 @@ Example of an animated heatmap based on the durations of the stimulus in logspac
 Example of a barplot of aggregated counts of gazes on object vehicles for different stimulus durations.
 
 ![example of correlation matrix](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/all_corr_matrix.jpg?raw=true)
-Example of the correlation matrix of paramters used during the creation of the stimuli.
+Example of the correlation matrix of parameters used during the creation of the stimuli.
 
 ### Configuration of analysis
 Configuration of analysis needs to be defined in `gazes-crowdsourced/gazes/analysis/config`. Please use the `default.config` file for the required structure of the file. If no custom config file is provided, `default.config` is used. The config file has the following parameters:
