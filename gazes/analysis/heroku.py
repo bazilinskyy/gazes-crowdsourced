@@ -468,7 +468,7 @@ class Heroku:
         # return points
         return points, points_worker, points_duration
 
-    def populate_coords_mapping(self, df, points_duration, mapping):
+    def populate_mapping(self, df, points_duration, mapping):
         """
         Populate dataframe with mapping of stimuli with counts of detected
         coords for each stimulus duration.
@@ -499,10 +499,22 @@ class Heroku:
                         # not nan
                         else:
                             mapping.at[stim_id, self.durations[duration]] += 1
+                # count number of participants per duration
+                name_cell = 'image_' + \
+                            str(stim_id) + \
+                            '-' + str(self.durations[duration]) + \
+                            '-cb'
+                count = int(self.heroku_data[name_cell].count())
+                mapping.at[stim_id,
+                           str(self.durations[duration]) + '_count'] = count
             # add area of vehicle polygon
             mapping.at[stim_id, 'veh_area'] = polygon.area
         # add mean value of counts
         mapping['gazes_mean'] = mapping[self.durations].mean(axis=1)
+        # convert counts of participants to integers
+        for duration in range(len(self.durations)):
+            column = str(self.durations[duration]) + '_count'
+            mapping[column] = mapping[column].astype(int)
         # save to csv
         if self.save_csv:
             # save to csv

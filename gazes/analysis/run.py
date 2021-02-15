@@ -11,10 +11,10 @@ logger = gz.CustomLogger(__name__)  # use custom logger
 # Const
 SAVE_P = False  # save pickle files with data
 LOAD_P = True  # load pickle files with data
-SAVE_CSV = False  # load csv files with data
+SAVE_CSV = True  # load csv files with data
 REJECT_CHEATERS = False  # reject cheaters on Appen
 CALC_COORDS = False  # calculate coordinates
-UPDATE_MAPPING = False  # update mapping with counts of gazes
+UPDATE_MAPPING = True  # update mapping with counts of gazes
 file_coords = 'coords.p'  # file to save lists with coordinates
 file_mapping = 'mapping.p'  # file to save lists with coordinates
 
@@ -74,7 +74,7 @@ if __name__ == '__main__':
         # read in mapping of stimuli
         stimuli_mapped = heroku.read_mapping()
         # populate coordinates in mapping of stimuli
-        stimuli_mapped = heroku.populate_coords_mapping(heroku_data,
+        stimuli_mapped = heroku.populate_mapping(heroku_data,
                                                         points_duration,
                                                         stimuli_mapped)
         gz.common.save_to_p(file_mapping,

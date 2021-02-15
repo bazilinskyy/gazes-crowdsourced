@@ -540,8 +540,11 @@ class Analysis:
         Output correlation matrix.
         """
         # drop time and group_2 columns
-        mapping = mapping.drop(['time', 'group_2', 'gazes_mean'], 1)
         durations = gz.common.get_configs('stimulus_durations')
+        columns_drop = ['time', 'group_2', 'gazes_mean']
+        for dur in durations:
+            columns_drop.append(str(dur) + '_count')
+        mapping = mapping.drop(columns_drop, 1)
         mapping.fillna(0, inplace=True)
         # create correlation matrix
         corr = mapping.corr()
