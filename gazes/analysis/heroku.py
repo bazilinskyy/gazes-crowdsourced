@@ -528,6 +528,7 @@ class Heroku:
         Filter data based on the folllowing criteria:
             1. People who entered incorrect codes for sentinel images more than
                gz.common.get_configs('allowed_mistakes_sent') times.
+            2. People that chose the coordiantes in the centre too often.
         """
         # more than allowed number of mistake with codes for sentinel images
         # load mapping of codes and coordinates
@@ -633,7 +634,7 @@ class Heroku:
                                  worker_code,
                                  point,
                                  polygon)
-            # Check if for th worker there were more than allowed limit of
+            # Check if for the worker there were more than allowed limit of
             # points in the middle
             if detected / len(points) > allowed_percentage:
                 logger.debug('{}: had {} share of points in the '
@@ -660,7 +661,5 @@ class Heroku:
         """
         Output info for data in object.
         """
-        # info on age
-        # info on gender
         count = Counter(self.heroku_data['group_choice'])
         logger.info('Groups: {}', count.most_common())
