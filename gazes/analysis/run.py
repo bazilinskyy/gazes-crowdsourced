@@ -75,8 +75,8 @@ if __name__ == '__main__':
         stimuli_mapped = heroku.read_mapping()
         # populate coordinates in mapping of stimuli
         stimuli_mapped = heroku.populate_mapping(heroku_data,
-                                                        points_duration,
-                                                        stimuli_mapped)
+                                                 points_duration,
+                                                 stimuli_mapped)
         gz.common.save_to_p(file_mapping,
                             stimuli_mapped,
                             'points data')
