@@ -110,7 +110,7 @@ if __name__ == '__main__':
                               points[stim_id],
                               save_file=True)
         # create histogram for stimulus and durations
-        points_process = {}
+        points_process: dict = {}
         for points_dur in range(len(points_duration)):
             suffix = '_gazes_' + str(durations[points_dur]) + '.jpg'
             analysis.create_gazes(stim_path,
