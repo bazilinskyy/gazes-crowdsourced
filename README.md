@@ -16,12 +16,12 @@ Tested with Python 3.8.5. To setup the environment run these two commandsin a pa
 We use [Heroku](https://www.heroku.com/) to host the node.js implementation. The demo of the implementation may be viewed [here](https://gazes-crowdsourced.herokuapp.com/?debug=1&save_data=0). Implementation supports images and/or videos as stimuli.
 
 ### Codecharts
-![example of codechart](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/public/img/codeboard/cb_0.jpg?raw=true)
+![example of codechart](https://github.com/bazilinskyy/gazes-crowdsourced/blob/main/public/img/codeboard/cb_0.jpg?raw=true)
 
-Gaze information is gathered by showing a black screen with a set of random codes in the format 'LDD' (L=letter, D=digit, e.g., 'F32'). The participant is asked to remember the last code they were looking at. On the next page they need to input that code. Gazes are aggregated based on the mapping of codes to the coordinates within a stimulus. The mapping is available [here](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/public/img/codeboard/data.json).
+Gaze information is gathered by showing a black screen with a set of random codes in the format 'LDD' (L=letter, D=digit, e.g., 'F32'). The participant is asked to remember the last code they were looking at. On the next page they need to input that code. Gazes are aggregated based on the mapping of codes to the coordinates within a stimulus. The mapping is available [here](https://github.com/bazilinskyy/gazes-crowdsourced/blob/main/public/img/codeboard/data.json).
 
 ### Sentinel images
-![example of sentinel image](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/public/img/sentinel/sentinel_0.jpg?raw=true)
+![example of sentinel image](https://github.com/bazilinskyy/gazes-crowdsourced/blob/main/public/img/sentinel/sentinel_0.jpg?raw=true)
 Example of sentinel image
 
 Sentinel images are oval images of faces. Participants are asked to look at them and input the code that is within the area of the face. Such images are used during training and during the study to see if people still pay attention to the task. We used the following royalty-free base images to create the sentinel images: [image 0](https://www.pexels.com/photo/women-s-white-and-black-button-up-collared-shirt-774909), [image 1](https://www.pexels.com/photo/woman-near-house-2804282), [image 2](https://www.pexels.com/photo/woman-standing-near-yellow-petaled-flower-2050994), [image 3](https://www.pexels.com/photo/person-holding-hammer-while-smiling-3267784), [image 4](https://www.pexels.com/photo/photography-of-laughing-guy-1408196), [image 5](https://www.pxfuel.com/en/free-photo-jmdxk), [image 6](https://www.pexels.com/photo/man-in-blue-top-2830332), [image 7](https://www.pexels.com/photo/photo-of-man-wearing-denim-jacket-1599980), [image 8](https://www.pxfuel.com/en/free-photo-eibzf), [image 9](https://www.pxfuel.com/en/free-photo-jrjqb).
@@ -56,28 +56,28 @@ Analysis can be started by running `python gazes-crowdsourced/gazes/analysis/run
 
 The polygons of the closest vehicle(s) in the scene are made with [image-map.net](https://www.image-map.net). They are saved in `gazes-crowdsourced/public/img/stimuli/vehicles_polygons.csv`. Counts of eye gazes within polygons (or Areas of Interest, AOIs) are calculated and appended to the mapping of the stimuli `gazes-crowdsourced/public/img/stimuli/mapping.csv`.
 
-![polygon over vehicle](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_25_polygon.jpg?raw=true)
+![polygon over vehicle](https://github.com/bazilinskyy/gazes-crowdsourced/blob/main/figures/image_25_polygon.jpg?raw=true)
 Polygon (Area of Interest) of the closest vehicle in the scene.
 
 ### Visualisation
 Visualisations of gazes, heatmaps and histograms and  are saved in `gazes-crowdsourced/_output`.
 
-![example of histogram](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_86_gazes.jpg?raw=true)
+![example of histogram](https://github.com/bazilinskyy/gazes-crowdsourced/blob/main/figures/image_86_gazes.jpg?raw=true)
 Example of a visualisation of gazes.
 
-![example of heatmap](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_60_kdeplot.jpg?raw=true)
+![example of heatmap](https://github.com/bazilinskyy/gazes-crowdsourced/blob/main/figures/image_60_kdeplot.jpg?raw=true)
 Example of a heatmap.
 
-![example of histogram](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_60_histogram.jpg?raw=true)
+![example of histogram](https://github.com/bazilinskyy/gazes-crowdsourced/blob/main/figures/image_60_histogram.jpg?raw=true)
 Example of a histogram (same source image as heatmap above).
 
-![example of animated heatmap](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/image_9_animation.gif?raw=true)
+![example of animated heatmap](https://github.com/bazilinskyy/gazes-crowdsourced/blob/main/figures/image_9_animation.gif?raw=true)
 Example of an animated heatmap based on the durations of the stimulus in logspace `[100, 151, 227, 342, 515, 776, 1170, 1762, 2655, 4000]`. Here, the focus on the distant car is apparent after a period of concentration on the centre of the image. :shipit: Also see a video of such animated heatmaps for all stimuli at https://youtu.be/ZroKe9dKQvs.
 
-![example of barplot of counts of gazes](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/all_gazes_vehicle.jpg?raw=true)
+![example of barplot of counts of gazes](https://github.com/bazilinskyy/gazes-crowdsourced/blob/main/figures/all_gazes_vehicle.jpg?raw=true)
 Example of a barplot of aggregated counts of gazes on object vehicles for different stimulus durations.
 
-![example of correlation matrix](https://github.com/bazilinskyy/gazes-crowdsourced/blob/master/figures/all_corr_matrix.jpg?raw=true)
+![example of correlation matrix](https://github.com/bazilinskyy/gazes-crowdsourced/blob/main/figures/all_corr_matrix.jpg?raw=true)
 Example of the correlation matrix of parameters used during the creation of the stimuli.
 
 ### Configuration of analysis
