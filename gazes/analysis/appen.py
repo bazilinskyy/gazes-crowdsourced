@@ -1,9 +1,6 @@
 # by Pavlo Bazilinskyy <pavlo.bazilinskyy@gmail.com>
-import json
-import os
 import pandas as pd
 from collections import Counter
-from tqdm import tqdm
 
 import gazes as gz
 

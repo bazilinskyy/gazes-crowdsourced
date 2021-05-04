@@ -1,12 +1,10 @@
 # by Pavlo Bazilinskyy <pavlo.bazilinskyy@gmail.com>
-import json
 import os
 import subprocess
 import io
 import pickle
 import matplotlib
 import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
 import matplotlib.animation as animation
 import numpy as np
 import seaborn as sns
@@ -56,10 +54,6 @@ class Analysis:
         # get dimensions
         width = gz.common.get_configs('stimulus_width')
         height = gz.common.get_configs('stimulus_height')
-        # convert points into np array
-        xy = np.array(points)
-        x = xy[:, 0]
-        y = xy[:, 1]
         # show heatmap by plt
         dpi = 150
         fig = plt.figure(figsize=(width/dpi, height/dpi), dpi=dpi)
@@ -123,7 +117,7 @@ class Analysis:
             xi, yi = np.mgrid[x.min():x.max():x.size**0.5*1j,
                               y.min():y.max():y.size**0.5*1j]
             zi = k(np.vstack([xi.flatten(), yi.flatten()]))
-        except (np.linalg.LinAlgError, np.linalg.LinAlgError, ValueError) as e:
+        except (np.linalg.LinAlgError, np.linalg.LinAlgError, ValueError):
             logger.error('Not enough data. Heatmap was not created for {}.',
                          image)
             return
@@ -139,7 +133,7 @@ class Analysis:
                 plt.margins(0, 0)
                 plt.gca().xaxis.set_major_locator(plt.NullLocator())
                 plt.gca().yaxis.set_major_locator(plt.NullLocator())
-            except TypeError as e:
+            except TypeError:
                 logger.error('Not enough data. Heatmap was not created for '
                              + '{}.',
                              image)
@@ -154,7 +148,7 @@ class Analysis:
                 plt.margins(0, 0)
                 plt.gca().xaxis.set_major_locator(plt.NullLocator())
                 plt.gca().yaxis.set_major_locator(plt.NullLocator())
-            except TypeError as e:
+            except TypeError:
                 logger.error('Not enough data. Heatmap was not created for '
                              + '{}.',
                              image)
@@ -168,7 +162,7 @@ class Analysis:
                                 alpha=0.5,
                                 shade=True,
                                 cmap="RdBu_r")
-            except TypeError as e:
+            except TypeError:
                 logger.error('Not enough data. Heatmap was not created for '
                              + '{}.',
                              image)

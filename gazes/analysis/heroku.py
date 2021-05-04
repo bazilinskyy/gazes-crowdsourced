@@ -102,17 +102,13 @@ class Heroku:
                 # load data from a single row into a list
                 list_row = json.loads(row)
                 # flag that training image was detected
-                train_found = False
                 # last found training image
                 train_name = ''
                 # flag that stimulus was detected
-                stim_found = False
                 # last found stimulus
                 stim_name = ''
                 # duratoin of last found stimulus
                 stim_dur = -1
-                # flag that sentinel image was detected
-                sent_found = False
                 # last found sentinel image
                 sent_name = ''
                 # last time_elapsed
@@ -142,16 +138,14 @@ class Heroku:
                             if self.prefixes['training'] in stim_no_path:
                                 # Record that stimulus was detected for the
                                 # cells to follow
-                                train_found = True
                                 train_name = stim_no_path
                             # stimulus image is found
                             elif self.prefixes['stimulus'] in stim_no_path:
                                 # Record that stimulus was detected for the
                                 # cells to follow
-                                stim_found = True
                                 stim_name = stim_no_path
                                 # stimulus duration
-                                # todo: uncomment for next study with correct data recording
+                                # todo: uncomment for correct data recording
                                 # if 'stimulus_duration' in data_cell.keys():
                                 #     stim_dur = data_cell['stimulus_duration']  # noqa: E501
                                 if time_elapsed_last > -1:
@@ -206,7 +200,6 @@ class Heroku:
                             elif self.prefixes['sentinel'] in stim_no_path:
                                 # Record that stimulus was detected for the
                                 # cells to follow
-                                sent_found = True
                                 sent_name = stim_no_path
                     # data entry following a codechart found
                     elif 'responses' in data_cell.keys():
@@ -232,7 +225,6 @@ class Heroku:
                                 # previous values found
                                 dict_row[train_name + '-rt'].append(data_cell['rt'])  # noqa: E501
                             # reset flags for found stimulus
-                            train_found = False
                             train_name = ''
                         if stim_name != '':
                             # turn input to upper case
@@ -252,7 +244,6 @@ class Heroku:
                                 # previous values found
                                 dict_row[stim_name + '-' + str(stim_dur) + '-rt'].append(data_cell['rt'])  # noqa: E501
                             # reset flags for found stimulus
-                            stim_found = False
                             stim_name = ''
                         elif sent_name != '':
                             # turn input to upper case
@@ -272,7 +263,6 @@ class Heroku:
                                 # previous values found
                                 dict_row[sent_name + '-rt'].append(data_cell['rt'])  # noqa: E501
                             # reset flags for found sentinel image
-                            sent_found = False
                             sent_name = ''
                     # record time_elapsed
                     if 'time_elapsed' in data_cell.keys():
@@ -571,7 +561,6 @@ class Heroku:
                     else:
                         # increase counter of sentinel images
                         training_counter = training_counter + 1
-                        sent_found = True
                         # extract ID of image
                         num_found = re.findall(r'\d+',
                                                index_r)

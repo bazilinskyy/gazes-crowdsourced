@@ -9,8 +9,8 @@ gz.logs(show_level='info', show_color=True)
 logger = gz.CustomLogger(__name__)  # use custom logger
 
 # Const
-SAVE_P = False  # save pickle files with data
-LOAD_P = True  # load pickle files with data
+SAVE_P = True  # save pickle files with data
+LOAD_P = False  # load pickle files with data
 SAVE_CSV = True  # load csv files with data
 REJECT_CHEATERS = False  # reject cheaters on Appen
 CALC_COORDS = False  # calculate coordinates
