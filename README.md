@@ -102,6 +102,6 @@ Configuration of analysis needs to be defined in `gazes-crowdsourced/gazes/analy
 * `vehicles_polygons`: csv file with coordinates of polygons of object vehicles in stimuli.
 * `mapping_stimuli`: csv file with mapping of stimuli.
 
-### Troubleshooting
-## Unknown file extension .mp4
-If you receive the `ValueError: unknown file extension: .mp4` from `PIL`, install FFMPEG from https://www.ffmpeg.org/download.html. This problem has been reported on Windows.
+## Troubleshooting
+### Unknown file extension .mp4
+If you receive the `ValueError: unknown file extension: .mp4` from `PIL`, install FFMPEG from https://www.ffmpeg.org/download.html. This problem was reported on Windows.
