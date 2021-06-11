@@ -20,3 +20,4 @@ secret
 
 # Pickle files
 gazes/analysis/*.p
+gazes/*.p

@@ -57,7 +57,8 @@ def save_to_p(file, data, desription_data='data'):
     """
     Save data to a pickle file.
     """
-    with open(file, "wb") as f:
+    path = os.path.join(os.path.join(gz.settings.root_dir, 'gazes'), file)
+    with open(path, 'wb') as f:
         pickle.dump(data, f)
     logger.info('Saved ' + desription_data + ' to pickle file {}.', file)
 
@@ -66,7 +67,8 @@ def load_from_p(file, desription_data='data'):
     """
     Load data from a pickle file.
     """
-    with open(file, "rb") as f:
+    path = os.path.join(os.path.join(gz.settings.root_dir, 'gazes'), file)
+    with open(path, 'rb') as f:
         data = pickle.load(f)
     logger.info('Loaded ' + desription_data + ' from pickle file {}.',
                 file)
