@@ -8,7 +8,7 @@ If you use the framework for academic work please cite the following paper.
 > Bazilinskyy, P., Dodou, D., & De Winter, J. C. F. (2021). Visual attention of pedestrians in traffic Scenes. Proceedings of AHFE 2021. Available at https://www.researchgate.net/publication/348960793_Visual_attention_of_pedestrians_in_traffic_scenes_A_crowdsourcing_experiment
 
 ## Setup
-Tested with Python 3.8.5. To setup the environment run these two commandsin a parent fodler of the downloaded repository:
+Tested with Python 3.8.5. To setup the environment run these two commands in a parent fodler of the downloaded repository:
 - `pip install -e gazes-crowdsourced` will setup the project as a package accessible in the environment.
 - `pip install -r gazes-crowdsourced/requirements.txt` will install required packages.
 
