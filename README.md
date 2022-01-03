@@ -52,7 +52,7 @@ Data from appen is anonymised in the following way:
 2. IDs are anonymised by subtracting the given ID from `config.mask_id`.
 
 ## Analysis
-Analysis can be started by running `python gazes-crowdsourced/gazes/analysis/run.py`. A number of csv files are saved in `gazes-crowdsourced/_output`.
+Analysis can be started by running `python gazes-crowdsourced/gazes/run.py`. A number of csv files are saved in `gazes-crowdsourced/_output`.
 
 The polygons of the closest vehicle(s) in the scene are made with [image-map.net](https://www.image-map.net). They are saved in `gazes-crowdsourced/public/img/stimuli/vehicles_polygons.csv`. Counts of eye gazes within polygons (or Areas of Interest, AOIs) are calculated and appended to the mapping of the stimuli `gazes-crowdsourced/public/img/stimuli/mapping.csv`.
 
